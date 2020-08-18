@@ -113,7 +113,7 @@ void PatternEditor::getPattern(const std::string ptrnFile) {
 	}
 }
 
-
+/* Load the C2D_Image of the pattern data and such. */
 void PatternEditor::load(const std::string ptrnFile, bool fromFile) {
 	if (fromFile) this->getPattern(ptrnFile);
 
@@ -168,7 +168,7 @@ void PatternEditor::Draw(void) const {
 			Gui::DrawStringCentered(0, 140, 0.6f, C2D_Color32(255, 255, 255, 255), "Gender: Male", 395, 0);
 		}
 
-		/* Display Region and such. */
+		/* Display Savetype. */
 		Gui::DrawStringCentered(0, 160, 0.6f, C2D_Color32(255, 255, 255, 255), "Savetype: " + this->getSaveName(), 395, 0);
 
 		/* Display Region, if on AC:WW. */
@@ -207,29 +207,31 @@ void PatternEditor::Logic(u32 hDown, u32 hHeld, touchPosition touch) {
 	}
 
 	if (hDown & KEY_START) {
-		/* Here we save the pattern. */
-		std::string destination = Overlays::SelectDestination("Select the destination for the pattern.", "sdmc:/3ds/LeafEdit/Pattern-Editor/");
+		if (this->patternSize > 0 && this->data != nullptr) {
+			/* Here we save the pattern. */
+			std::string destination = Overlays::SelectDestination("Select the destination for the pattern.", "sdmc:/3ds/LeafEdit/Pattern-Editor/");
 
-		/* Enter the name of the pattern. */
-		destination += KBD::kbdString(20, "Enter the Pattern name (without extension).");
+			/* Enter the name of the pattern. */
+			destination += KBD::kbdString(20, "Enter the Pattern name (without extension).");
 
-		/* Get the extension for the Pattern. */
-		switch(this->savetype) {
-			case SaveType::WW:
-				destination += ".acww";
-				break;
-			case SaveType::NL:
-			case SaveType::WA:
-				destination += ".acnl";
-				break;
-			case SaveType::UNUSED:
-				destination += ".invalid";
-				break;
+			/* Get the extension for the Pattern. */
+			switch(this->savetype) {
+				case SaveType::WW:
+					destination += ".acww";
+					break;
+				case SaveType::NL:
+				case SaveType::WA:
+					destination += ".acnl";
+					break;
+				case SaveType::UNUSED:
+					destination += ".invalid";
+					break;
+			}
+
+			FILE *file = fopen(destination.c_str(), "wb");
+			fwrite(this->data.get(), 1, this->patternSize, file);
+			fclose(file);
+			Msg::DisplayWaitMsg("Properly saved pattern to file.");
 		}
-
-		FILE *file = fopen(destination.c_str(), "wb");
-		fwrite(this->data.get(), 1, this->patternSize, file);
-		fclose(file);
-		Msg::DisplayWaitMsg("Properly saved pattern to file.");
 	}
 }
