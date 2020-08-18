@@ -1,0 +1,11 @@
+
+*.d
+*.o
+*.map
+*.lst
+build/sprites.h
+*.bin
+*.3dsx
+*.elf
+*.smdh
+*.t3x
