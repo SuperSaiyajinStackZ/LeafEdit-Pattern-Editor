@@ -35,9 +35,9 @@ void Msg::DisplayWarnMsg(std::string Text) {
 	C2D_TargetClear(Bottom, C2D_Color32(0, 0, 0, 0));
 	UI::DrawBase(true, true);
 
-	Gui::Draw_Rect(0, 80, 400, 88, C2D_Color32(14, 73, 32, 255));
+	Gui::Draw_Rect(0, 80, 400, 88, C2D_Color32(0, 0, 230, 255));
 
-	Gui::DrawStringCentered(0, (240-Gui::GetStringHeight(0.7f, Text))/2, 0.7f, C2D_Color32(255, 255, 255, 255), Text, 395, 70);
+	Gui::DrawStringCentered(0, (240-Gui::GetStringHeight(0.8f, Text))/2, 0.8f, C2D_Color32(255, 255, 255, 255), Text, 395, 70, fnt);
 	UI::DrawBase(false, true);
 	C3D_FrameEnd(0);
 
@@ -54,9 +54,9 @@ void Msg::DisplayWaitMsg(std::string waitMsg, ...) {
 	C2D_TargetClear(Bottom, C2D_Color32(0, 0, 0, 0));
 
 	UI::DrawBase(true, true);
-	Gui::Draw_Rect(0, 80, 400, 88, C2D_Color32(14, 73, 32, 255));
-	Gui::DrawStringCentered(0, (240-Gui::GetStringHeight(0.7f, waitMsg))/2, 0.7f, C2D_Color32(255, 255, 255, 255), waitMsg, 390, 70);
-	Gui::DrawStringCentered(0, 217, 0.7f, C2D_Color32(255, 255, 255, 255), "Press A to continue.", 395, 0);
+	Gui::Draw_Rect(0, 80, 400, 88, C2D_Color32(0, 0, 230, 255));
+	Gui::DrawStringCentered(0, (240-Gui::GetStringHeight(0.8f, waitMsg))/2, 0.8f, C2D_Color32(255, 255, 255, 255), waitMsg, 390, 70, fnt);
+	Gui::DrawStringCentered(0, 217, 0.9f, C2D_Color32(255, 255, 255, 255), "Press \uE000 to continue.", 395, 0, fnt);
 
 	UI::DrawBase(false, true);
 	C3D_FrameEnd(0);
@@ -65,4 +65,19 @@ void Msg::DisplayWaitMsg(std::string waitMsg, ...) {
 		hidScanInput();
 		if ((hidKeysDown() & KEY_A)) break;
 	}
+}
+
+void Msg::HelperBox(std::string Msg) {
+	Gui::clearTextBufs();
+	C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+	Gui::ScreenDraw(Top);
+	Gui::Draw_Rect(0, 0, 400, 240, C2D_Color32(0, 0, 0, 190));
+	int textBoxHeight = Gui::GetStringHeight(0.7f, Msg, fnt) + 5;
+
+	Gui::Draw_Rect(40, 211 - textBoxHeight, 320, textBoxHeight, C2D_Color32(0, 0, 180, 255));
+	Gui::Draw_Rect(44, 215 - textBoxHeight, 312, textBoxHeight - 8, C2D_Color32(0, 0, 230, 255));
+	Gui::DrawStringCentered(0, 215 - textBoxHeight, 0.7, C2D_Color32(255, 255, 255, 255), Msg, 305, Gui::GetStringHeight(0.7f, Msg), fnt);
+	Gui::ScreenDraw(Bottom);
+	Gui::Draw_Rect(0, 0, 320, 240, C2D_Color32(0, 0, 0, 190));
+	C3D_FrameEnd(0);
 }

@@ -42,7 +42,11 @@ public:
 
 	bool isValid() override { return this->valid; }
 	u8 getPaletteColor(u8 plt) override;
-	u8 getPixel(int pixel, bool right = false) override;
+	int getWWPaletteIndex() override;
+	void setPaletteColor(int index, u8 color) override;
+	pixel getPixel(int pixel) override;
+	void setPixel(int index, int color) override;
+	void setPixel(int x, int y, int color) override;
 private:
 	bool valid = false;
 
@@ -50,6 +54,10 @@ private:
 		return this->data.get() + ptrnOffset;
 	}
 
+	pixel *pixelPointer() const {
+		return (pixel *)(data.get() + ptrnOffset);
+	}
+	
 	u8* paletteData() const {
 		return this->data.get() + pltOffset;
 	}

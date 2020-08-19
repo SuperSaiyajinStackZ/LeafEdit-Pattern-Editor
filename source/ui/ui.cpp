@@ -48,3 +48,15 @@ void UI::DrawButton(Button btn, float TextSize) {
 	Gui::Draw_Rect(btn.X, btn.Y, btn.XSize, btn.YSize, C2D_Color32(0, 50, 0, 255));
 	Gui::DrawStringCentered(btn.X - 160 + (btn.XSize/2), btn.Y + (btn.YSize/2) - 10, TextSize, C2D_Color32(0, 0, 0, 255), btn.Text, btn.XSize-10, btn.YSize-5);
 }
+
+/* Special Grid for the Palettes. Universal-Core ones won't work well. */
+void UI::DrawPaletteGrid(float xPos, float yPos, float Width, float Height, u32 paletteColor, u32 gridColor) {
+	static constexpr int w	= 1;
+	C2D_DrawRectSolid(xPos, yPos, 0.5, Width, Height, paletteColor);
+
+	/* Grid part. */
+	C2D_DrawRectSolid(xPos, yPos, 0.5, Width, w, gridColor); // top
+	C2D_DrawRectSolid(xPos, yPos + w, 0.5, w, Height - 2 * w, gridColor); // left
+	C2D_DrawRectSolid(xPos + Width - w, yPos + w, 0.5, w, Height - 2 * w, gridColor); // right
+	C2D_DrawRectSolid(xPos, yPos + Height - w, 0.5, Width, w, gridColor); // bottom
+}

@@ -40,7 +40,7 @@ static void DrawTop(std::string txt, uint Selection, std::vector<DirEntry> dirCo
 
 	UI::DrawBase(true, true);
 	Gui::Draw_Rect(0, 0, 400, 240, C2D_Color32(0, 0, 0, 190));
-	Gui::DrawStringCentered(0, -2, 0.7f, C2D_Color32(255, 255, 255, 255), txt, 390);
+	Gui::DrawStringCentered(0, 0, 0.9f, C2D_Color32(255, 255, 255, 255), txt, 390, 0, fnt);
 
 	for (uint i = (Selection < 5) ? 0 : Selection - 5; i < dirContents.size() && i < ((Selection < 5) ? 6 : Selection + 1); i++) {
 		if (i == Selection) {
@@ -54,20 +54,20 @@ static void DrawTop(std::string txt, uint Selection, std::vector<DirEntry> dirCo
 		files += "\n\n";
 	}
 
-	Gui::DrawString(26, 32, 0.53f, C2D_Color32(255, 255, 255, 255), files, 360);
-	Gui::DrawStringCentered(0, 217, 0.6f, C2D_Color32(255, 255, 255, 255), "Press START to refresh the list.", 390);
+	Gui::DrawString(26, 32, 0.7f, C2D_Color32(255, 255, 255, 255), files, 360, 0, fnt);
+	Gui::DrawStringCentered(0, 217, 0.9f, C2D_Color32(255, 255, 255, 255), "Press START to refresh the list.", 390, 0, fnt);
 	if (fadealpha > 0) Gui::Draw_Rect(0, 0, 400, 240, C2D_Color32(fadecolor, fadecolor, fadecolor, fadealpha));
 }
 
 static void DrawBottom() {
 	UI::DrawBase(false, true);
 	Gui::Draw_Rect(0, 0, 320, 240, C2D_Color32(0, 0, 0, 190));
-	Gui::DrawStringCentered(0, -2, 0.7f, C2D_Color32(255, 255, 255, 255), "Press Y to select destination.", 310);
+	Gui::DrawStringCentered(0, 0, 0.9f, C2D_Color32(255, 255, 255, 255), "Press \uE003 to select destination.", 310, 0, fnt);
 	C3D_FrameEnd(0);
 }
 
 std::string Overlays::SelectDestination(std::string txt, std::string defaultDest) {
-	s32 selectedFile = 0;
+	s32 selectedDir = 0;
 	std::vector<DirEntry> dirContents;
 	bool dirChanged = true;
 
@@ -83,7 +83,7 @@ std::string Overlays::SelectDestination(std::string txt, std::string defaultDest
 
 	while (1) {
 		/* Screen draw part. */
-		DrawTop(txt, selectedFile, dirContents);
+		DrawTop(txt, selectedDir, dirContents);
 		DrawBottom();
 
 		/* The input part. */
@@ -105,9 +105,9 @@ std::string Overlays::SelectDestination(std::string txt, std::string defaultDest
 
 		if (hDown & KEY_A) {
 			if (dirContents.size() > 0) {
-				if (dirContents[selectedFile].isDirectory) {
-					chdir(dirContents[selectedFile].name.c_str());
-					selectedFile = 0;
+				if (dirContents[selectedDir].isDirectory) {
+					chdir(dirContents[selectedDir].name.c_str());
+					selectedDir = 0;
 					dirChanged = true;
 				}
 			}
@@ -120,14 +120,14 @@ std::string Overlays::SelectDestination(std::string txt, std::string defaultDest
 		}
 
 		if (hRepeat & KEY_UP) {
-			if (selectedFile > 0) {
-				selectedFile--;
+			if (selectedDir > 0) {
+				selectedDir--;
 			}
 		}
 		
 		if (hRepeat & KEY_DOWN) {
-			if ((uint)selectedFile < dirContents.size()-1) {
-				selectedFile++;
+			if ((uint)selectedDir < dirContents.size()-1) {
+				selectedDir++;
 			}
 		}
 		
@@ -138,12 +138,13 @@ std::string Overlays::SelectDestination(std::string txt, std::string defaultDest
 				return defaultDest;
 			} else {
 				chdir("..");
-				selectedFile = 0;
+				selectedDir = 0;
 				dirChanged = true;
 			}
 		}
 		
 		if (hDown & KEY_START) {
+			selectedDir = 0;
 			dirChanged = true;
 		}
 	}

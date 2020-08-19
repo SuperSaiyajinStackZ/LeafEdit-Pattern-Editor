@@ -33,7 +33,7 @@
 #include <citro2d.h>
 
 namespace CoreUtils {
-	void generateEmptyPattern(SaveType ST, WWRegion region, std::shared_ptr<u8[]> &data);
+	void generateEmptyPattern(SaveType ST, WWRegion region, std::shared_ptr<u8[]> &data, u32 &size);
 	C2D_Image patternImage(std::shared_ptr<PatternImage> image, SaveType ST = SaveType::UNUSED);
 }
 

@@ -32,4 +32,6 @@
 #include "screenCommon.hpp"
 #include "ui.hpp"
 
+extern C2D_Font fnt;
+
 #endif

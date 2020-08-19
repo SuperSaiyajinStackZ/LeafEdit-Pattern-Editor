@@ -40,7 +40,7 @@ static void DrawTop(std::string txt, uint Selection, std::vector<DirEntry> dirCo
 
 	UI::DrawBase(true, true);
 	Gui::Draw_Rect(0, 0, 400, 240, C2D_Color32(0, 0, 0, 190));
-	Gui::DrawStringCentered(0, -2, 0.7f, C2D_Color32(255, 255, 255, 255), txt, 390);
+	Gui::DrawStringCentered(0, 0, 0.9f, C2D_Color32(255, 255, 255, 255), txt, 390, 0, fnt);
 
 	for (uint i = (Selection < 5) ? 0 : Selection - 5; i < dirContents.size() && i < ((Selection < 5) ? 6 : Selection + 1); i++) {
 		if (i == Selection) {
@@ -54,8 +54,8 @@ static void DrawTop(std::string txt, uint Selection, std::vector<DirEntry> dirCo
 		files += "\n\n";
 	}
 
-	Gui::DrawString(26, 32, 0.53f, C2D_Color32(255, 255, 255, 255), files, 360);
-	Gui::DrawStringCentered(0, 217, 0.6f, C2D_Color32(255, 255, 255, 255), "Press START to refresh the list.", 390);
+	Gui::DrawString(26, 32, 0.7f, C2D_Color32(255, 255, 255, 255), files, 360, 0, fnt);
+	Gui::DrawStringCentered(0, 217, 0.9f, C2D_Color32(255, 255, 255, 255), "Press START to refresh the list.", 390, 0, fnt);
 	if (fadealpha > 0) Gui::Draw_Rect(0, 0, 400, 240, C2D_Color32(fadecolor, fadecolor, fadecolor, fadealpha));
 }
 
@@ -127,6 +127,7 @@ std::string Overlays::SelectFile(std::string initialPath, std::vector<std::strin
 		}
 		
 		if (hDown & KEY_START) {
+			selectedFile = 0;
 			dirChanged = true;
 		}
 	}

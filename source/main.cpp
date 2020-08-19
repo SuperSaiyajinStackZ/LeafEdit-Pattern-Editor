@@ -26,13 +26,21 @@
 
 #include <3ds.h>
 #include "common.hpp"
-#include "MainMenu.hpp"
 #include "overlay.hpp"
+#include "patternEditor.hpp"
+#include "structs.hpp"
+
 #include <dirent.h>
 
 bool exiting = false;
 
 C2D_SpriteSheet sprites;
+C2D_Font fnt;
+
+bool touching(touchPosition touch, Structs::ButtonPos button) {
+	if (touch.px >= button.x && touch.px <= (button.x + button.w) && touch.py >= button.y && touch.py <= (button.y + button.h)) return true;
+	else return false;
+}
 
 int main() {
     /* Init all services. */
@@ -42,13 +50,15 @@ int main() {
 
 	/* Create Directories. */
     mkdir("sdmc:/3ds/LeafEdit", 0777);
-	mkdir("sdmc:/3ds/LeafEdit/Pattern-Editor", 0777); // Pattern path.
+	mkdir("sdmc:/3ds/LeafEdit/Pattern-Editor", 0777); // Main path.
+    mkdir("sdmc:/3ds/LeafEdit/Pattern-Editor/Pattern", 0777); // Pattern path.
 
 	Gui::loadSheet("romfs:/gfx/sprites.t3x", sprites);
+    Gui::loadFont(fnt, "romfs:/gfx/font.bcfnt");
 	osSetSpeedupEnable(true); // Enable speed-up for New 3DS users.
 
     Overlays::SplashOverlay();
-    Gui::setScreen(std::make_unique<MainMenu>(), false, true);
+    Gui::setScreen(std::make_unique<PatternEditor>(), false, true);
 
     /* MainLoop part here. */
     while(aptMainLoop() && !exiting) {
@@ -76,6 +86,7 @@ int main() {
     
     /* Unload and deinit. */
     Gui::unloadSheet(sprites);
+    Gui::unloadFont(fnt);
     Gui::exit();
     gfxExit();
     romfsExit();

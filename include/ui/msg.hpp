@@ -32,6 +32,7 @@
 namespace Msg {
 	void DisplayWarnMsg(std::string Text); // Display a Warn Message for about 2 seconds.
 	void DisplayWaitMsg(std::string waitMsg, ...); // Will Display a Message, which needs a confirmation with A.
+	void HelperBox(std::string Msg); // For displaying Instructions, and such.
 }
 
 #endif

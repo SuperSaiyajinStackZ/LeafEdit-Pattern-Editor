@@ -24,29 +24,10 @@
 *         reasonable ways as different from the original version.
 */
 
-#include "mainMenu.hpp"
-#include "patternEditor.hpp"
-#include "screenCommon.hpp"
+#include "coreUtils.hpp"
+#include "overlay.hpp"
 
-extern int fadealpha;
-extern bool fadein;
-extern bool exiting;
-
-void MainMenu::Draw(void) const {
-	UI::DrawBase(true, true);
-	Gui::DrawStringCentered(0, -2, 0.8, C2D_Color32(255, 255, 255, 255), "Pattern Editor - MainMenu", 390, 0);
-	if (fadealpha > 0) Gui::Draw_Rect(0, 0, 400, 240, C2D_Color32(fadecolor, fadecolor, fadecolor, fadealpha));
-	UI::DrawBase(false, true);
-	if (fadealpha > 0) Gui::Draw_Rect(0, 0, 320, 240, C2D_Color32(fadecolor, fadecolor, fadecolor, fadealpha));
-}
-
-
-void MainMenu::Logic(u32 hDown, u32 hHeld, touchPosition touch) {
-	if (hDown & KEY_START) {
-		exiting = true;
-	}
-
-	if (hDown & KEY_A) {
-		Gui::setScreen(std::make_unique<PatternEditor>(), true, true);
-	}
+void Overlays::PaletteTool(std::shared_ptr<PatternImage> &pImg, C2D_Image &img, SaveType ST) {
+	if (ST == SaveType::NL || ST == SaveType::WA) Overlays::PaletteToolNL(pImg, img);
+	else if (ST == SaveType::WW) Overlays::PaletteToolWW(pImg, img);
 }

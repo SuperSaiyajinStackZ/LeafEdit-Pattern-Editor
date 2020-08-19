@@ -28,6 +28,7 @@
 #define _LEAFEDIT_PATTERN_EDITOR_OVERLAY_HPP
 
 #include "common.hpp"
+#include "PatternImage.hpp"
 #include <string>
 #include <vector>
 
@@ -36,6 +37,10 @@ namespace Overlays {
 	std::string SelectFile(std::string initialPath, std::vector<std::string> extensions, std::string txt);
 	std::string SelectPattern();
 	std::string SelectDestination(std::string txt, std::string defaultDest);
+
+	void PaletteToolWW(std::shared_ptr<PatternImage> &pImg, C2D_Image &img);
+	void PaletteToolNL(std::shared_ptr<PatternImage> &pImg, C2D_Image &img);
+	void PaletteTool(std::shared_ptr<PatternImage> &pImg, C2D_Image &img, SaveType ST);
 }
 
 #endif

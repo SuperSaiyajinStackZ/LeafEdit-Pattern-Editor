@@ -33,7 +33,7 @@ static void Draw(void) {
 	C2D_TargetClear(Bottom, C2D_Color32(0, 0, 0, 0));
 	Gui::ScreenDraw(Top);
 	UI::DrawSprite(sprites_dev_by_idx, 0, 0);
-	Gui::DrawString(240, 175, 0.5, C2D_Color32(0, 0, 0, 255), "2020");
+	Gui::DrawString(240, 175, 0.7, C2D_Color32(0, 0, 0, 255), "2020", 0, 0, fnt);
 	if (fadealpha > 0) Gui::Draw_Rect(0, 0, 400, 240, C2D_Color32(fadecolor, fadecolor, fadecolor, fadealpha)); // Fade in/out effect
 	Gui::ScreenDraw(Bottom);
 	UI::DrawSprite(sprites_universal_core_idx, 0, 0);
