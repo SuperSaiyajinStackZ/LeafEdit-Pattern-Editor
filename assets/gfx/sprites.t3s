@@ -1,4 +1,11 @@
 --atlas -f rgba -z auto
 
 sprites/dev_by.png
+sprites/europe.png
+sprites/iconNL.png
+sprites/iconWA.png
+sprites/iconWW.png
+sprites/japan.png
+sprites/korea.png
 sprites/universal-core.png
+sprites/usa.png

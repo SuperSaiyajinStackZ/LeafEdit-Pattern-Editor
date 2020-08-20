@@ -24,47 +24,19 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef _LEAFEDIT_PATTERN_EDITOR_OVERLAY_HPP
-#define _LEAFEDIT_PATTERN_EDITOR_OVERLAY_HPP
+#include "inifile.hpp"
+#include "settings.hpp"
 
-#include "common.hpp"
-#include "PatternImage.hpp"
-#include <string>
-#include <vector>
+CIniFile settingsfile("sdmc:/3ds/LeafEdit/Pattern-Editor/Settings.ini");
 
-enum class PatternMode {
-	/* Main modes. */
-	Draw, // Always the default mode.
-	Clear,
-	Import,
-	Export,
-	Palette,
-	Credits,
-	Exit,
+std::string Settings::DefaultPath;
 
-	/* Pattern changing stuff. TODO. */
-	Name,
-	CreatorName,
-	CreatorID,
-	TownName,
-	TownID,
-	CreatorGender
-};
-
-namespace Overlays {
-	void SplashOverlay();
-	void CreditsOverlay();
-
-	std::string SelectFile(std::string initialPath, std::vector<std::string> extensions, std::string txt);
-	std::string SelectPattern();
-	std::string SelectDestination(std::string txt, std::string defaultDest);
-
-	void PaletteToolWW(std::shared_ptr<PatternImage> &pImg, C2D_Image &img);
-	void PaletteToolNL(std::shared_ptr<PatternImage> &pImg, C2D_Image &img);
-	void PaletteTool(std::shared_ptr<PatternImage> &pImg, C2D_Image &img, SaveType ST);
-
-	PatternMode ToolSelect();
-	void SaveSelect(SaveType &ST, WWRegion &region);
+void Settings::Read() {
+	settingsfile.LoadIniFile("sdmc:/3ds/LeafEdit/Pattern-Editor/Settings.ini");
+	Settings::DefaultPath = settingsfile.GetString("Defaults", "defaultPattern ", "romfs:/pattern/empty/nl.acnl");
 }
 
-#endif
+void Settings::Save() {
+	settingsfile.SetString("Defaults", "defaultPattern ", Settings::DefaultPath);
+	settingsfile.SaveIniFile("sdmc:/3ds/LeafEdit/Pattern-Editor/Settings.ini");
+}

@@ -9,3 +9,5 @@ build/sprites.h
 *.elf
 *.smdh
 *.t3x
+*.exe
+*.cia

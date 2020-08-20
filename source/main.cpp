@@ -28,6 +28,7 @@
 #include "common.hpp"
 #include "overlay.hpp"
 #include "patternEditor.hpp"
+#include "settings.hpp"
 #include "structs.hpp"
 
 #include <dirent.h>
@@ -57,6 +58,7 @@ int main() {
     Gui::loadFont(fnt, "romfs:/gfx/font.bcfnt");
 	osSetSpeedupEnable(true); // Enable speed-up for New 3DS users.
 
+    Settings::Read();
     Overlays::SplashOverlay();
     Gui::setScreen(std::make_unique<PatternEditor>(), false, true);
 
@@ -87,6 +89,7 @@ int main() {
     /* Unload and deinit. */
     Gui::unloadSheet(sprites);
     Gui::unloadFont(fnt);
+    Settings::Save();
     Gui::exit();
     gfxExit();
     romfsExit();

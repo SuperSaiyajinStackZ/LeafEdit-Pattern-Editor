@@ -45,8 +45,8 @@ void UI::DrawBase(bool onTop, bool bar) {
 }
 
 void UI::DrawButton(Button btn, float TextSize) {
-	Gui::Draw_Rect(btn.X, btn.Y, btn.XSize, btn.YSize, C2D_Color32(0, 50, 0, 255));
-	Gui::DrawStringCentered(btn.X - 160 + (btn.XSize/2), btn.Y + (btn.YSize/2) - 10, TextSize, C2D_Color32(0, 0, 0, 255), btn.Text, btn.XSize-10, btn.YSize-5);
+	Gui::Draw_Rect(btn.X, btn.Y, btn.XSize, btn.YSize, C2D_Color32(0, 0, 230, 255));
+	Gui::DrawStringCentered(btn.X - 160 + (btn.XSize / 2), btn.Y + (btn.YSize / 2) - 10, TextSize, C2D_Color32(255, 255, 255, 255), btn.Text, btn.XSize - 10, btn.YSize - 5);
 }
 
 /* Special Grid for the Palettes. Universal-Core ones won't work well. */

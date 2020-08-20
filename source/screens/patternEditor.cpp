@@ -29,6 +29,7 @@
 #include "overlay.hpp"
 #include "patternEditor.hpp"
 #include "screenCommon.hpp"
+#include "settings.hpp"
 #include "stringUtils.hpp"
 #include "utils.hpp"
 
@@ -182,10 +183,7 @@ void PatternEditor::load(const std::string ptrnFile, bool fromFile) {
 
 /* Load Empty Pattern. */
 PatternEditor::PatternEditor() {
-	this->savetype = SaveType::NL;
-	CoreUtils::generateEmptyPattern(this->savetype, this->saveregion, this->data, this->patternSize);
-	this->isValid = true;
-	this->load("", false);
+	this->load(Settings::DefaultPath, true);
 }
 
 /* Destroy C2D_Image, if exist. */
@@ -205,10 +203,12 @@ void PatternEditor::Draw(void) const {
 		Gui::DrawStringCentered(0, 100, 0.7f, C2D_Color32(255, 255, 255, 255), "Origin Town Name: " + StringUtils::UTF16toUTF8(this->pattern->origtownname()), 395, 0, fnt);
 		Gui::DrawStringCentered(0, 120, 0.7f, C2D_Color32(255, 255, 255, 255), "Origin Town ID: " + std::to_string(this->pattern->origtownid()), 395, 0, fnt);
 
-		if (this->pattern->creatorGender()) {
-			Gui::DrawStringCentered(0, 140, 0.7f, C2D_Color32(255, 255, 255, 255), "Gender: Female", 395, 0, fnt);
-		} else {
-			Gui::DrawStringCentered(0, 140, 0.7f, C2D_Color32(255, 255, 255, 255), "Gender: Male", 395, 0, fnt);
+		if (this->savetype != SaveType::WW) {
+			if (this->pattern->creatorGender()) {
+				Gui::DrawStringCentered(0, 140, 0.7f, C2D_Color32(255, 255, 255, 255), "Creator Gender: Female", 395, 0, fnt);
+			} else {
+				Gui::DrawStringCentered(0, 140, 0.7f, C2D_Color32(255, 255, 255, 255), "Creator Gender: Male", 395, 0, fnt);
+			}
 		}
 
 		/* Display Savetype. */
@@ -219,7 +219,7 @@ void PatternEditor::Draw(void) const {
 			Gui::DrawStringCentered(0, 180, 0.7f, C2D_Color32(255, 255, 255, 255), "Region: " + this->getRegionName(), 395, 0, fnt);
 		}
 
-		Gui::DrawStringCentered(0, 217, 0.9f, C2D_Color32(255, 255, 255, 255), "Press \uE000 to show instructions.", 395, 0, fnt);
+		Gui::DrawStringCentered(0, 217, 0.9f, C2D_Color32(255, 255, 255, 255), "Press SELECT to show instructions.", 395, 0, fnt);
 		if (fadealpha > 0) Gui::Draw_Rect(0, 0, 400, 240, C2D_Color32(fadecolor, fadecolor, fadecolor, fadealpha));
 		UI::DrawBase(false, false);
 		if (this->patternImage.subtex) C2D_DrawImageAt(this->patternImage, 8, 8, 0.5f, nullptr, 7, 7); // 224x224. 224/32 -> 7.
@@ -255,26 +255,49 @@ void PatternEditor::Draw(void) const {
 }
 
 void PatternEditor::Logic(u32 hDown, u32 hHeld, touchPosition touch) {
-	/* TODO: Let Select open a Pattern Tool Menu or so instead of exiting. */
-	if (hDown & KEY_SELECT) {
+	if (hDown & KEY_Y) {
+		this->mode = Overlays::ToolSelect();
+	}
+
+	/* Exit the app. */
+	if (this->mode == PatternMode::Exit) {
 		exiting = true;
 	}
 
-	/* Open the Pattern Palette Selection. */
-	if (hDown & KEY_Y) {
-		Overlays::PaletteTool(this->image, this->patternImage, this->savetype);
+	/* Credits Mode. */
+	if (this->mode == PatternMode::Credits) {
+		Overlays::CreditsOverlay();
+		this->mode = PatternMode::Draw;
 	}
 
-	/* Loading | Selecting another pattern. */
-	if (hDown & KEY_X) {
+	/* Clear Mode. */
+	if (this->mode == PatternMode::Clear) {
+		/* Select SaveType. */
+		Overlays::SaveSelect(this->savetype, this->saveregion);
+		CoreUtils::generateEmptyPattern(this->savetype, this->saveregion, this->data, this->patternSize);
+		this->load("", false);
+		this->mode = PatternMode::Draw;
+	}
+
+	/* Palette mode. */
+	if (this->mode == PatternMode::Palette) {
+		Overlays::PaletteTool(this->image, this->patternImage, this->savetype);
+		this->mode = PatternMode::Draw;
+	}
+
+	/* Import mode. */
+	if (this->mode == PatternMode::Import) {
 		const std::string file = Overlays::SelectPattern();
 
 		if (file != "!NO_PATTERN") {
 			this->load(file, true);
 		}
+
+		this->mode = PatternMode::Draw;
 	}
 
-	if (hDown & KEY_START) {
+	/* Export mode. */
+	if (this->mode == PatternMode::Export) {
 		if (this->patternSize > 0 && this->data != nullptr) {
 			/* Here we save the pattern. */
 			std::string destination = Overlays::SelectDestination("Select the destination for the pattern.", "sdmc:/3ds/LeafEdit/Pattern-Editor/Pattern/");
@@ -301,47 +324,49 @@ void PatternEditor::Logic(u32 hDown, u32 hHeld, touchPosition touch) {
 			fclose(file);
 			Msg::DisplayWaitMsg("Properly saved file to:\n\n" + destination + ".");
 		}
+
+		this->mode = PatternMode::Draw;
 	}
 
-	/* Pattern drawing part. */
-	if (this->isValid) {
-		if (hHeld & KEY_TOUCH) {
-			bool didTouch = false;
-			for (int x = 0; x < 32; x++) {
-				for (int y = 0; y < 32; y++) {
-					if (touch.px <= (8 + 7 + x * 7) && touch.px >= (8 + x * 7) && touch.py <= (8 + 7 + y * 7) && touch.py >= (8 + y * 7)) {
-						if (this->savetype == SaveType::WW) this->image->setPixel(x, y, this->color + 1);
-						else if (this->savetype == SaveType::NL || this->savetype == SaveType::WA) this->image->setPixel(x, y, this->color);
-						didTouch = true;
-						break;
+
+	/* Pattern drawing mode. */
+	if (this->mode == PatternMode::Draw) {
+		if (this->isValid) {
+			if (hHeld & KEY_TOUCH) {
+				bool didTouch = false;
+				for (int x = 0; x < 32; x++) {
+					for (int y = 0; y < 32; y++) {
+						if (touch.px <= (8 + 7 + x * 7) && touch.px >= (8 + x * 7) && touch.py <= (8 + 7 + y * 7) && touch.py >= (8 + y * 7)) {
+							if (this->savetype == SaveType::WW) this->image->setPixel(x, y, this->color + 1);
+							else if (this->savetype == SaveType::NL || this->savetype == SaveType::WA) this->image->setPixel(x, y, this->color);
+							didTouch = true;
+							break;
+						}
 					}
 				}
-			}
 
-			/* If we didn't touched the Pattern. */
-			if (!didTouch) {
-				for (int i = 0; i < 15; i++) {
-					if (touching(touch, palettePos[i])) {
-						this->color = i;
+				/* If we didn't touched the Pattern. */
+				if (!didTouch) {
+					for (int i = 0; i < 15; i++) {
+						if (touching(touch, palettePos[i])) {
+							this->color = i;
+						}
 					}
 				}
-			}
 
-			if (didTouch) {
-				C3D_FrameEnd(0);
-				if (this->patternImage.subtex != nullptr) C2DUtils::C2D_ImageDelete(this->patternImage);
-				this->patternImage = CoreUtils::patternImage(this->image, this->savetype);
+				if (didTouch) {
+					C3D_FrameEnd(0);
+					if (this->patternImage.subtex != nullptr) C2DUtils::C2D_ImageDelete(this->patternImage);
+					this->patternImage = CoreUtils::patternImage(this->image, this->savetype);
+				}
 			}
 		}
 	}
 
 	/* Instructions. */
-	if (hHeld & KEY_A) {
-		Msg::HelperBox("Press \uE000 to display Helperbox."
-						"\nPress \uE002 to load another pattern."
-						"\nPress \uE003 to open the Palette tool."
-						"\nPress START to save the pattern to a file."
-						"\nPress SELECT to exit the app."
+	if (hHeld & KEY_SELECT) {
+		Msg::HelperBox("Press SELECT to display Helperbox."
+						"\nPress \uE003 to open the pattern tool."
 						"\nTouch the pattern to draw."
 						"\nTouch the palette colors on the side to select a color.");
 	}

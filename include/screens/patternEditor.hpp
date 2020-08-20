@@ -51,6 +51,8 @@ private:
 	const std::string getSaveName() const;
 	const std::string getRegionName() const;
 
+	PatternMode mode = PatternMode::Draw;
+	
 	/* Save / Region Related stuff. */
 	bool isValid = false;
 	SaveType savetype = SaveType::UNUSED;
