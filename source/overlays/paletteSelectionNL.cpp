@@ -80,7 +80,8 @@ static void Draw(std::shared_ptr<PatternImage> &pImg, C2D_Image &img, int index,
 	C2D_TargetClear(Bottom, C2D_Color32(0, 0, 0, 0));
 
 	UI::DrawBase(true, true);
-	Gui::DrawStringCentered(0, 0, 0.9, C2D_Color32(255, 255, 255, 255), "Palette Editor", 310, 100, fnt);
+	UI::DrawSprite(sprites_bottom_bar_idx, 0, 209);
+	Gui::DrawStringCentered(0, -2, 0.9, C2D_Color32(255, 255, 255, 255), "Palette Editor", 310, 100, fnt);
 	if (img.subtex != nullptr) C2D_DrawImageAt(img, 125, 45, 0.5f, nullptr, 5, 5); // 160x160. 160/32 -> 5.
 	Gui::DrawStringCentered(0, 217, 0.9f, C2D_Color32(255, 255, 255, 255), "Press \uE001 to exit overlay.", 395, 0, fnt);
 
@@ -95,8 +96,9 @@ static void Draw(std::shared_ptr<PatternImage> &pImg, C2D_Image &img, int index,
 
 
 	UI::DrawBase(false, true);
-	Gui::DrawStringCentered(0, 0, 0.9, C2D_Color32(255, 255, 255, 255), "Press SELECT to show instructions.", 395, 0, fnt);
-	Gui::DrawStringCentered(0, 50, 0.9f, C2D_Color32(255, 255, 255, 255), "Select a palette index.", 310, 100, fnt);
+	UI::DrawSprite(sprites_top_bar_idx, 0, 0);
+	Gui::DrawStringCentered(0, -2, 0.9, C2D_Color32(255, 255, 255, 255), "Press SELECT to show instructions.", 395, 0, fnt);
+	Gui::DrawStringCentered(0, 50, 0.9f, C2D_Color32(0, 0, 0, 255), "Select a palette index.", 310, 100, fnt);
 
 	/* Drawing Palette. */
 	for (int i = 0; i < 15; i++) {
@@ -134,7 +136,8 @@ static void DrawPaletteSelection(C2D_Image &img, int colorGroup, int selection, 
 	C2D_TargetClear(Top, C2D_Color32(0, 0, 0, 0));
 
 	UI::DrawBase(true, true);
-	Gui::DrawStringCentered(0, 0, 0.9, C2D_Color32(255, 255, 255, 255), "Palette Editor", 310, 100, fnt);
+	UI::DrawSprite(sprites_bottom_bar_idx, 0, 209);
+	Gui::DrawStringCentered(0, -2, 0.9, C2D_Color32(255, 255, 255, 255), "Palette Editor", 310, 100, fnt);
 	if (img.subtex != nullptr) C2D_DrawImageAt(img, 125, 45, 0.5f, nullptr, 5, 5); // 160x160. 160/32 -> 5.
 
 	if (instructions) {
@@ -147,8 +150,9 @@ static void DrawPaletteSelection(C2D_Image &img, int colorGroup, int selection, 
 	}
 	
 	UI::DrawBase(false, true);
-	Gui::DrawStringCentered(0, 0, 0.9, C2D_Color32(255, 255, 255, 255), "Press SELECT to show instructions.", 395, 0, fnt);
-	Gui::DrawStringCentered(0, 50, 0.9f, C2D_Color32(255, 255, 255, 255), "Color Group: " + std::to_string(colorGroup + 1) + " | 17", 310, 100, fnt);
+	UI::DrawSprite(sprites_top_bar_idx, 0, 0);
+	Gui::DrawStringCentered(0, -2, 0.9, C2D_Color32(255, 255, 255, 255), "Press SELECT to show instructions.", 395, 0, fnt);
+	Gui::DrawStringCentered(0, 50, 0.9f, C2D_Color32(0, 0, 0, 255), "Color Group: " + std::to_string(colorGroup + 1) + " | 17", 310, 100, fnt);
 
 	if (colorGroup < 16) {
 		for (int i = 0; i < 9; i++) {
@@ -158,6 +162,7 @@ static void DrawPaletteSelection(C2D_Image &img, int colorGroup, int selection, 
 				UI::DrawPaletteGrid(colorGrid[i].x, colorGrid[i].y, colorGrid[i].w, colorGrid[i].h, NLPaletteColors[(i + (colorGroup * 16))], C2D_Color32(0, 0, 0, 255));
 			}
 		}
+
 	} else {
 		for (int i = 0; i < 15; i++) {
 			if (i == selection) {

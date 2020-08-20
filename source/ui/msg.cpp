@@ -54,6 +54,7 @@ void Msg::DisplayWaitMsg(std::string waitMsg, ...) {
 	C2D_TargetClear(Bottom, C2D_Color32(0, 0, 0, 0));
 
 	UI::DrawBase(true, true);
+	UI::DrawSprite(sprites_bottom_bar_idx, 0, 209);
 	Gui::Draw_Rect(0, 80, 400, 88, C2D_Color32(0, 0, 230, 255));
 	Gui::DrawStringCentered(0, (240-Gui::GetStringHeight(0.8f, waitMsg))/2, 0.8f, C2D_Color32(255, 255, 255, 255), waitMsg, 390, 70, fnt);
 	Gui::DrawStringCentered(0, 217, 0.9f, C2D_Color32(255, 255, 255, 255), "Press \uE000 to continue.", 395, 0, fnt);

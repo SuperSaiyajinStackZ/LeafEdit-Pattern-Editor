@@ -1,5 +1,8 @@
 --atlas -f rgba -z auto
 
+sprites/bar.png
+sprites/bottom_bar.png
+sprites/button_corner.png
 sprites/dev_by.png
 sprites/europe.png
 sprites/iconNL.png
@@ -7,5 +10,10 @@ sprites/iconWA.png
 sprites/iconWW.png
 sprites/japan.png
 sprites/korea.png
+sprites/pointer.png
+sprites/selector_side.png
+sprites/stackz.png
+sprites/tileBG.png
+sprites/top_bar.png
 sprites/universal-core.png
 sprites/usa.png

@@ -49,7 +49,7 @@ static void Draw(int mode, int selection) {
 
 	UI::DrawBase(true, true);
 	if (mode == 0) {
-		Gui::DrawStringCentered(0, 0, 0.9f, C2D_Color32(255, 255, 255, 255), "Select a SaveType.", 395, 0, fnt);
+		Gui::DrawStringCentered(0, -2, 0.9f, C2D_Color32(255, 255, 255, 255), "Select a SaveType.", 395, 0, fnt);
 		UI::DrawBase(false, true);
 
 		
@@ -59,11 +59,11 @@ static void Draw(int mode, int selection) {
 
 		Gui::drawGrid(types[selection].x, types[selection].y, types[selection].w, types[selection].h, C2D_Color32(180, 0, 0, 200));
 
-		Gui::DrawString(20, 70, 0.75f, C2D_Color32(255, 255, 255, 255), "New Leaf", 0, 0, fnt);
-		Gui::DrawString(105, 140, 0.75f, C2D_Color32(255, 255, 255, 255), "Welcome Amiibo", 0, 0, fnt);
-		Gui::DrawString(220, 70, 0.75f, C2D_Color32(255, 255, 255, 255), "Wild World", 0, 0, fnt);
+		Gui::DrawString(20, 70, 0.75f, C2D_Color32(0, 0, 0, 255), "New Leaf", 0, 0, fnt);
+		Gui::DrawString(105, 140, 0.75f, C2D_Color32(0, 0, 0, 255), "Welcome Amiibo", 0, 0, fnt);
+		Gui::DrawString(220, 70, 0.75f, C2D_Color32(0, 0, 0, 255), "Wild World", 0, 0, fnt);
 	} else {
-		Gui::DrawStringCentered(0, 0, 0.9f, C2D_Color32(255, 255, 255, 255), "Select a Region.", 395, 0, fnt);
+		Gui::DrawStringCentered(0, -2, 0.9f, C2D_Color32(255, 255, 255, 255), "Select a Region.", 395, 0, fnt);
 		UI::DrawBase(false, true);
 		
 		UI::DrawSprite(sprites_japan_idx, regions[0].x, regions[0].y);
@@ -73,10 +73,10 @@ static void Draw(int mode, int selection) {
 
 		Gui::drawGrid(regions[selection].x, regions[selection].y, regions[selection].w, regions[selection].h, C2D_Color32(180, 0, 0, 200));
 
-		Gui::DrawStringCentered(-90 - 30, 95, 0.8, C2D_Color32(255, 255, 255, 255), "Japan", 0, 0, fnt);
-		Gui::DrawStringCentered(-10 - 30, 95, 0.8, C2D_Color32(255, 255, 255, 255), "USA", 0, 0, fnt);
-		Gui::DrawStringCentered(70 - 30, 95, 0.8, C2D_Color32(255, 255, 255, 255), "Europe", 0, 0, fnt);
-		Gui::DrawStringCentered(150 - 30, 95, 0.8, C2D_Color32(255, 255, 255, 255), "Korea", 0, 0, fnt);
+		Gui::DrawStringCentered(-90 - 30, 95, 0.8, C2D_Color32(0, 0, 0, 255), "Japan", 0, 0, fnt);
+		Gui::DrawStringCentered(-10 - 30, 95, 0.8, C2D_Color32(0, 0, 0, 255), "USA", 0, 0, fnt);
+		Gui::DrawStringCentered(70 - 30, 95, 0.8, C2D_Color32(0, 0, 0, 255), "Europe", 0, 0, fnt);
+		Gui::DrawStringCentered(150 - 30, 95, 0.8, C2D_Color32(0, 0, 0, 255), "Korea", 0, 0, fnt);
 	}
 
 	C3D_FrameEnd(0);

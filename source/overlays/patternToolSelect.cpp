@@ -49,14 +49,15 @@ static void Draw(int select) {
 	C2D_TargetClear(Bottom, C2D_Color32(0, 0, 0, 0));
 
 	UI::DrawBase(true, true);
-	Gui::DrawStringCentered(0, 0, 0.9f, C2D_Color32(255, 255, 255, 255), "Pattern Tool Menu", 395, 0, fnt);
+	Gui::DrawStringCentered(0, -2, 0.9f, C2D_Color32(255, 255, 255, 255), "Pattern Tool Menu", 395, 0, fnt);
 	UI::DrawBase(false, true);
 
 	/* TODO: Buttons. */
 	for (int i = 0; i < 6; i++) {
-		UI::DrawButton(buttons[i]);
-		if (select == i) Gui::drawGrid(buttons[i].X, buttons[i].Y, buttons[i].XSize, buttons[i].YSize, C2D_Color32(180, 0, 0, 200));
+		UI::DrawButton(buttons[i], 0.6);
 	}
+
+	UI::DrawSprite(sprites_pointer_idx, buttons[select].X + 100, buttons[select].Y + 30);
 
 	C3D_FrameEnd(0);
 }

@@ -195,28 +195,30 @@ PatternEditor::~PatternEditor() {
 
 void PatternEditor::Draw(void) const {
 	UI::DrawBase(true, true);
+	UI::DrawSprite(sprites_bottom_bar_idx, 0, 209);
+
 	if (this->isValid) {
-		Gui::DrawStringCentered(0, 0, 0.9f, C2D_Color32(255, 255, 255, 255), "Pattern Editor", 395, 0, fnt);
-		Gui::DrawStringCentered(0, 40, 0.7f, C2D_Color32(255, 255, 255, 255), "Pattern Name: " + StringUtils::UTF16toUTF8(this->pattern->name()), 395, 0, fnt);
-		Gui::DrawStringCentered(0, 60, 0.7f, C2D_Color32(255, 255, 255, 255), "Creator Name: " + StringUtils::UTF16toUTF8(this->pattern->creatorname()), 395, 0, fnt);
-		Gui::DrawStringCentered(0, 80, 0.7f, C2D_Color32(255, 255, 255, 255), "Creator ID: " + std::to_string(this->pattern->creatorid()), 395, 0, fnt);
-		Gui::DrawStringCentered(0, 100, 0.7f, C2D_Color32(255, 255, 255, 255), "Origin Town Name: " + StringUtils::UTF16toUTF8(this->pattern->origtownname()), 395, 0, fnt);
-		Gui::DrawStringCentered(0, 120, 0.7f, C2D_Color32(255, 255, 255, 255), "Origin Town ID: " + std::to_string(this->pattern->origtownid()), 395, 0, fnt);
+		Gui::DrawStringCentered(0, -2, 0.9f, C2D_Color32(255, 255, 255, 255), "Pattern Editor", 395, 0, fnt);
+		Gui::DrawStringCentered(0, 40, 0.7f, C2D_Color32(0, 0, 0, 255), "Pattern Name: " + StringUtils::UTF16toUTF8(this->pattern->name()), 395, 0, fnt);
+		Gui::DrawStringCentered(0, 60, 0.7f, C2D_Color32(0, 0, 0, 255), "Creator Name: " + StringUtils::UTF16toUTF8(this->pattern->creatorname()), 395, 0, fnt);
+		Gui::DrawStringCentered(0, 80, 0.7f, C2D_Color32(0, 0, 0, 255), "Creator ID: " + std::to_string(this->pattern->creatorid()), 395, 0, fnt);
+		Gui::DrawStringCentered(0, 100, 0.7f, C2D_Color32(0, 0, 0, 255), "Origin Town Name: " + StringUtils::UTF16toUTF8(this->pattern->origtownname()), 395, 0, fnt);
+		Gui::DrawStringCentered(0, 120, 0.7f, C2D_Color32(0, 0, 0, 255), "Origin Town ID: " + std::to_string(this->pattern->origtownid()), 395, 0, fnt);
 
 		if (this->savetype != SaveType::WW) {
 			if (this->pattern->creatorGender()) {
-				Gui::DrawStringCentered(0, 140, 0.7f, C2D_Color32(255, 255, 255, 255), "Creator Gender: Female", 395, 0, fnt);
+				Gui::DrawStringCentered(0, 140, 0.7f, C2D_Color32(0, 0, 0, 255), "Creator Gender: Female", 395, 0, fnt);
 			} else {
-				Gui::DrawStringCentered(0, 140, 0.7f, C2D_Color32(255, 255, 255, 255), "Creator Gender: Male", 395, 0, fnt);
+				Gui::DrawStringCentered(0, 140, 0.7f, C2D_Color32(0, 0, 0, 255), "Creator Gender: Male", 395, 0, fnt);
 			}
 		}
 
 		/* Display Savetype. */
-		Gui::DrawStringCentered(0, 160, 0.7f, C2D_Color32(255, 255, 255, 255), "Savetype: " + this->getSaveName(), 395, 0, fnt);
+		Gui::DrawStringCentered(0, 160, 0.7f, C2D_Color32(0, 0, 0, 255), "Savetype: " + this->getSaveName(), 395, 0, fnt);
 
 		/* Display Region, if on AC:WW. */
 		if (this->savetype == SaveType::WW) {
-			Gui::DrawStringCentered(0, 180, 0.7f, C2D_Color32(255, 255, 255, 255), "Region: " + this->getRegionName(), 395, 0, fnt);
+			Gui::DrawStringCentered(0, 180, 0.7f, C2D_Color32(0, 0, 0, 255), "Region: " + this->getRegionName(), 395, 0, fnt);
 		}
 
 		Gui::DrawStringCentered(0, 217, 0.9f, C2D_Color32(255, 255, 255, 255), "Press SELECT to show instructions.", 395, 0, fnt);
@@ -247,7 +249,7 @@ void PatternEditor::Draw(void) const {
 
 		/* Invalid!! */
 	} else {
-		Gui::DrawStringCentered(0, 0, 0.9f, C2D_Color32(255, 255, 255, 255), "Pattern Editor - Invalid Pattern!", 395, 0, fnt);
+		Gui::DrawStringCentered(0, -2, 0.9f, C2D_Color32(255, 255, 255, 255), "Pattern Editor - Invalid Pattern!", 395, 0, fnt);
 		if (fadealpha > 0) Gui::Draw_Rect(0, 0, 400, 240, C2D_Color32(fadecolor, fadecolor, fadecolor, fadealpha));
 		UI::DrawBase(false, false);
 		if (fadealpha > 0) Gui::Draw_Rect(0, 0, 320, 240, C2D_Color32(fadecolor, fadecolor, fadecolor, fadealpha));
@@ -365,8 +367,7 @@ void PatternEditor::Logic(u32 hDown, u32 hHeld, touchPosition touch) {
 
 	/* Instructions. */
 	if (hHeld & KEY_SELECT) {
-		Msg::HelperBox("Press SELECT to display Helperbox."
-						"\nPress START to open the pattern tool."
+		Msg::HelperBox("Press START to open the pattern tool menu."
 						"\nTouch the pattern to draw."
 						"\nTouch the palette colors on the side to select a color.");
 	}

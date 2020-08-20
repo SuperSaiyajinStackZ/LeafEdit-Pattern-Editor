@@ -58,3 +58,5 @@ You need devkitARM along with Libctru, Citro2D & Citro3D for this to compile. Yo
 - [Slattz](https://github.com/Slattz): For the region flags & game icons from [NLTK](https://github.com/Slattz/NLTK).
 
 - [Universal-Team](https://github.com/Universal-Team): For [LeafEdit's](https://github.com/Universal-Team/LeafEdit) pattern core and [Universal-Core](https://github.com/Universal-Team/Universal-Core).
+
+- [TotallyNotGuy](https://github.com/TotallyNotGuy): For the amazing Graphics from LeafEdit.

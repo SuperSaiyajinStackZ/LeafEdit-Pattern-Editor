@@ -56,7 +56,8 @@ static void Draw(std::shared_ptr<PatternImage> &pImg, C2D_Image &img, bool instr
 	C2D_TargetClear(Bottom, C2D_Color32(0, 0, 0, 0));
 
 	UI::DrawBase(true, true);
-	Gui::DrawStringCentered(0, 0, 0.9, C2D_Color32(255, 255, 255, 255), "Palette Editor", 395, 0, fnt);
+	UI::DrawSprite(sprites_bottom_bar_idx, 0, 209);
+	Gui::DrawStringCentered(0, -2, 0.9, C2D_Color32(255, 255, 255, 255), "Palette Editor", 395, 0, fnt);
 	if (img.subtex != nullptr) C2D_DrawImageAt(img, 125, 45, 0.5f, nullptr, 5, 5); // 160x160. 160/32 -> 5.
 	Gui::DrawStringCentered(0, 217, 0.9f, C2D_Color32(255, 255, 255, 255), "Press \uE001 to exit overlay.", 395, 0, fnt);
 
@@ -70,14 +71,15 @@ static void Draw(std::shared_ptr<PatternImage> &pImg, C2D_Image &img, bool instr
 	}
 
 	UI::DrawBase(false, true);
-	Gui::DrawStringCentered(0, 0, 0.9, C2D_Color32(255, 255, 255, 255), "Press SELECT to show instructions.", 395, 0, fnt);
+	UI::DrawSprite(sprites_top_bar_idx, 0, 0);
+	Gui::DrawStringCentered(0, -2, 0.9, C2D_Color32(255, 255, 255, 255), "Press SELECT to show instructions.", 395, 0, fnt);
 
 	/* Drawing Palette. */
 	for (int i = 0; i < 15; i++) {
 		UI::DrawPaletteGrid(10 + i * 20, 120, 20, 20, WWPaletteColors[pImg->getPaletteColor(i)], C2D_Color32(20, 20, 20, 255));
 	}
 
-	Gui::DrawStringCentered(0, 80, 0.9f, C2D_Color32(255, 255, 255, 255), "Palette: " + std::to_string(pImg->getWWPaletteIndex() + 1), 310, 0, fnt);
+	Gui::DrawStringCentered(0, 80, 0.9f, C2D_Color32(0, 0, 0, 255), "Palette: " + std::to_string(pImg->getWWPaletteIndex() + 1), 310, 0, fnt);
 	C3D_FrameEnd(0);
 }
 
