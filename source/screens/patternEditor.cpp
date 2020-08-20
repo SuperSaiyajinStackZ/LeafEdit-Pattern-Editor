@@ -255,7 +255,7 @@ void PatternEditor::Draw(void) const {
 }
 
 void PatternEditor::Logic(u32 hDown, u32 hHeld, touchPosition touch) {
-	if (hDown & KEY_Y) {
+	if (hDown & KEY_START) {
 		this->mode = Overlays::ToolSelect();
 	}
 
@@ -366,7 +366,7 @@ void PatternEditor::Logic(u32 hDown, u32 hHeld, touchPosition touch) {
 	/* Instructions. */
 	if (hHeld & KEY_SELECT) {
 		Msg::HelperBox("Press SELECT to display Helperbox."
-						"\nPress \uE003 to open the pattern tool."
+						"\nPress START to open the pattern tool."
 						"\nTouch the pattern to draw."
 						"\nTouch the palette colors on the side to select a color.");
 	}
