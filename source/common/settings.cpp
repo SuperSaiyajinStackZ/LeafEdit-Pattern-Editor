@@ -27,16 +27,35 @@
 #include "inifile.hpp"
 #include "settings.hpp"
 
-CIniFile settingsfile("sdmc:/3ds/LeafEdit/Pattern-Editor/Settings.ini");
 
-std::string Settings::DefaultPath;
+std::string Settings::DefaultPath, Settings::DefaultCreatorName, Settings::DefaultTownName;
+u16 Settings::DefaultCreatorID, Settings::DefaultTownID;
+u8 Settings::DefaultGender;
 
 void Settings::Read() {
-	settingsfile.LoadIniFile("sdmc:/3ds/LeafEdit/Pattern-Editor/Settings.ini");
+	CIniFile settingsfile("sdmc:/3ds/LeafEdit/Pattern-Editor/Settings.ini");
+	
 	Settings::DefaultPath = settingsfile.GetString("Defaults", "defaultPattern ", "romfs:/pattern/empty/nl.acnl");
+	Settings::DefaultCreatorName = settingsfile.GetString("Defaults", "defaultCreatorName ", "Unknown");
+	Settings::DefaultTownName = settingsfile.GetString("Defaults", "defaultTownName ", "Unknown");
+
+	Settings::DefaultCreatorID = (u16)settingsfile.GetInt("Defaults", "defaultCreatorID ", 0);
+	Settings::DefaultTownID = (u16)settingsfile.GetInt("Defaults", "defaultTownID ", 0);
+
+	Settings::DefaultGender = (u8)settingsfile.GetInt("Defaults", "defaultGender ", 0);
 }
 
 void Settings::Save() {
+	CIniFile settingsfile("sdmc:/3ds/LeafEdit/Pattern-Editor/Settings.ini");
+
 	settingsfile.SetString("Defaults", "defaultPattern ", Settings::DefaultPath);
-	settingsfile.SaveIniFile("sdmc:/3ds/LeafEdit/Pattern-Editor/Settings.ini");
+	settingsfile.SetString("Defaults", "defaultCreatorName ", Settings::DefaultCreatorName);
+	settingsfile.SetString("Defaults", "defaultTownName ", Settings::DefaultTownName);
+
+	settingsfile.SetInt("Defaults", "defaultCreatorID ", (int)Settings::DefaultCreatorID);
+	settingsfile.SetInt("Defaults", "defaultTownID ", (int)Settings::DefaultTownID);
+
+	settingsfile.SetInt("Defaults", "defaultGender ", (int)Settings::DefaultGender);
+
+	settingsfile.SaveIniFileModified("sdmc:/3ds/LeafEdit/Pattern-Editor/Settings.ini");
 }

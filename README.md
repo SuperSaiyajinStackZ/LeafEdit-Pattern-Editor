@@ -20,8 +20,9 @@ This app is mainly used, to test Pattern Editing, before it gets officially impl
 ## TODOs
 - [ ] Add Pattern Name, Creator Name & Origin Town Name editing.
 - [ ] Add Player ID, Origin Town ID editing.
-- [ ] Add Creator Gender editing. (Is AC:NL only(?))
+- [ ] Add Creator Gender editing.
 - [ ] Add a proper banner & icon.
+- [ ] Fix Inifile's stuff. For some reason it'll save stuff 2 times... Or maybe.. switch to JSON?
 
 ## Screenshots of LeafEdit-Pattern-Editor
 ### Credits

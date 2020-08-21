@@ -27,13 +27,16 @@
 #ifndef _LEAFEDIT_PATTERN_EDITOR_SETTINGS_HPP
 #define _LEAFEDIT_PATTERN_EDITOR_SETTINGS_HPP
 
+#include <3ds.h>
 #include <string>
 
 namespace Settings {
 	void Read();
 	void Save();
 
-	extern std::string DefaultPath;
+	extern std::string DefaultPath, DefaultCreatorName, DefaultTownName;
+	extern u16 DefaultCreatorID, DefaultTownID;
+	extern u8 DefaultGender;
 }
 
 #endif
