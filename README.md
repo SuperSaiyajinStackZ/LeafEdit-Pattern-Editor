@@ -21,7 +21,7 @@ NOTE: This is not a save editor, for a save editor, please use [LeafEdit](https:
 
 - [x] Include a font, which should be able to display all characters.
 
-- [x] A Pattern Tool Overlay. // TODO: Second page for Pattern Name, Creator Name etc.
+- [x] A Pattern Tool Overlay.
 
 - [x] Ability, to load a default pattern on each startup from the SD Card through the `Settings.json` file.
 
