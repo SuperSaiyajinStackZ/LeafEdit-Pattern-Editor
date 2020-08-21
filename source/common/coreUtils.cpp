@@ -272,7 +272,7 @@ PatternInformations CoreUtils::getDefaultInformation(SaveType ST, WWRegion regio
 			creatorNameStart = 0x28;
 			creatorLength = 8;
 			townNameStart = 0x38;
-			townLength = 9;
+			townLength = 8;
 			creatorIDStart = 0x48;
 			townIDStart = 0x4A;
 			creatorGenderStart = 0x4C;
@@ -285,7 +285,7 @@ PatternInformations CoreUtils::getDefaultInformation(SaveType ST, WWRegion regio
 			creatorNameStart = 0x28;
 			creatorLength = 8;
 			townNameStart = 0x38;
-			townLength = 9;
+			townLength = 8;
 			creatorIDStart = 0x48;
 			townIDStart = 0x4A;
 			creatorGenderStart = 0x4C;
