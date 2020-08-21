@@ -199,26 +199,26 @@ void PatternEditor::Draw(void) const {
 
 	if (this->isValid) {
 		Gui::DrawStringCentered(0, -2, 0.9f, C2D_Color32(255, 255, 255, 255), "Pattern Editor", 395, 0, fnt);
-		Gui::DrawStringCentered(0, 40, 0.7f, C2D_Color32(0, 0, 0, 255), "Pattern Name: " + StringUtils::UTF16toUTF8(this->pattern->name()), 395, 0, fnt);
-		Gui::DrawStringCentered(0, 60, 0.7f, C2D_Color32(0, 0, 0, 255), "Creator Name: " + StringUtils::UTF16toUTF8(this->pattern->creatorname()), 395, 0, fnt);
-		Gui::DrawStringCentered(0, 80, 0.7f, C2D_Color32(0, 0, 0, 255), "Creator ID: " + std::to_string(this->pattern->creatorid()), 395, 0, fnt);
-		Gui::DrawStringCentered(0, 100, 0.7f, C2D_Color32(0, 0, 0, 255), "Origin Town Name: " + StringUtils::UTF16toUTF8(this->pattern->origtownname()), 395, 0, fnt);
-		Gui::DrawStringCentered(0, 120, 0.7f, C2D_Color32(0, 0, 0, 255), "Origin Town ID: " + std::to_string(this->pattern->origtownid()), 395, 0, fnt);
+		Gui::DrawStringCentered(0, 35, 0.7f, C2D_Color32(0, 0, 0, 255), "Pattern Name: " + StringUtils::UTF16toUTF8(this->pattern->name()), 395, 0, fnt);
+		Gui::DrawStringCentered(0, 55, 0.7f, C2D_Color32(0, 0, 0, 255), "Creator Name: " + StringUtils::UTF16toUTF8(this->pattern->creatorname()), 395, 0, fnt);
+		Gui::DrawStringCentered(0, 75, 0.7f, C2D_Color32(0, 0, 0, 255), "Creator ID: " + std::to_string(this->pattern->creatorid()), 395, 0, fnt);
+		Gui::DrawStringCentered(0, 95, 0.7f, C2D_Color32(0, 0, 0, 255), "Origin Town Name: " + StringUtils::UTF16toUTF8(this->pattern->origtownname()), 395, 0, fnt);
+		Gui::DrawStringCentered(0, 115, 0.7f, C2D_Color32(0, 0, 0, 255), "Origin Town ID: " + std::to_string(this->pattern->origtownid()), 395, 0, fnt);
 
-		if (this->savetype != SaveType::WW) {
-			if (this->pattern->creatorGender()) {
-				Gui::DrawStringCentered(0, 140, 0.7f, C2D_Color32(0, 0, 0, 255), "Creator Gender: Female", 395, 0, fnt);
-			} else {
-				Gui::DrawStringCentered(0, 140, 0.7f, C2D_Color32(0, 0, 0, 255), "Creator Gender: Male", 395, 0, fnt);
-			}
+		if (this->pattern->creatorGender()) {
+			Gui::DrawStringCentered(0, 135, 0.7f, C2D_Color32(0, 0, 0, 255), "Creator Gender: Female", 395, 0, fnt);
+		} else {
+			Gui::DrawStringCentered(0, 135, 0.7f, C2D_Color32(0, 0, 0, 255), "Creator Gender: Male", 395, 0, fnt);
 		}
+		
+		Gui::DrawStringCentered(0, 155, 0.7f, C2D_Color32(0, 0, 0, 255), "Designtype " + std::to_string(this->pattern->designtype()), 395, 0, fnt);
 
 		/* Display Savetype. */
-		Gui::DrawStringCentered(0, 160, 0.7f, C2D_Color32(0, 0, 0, 255), "Savetype: " + this->getSaveName(), 395, 0, fnt);
+		Gui::DrawStringCentered(0, 175, 0.7f, C2D_Color32(0, 0, 0, 255), "Savetype: " + this->getSaveName(), 395, 0, fnt);
 
 		/* Display Region, if on AC:WW. */
 		if (this->savetype == SaveType::WW) {
-			Gui::DrawStringCentered(0, 180, 0.7f, C2D_Color32(0, 0, 0, 255), "Region: " + this->getRegionName(), 395, 0, fnt);
+			Gui::DrawStringCentered(0, 195, 0.7f, C2D_Color32(0, 0, 0, 255), "Region: " + this->getRegionName(), 395, 0, fnt);
 		}
 
 		Gui::DrawStringCentered(0, 217, 0.9f, C2D_Color32(255, 255, 255, 255), "Press SELECT to show instructions.", 395, 0, fnt);
