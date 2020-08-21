@@ -67,12 +67,16 @@ void Settings::Read() {
 		fwrite(dump.c_str(), 1, config.dump(1, '\t').size(), file);
 		fclose(file); // Now we have the file and can properly access it.
 	}
+
+	FILE* file = fopen("sdmc:/3ds/LeafEdit/Pattern-Editor/Settings.json", "r");
+	config = nlohmann::json::parse(file, nullptr, false);
+	fclose(file);
 }
 
 /* Save Config. */
 void Settings::Save() {
 	if (configChanged) {
-		FILE *file = fopen("sdmc:/3ds/LeafEdit/Pattern-Editor/Settings.json", "w");
+		FILE *file = fopen("sdmc:/3ds/LeafEdit/Pattern-Editor/Settings.json", "wb");
 		const std::string dump = config.dump(1, '\t');
 		fwrite(dump.c_str(), 1, config.dump(1, '\t').size(), file);
 		fclose(file);
