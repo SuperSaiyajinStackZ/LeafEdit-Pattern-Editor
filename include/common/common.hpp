@@ -28,8 +28,10 @@
 #define _LEAFEDIT_PATTERN_EDITOR_COMMON_HPP
 
 #include "gui.hpp"
+#include "lang.hpp"
 #include "msg.hpp"
 #include "screenCommon.hpp"
+#include "settings.hpp"
 #include "ui.hpp"
 
 extern C2D_Font fnt;

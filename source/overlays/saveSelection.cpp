@@ -49,7 +49,7 @@ static void Draw(int mode, int selection) {
 
 	UI::DrawBase(true, true);
 	if (mode == 0) {
-		Gui::DrawStringCentered(0, -2, 0.9f, C2D_Color32(255, 255, 255, 255), "Select a SaveType.", 395, 0, fnt);
+		Gui::DrawStringCentered(0, -2, 0.9f, C2D_Color32(255, 255, 255, 255), Lang::get("SELECT_SAVETYPE"), 395, 0, fnt);
 		UI::DrawBase(false, true);
 
 		
@@ -63,7 +63,7 @@ static void Draw(int mode, int selection) {
 		Gui::DrawString(105, 140, 0.75f, C2D_Color32(0, 0, 0, 255), "Welcome Amiibo", 0, 0, fnt);
 		Gui::DrawString(220, 70, 0.75f, C2D_Color32(0, 0, 0, 255), "Wild World", 0, 0, fnt);
 	} else {
-		Gui::DrawStringCentered(0, -2, 0.9f, C2D_Color32(255, 255, 255, 255), "Select a Region.", 395, 0, fnt);
+		Gui::DrawStringCentered(0, -2, 0.9f, C2D_Color32(255, 255, 255, 255), Lang::get("SELECT_REGION"), 395, 0, fnt);
 		UI::DrawBase(false, true);
 		
 		UI::DrawSprite(sprites_japan_idx, regions[0].x, regions[0].y);

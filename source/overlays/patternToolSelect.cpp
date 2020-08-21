@@ -28,12 +28,15 @@
 
 extern bool exiting;
 static const std::vector<Button> buttons = {
-	{15, 34, 130, 48, "Import Pattern"},
-	{15, 97, 130, 48, "Change Palette"},
-	{15, 159, 130, 48, "Credits"},
-	{175, 34, 130, 48, "Export Pattern"},
-	{175, 97, 130, 48, "Clear Pattern"},
-	{175, 159, 130, 48, "Exit"}
+	{15, 34, 130, 48, "IMPORT_PATTERN"},
+	{15, 97, 130, 48, "CHANGE_PALETTE"},
+	{15, 159, 130, 48, "CREDITS"},
+	{175, 34, 130, 48, "EXPORT_PATTERN"},
+	{175, 97, 130, 48, "CLEAR_PATTERN"},
+	{175, 159, 130, 48, "EXIT"},
+	{15, 34, 130, 48, "LANGUAGE"},
+	{175, 34, 130, 48, "SET_DEFAULT"},
+	{15, 97, 130, 48, "SET_DEFAULT_PATTERN"}
 };
 
 /* If button Position pressed -> Do something. */
@@ -42,90 +45,153 @@ bool touching(touchPosition touch, Button button) {
 	else return false;
 }
 
-static void Draw(int select) {
+static void Draw(int select, int page) {
 	Gui::clearTextBufs();
 	C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
 	C2D_TargetClear(Top, C2D_Color32(0, 0, 0, 0));
 	C2D_TargetClear(Bottom, C2D_Color32(0, 0, 0, 0));
 
 	UI::DrawBase(true, true);
-	Gui::DrawStringCentered(0, -2, 0.9f, C2D_Color32(255, 255, 255, 255), "Pattern Tool Menu", 395, 0, fnt);
+	Gui::DrawStringCentered(0, -2, 0.9f, C2D_Color32(255, 255, 255, 255), Lang::get("PATTERN_TOOL_MENU"), 395, 0, fnt);
 	UI::DrawBase(false, true);
 
 	/* TODO: Buttons. */
-	for (int i = 0; i < 6; i++) {
-		UI::DrawButton(buttons[i], 0.6);
+	if (page == 0) {
+		for (int i = 0; i < 6; i++) {
+			UI::DrawButton(buttons[i], 0.55);
+		}
+
+		UI::DrawSprite(sprites_pointer_idx, buttons[select].X + 100, buttons[select].Y + 30);
+	} else {
+		for (int i = 6; i < 9; i++) {
+			UI::DrawButton(buttons[i], 0.55);
+		}
+
+		UI::DrawSprite(sprites_pointer_idx, buttons[6 + select].X + 100, buttons[6 + select].Y + 30);
 	}
 
-	UI::DrawSprite(sprites_pointer_idx, buttons[select].X + 100, buttons[select].Y + 30);
+	UI::DrawSprite(sprites_top_bar_idx, 0, 0);
+	Gui::DrawStringCentered(0, -2, 0.9f, C2D_Color32(255, 255, 255, 255), Lang::get("PAGE") + std::to_string(page + 1) + " | 2", 310, 0, fnt);
 
 	C3D_FrameEnd(0);
 }
 
 PatternMode Overlays::ToolSelect() {
-	int selection = 0;
+	int selection = 0, page = 0;
 	while(1) {
-		Draw(selection);
+		Draw(selection, page);
 		u32 hDown = hidKeysDown();
 		touchPosition touch;
 		hidScanInput();
 		hidTouchRead(&touch);
 
-		if (hDown & KEY_TOUCH) {
-			if (touching(touch, buttons[0])) {
-				return PatternMode::Import;
-			} else if (touching(touch, buttons[1])) {
-				return PatternMode::Palette;
-			} else if (touching(touch, buttons[2])) {
-				return PatternMode::Credits;
-			} else if (touching(touch, buttons[3])) {
-				return PatternMode::Export;
-			} else if (touching(touch, buttons[4])) {
-				return PatternMode::Clear;
-			} else if (touching(touch, buttons[5])) {
-				return PatternMode::Exit;
+		if (hDown & KEY_R) {
+			if (page == 0) {
+				selection = 0;
+				page = 1;
 			}
 		}
 
-		if (hDown & KEY_UP) {
-			if (selection > 0) selection--;
-		}
-
-		if (hDown & KEY_DOWN) {
-			if (selection < 5) selection++;
-		}
-
-		/* TODO: Second page for this. */
-		if (hDown & KEY_X) {
-			return PatternMode::SetDefault;
-		}
-
-		if (hDown & KEY_RIGHT) {
-			if (selection < 3) {
-				selection += 3;
+		if (hDown & KEY_L) {
+			if (page == 1) {
+				selection = 0;
+				page = 0;
 			}
 		}
 
-		if (hDown & KEY_LEFT) {
-			if (selection < 6 && selection > 2) {
-				selection -= 3;
-			}
-		}
-
-		if (hDown & KEY_A) {
-			switch(selection) {
-				case 0:
+		if (page == 0) {
+			if (hDown & KEY_TOUCH) {
+				if (touching(touch, buttons[0])) {
 					return PatternMode::Import;
-				case 1:
+				} else if (touching(touch, buttons[1])) {
 					return PatternMode::Palette;
-				case 2:
+				} else if (touching(touch, buttons[2])) {
 					return PatternMode::Credits;
-				case 3:
+				} else if (touching(touch, buttons[3])) {
 					return PatternMode::Export;
-				case 4:
+				} else if (touching(touch, buttons[4])) {
 					return PatternMode::Clear;
-				case 5:
+				} else if (touching(touch, buttons[5])) {
 					return PatternMode::Exit;
+				}
+			}
+		} else {
+			if (hDown & KEY_TOUCH) {
+				if (touching(touch, buttons[6])) {
+					return PatternMode::LangSet;
+				} else if (touching(touch, buttons[7])) {
+					return PatternMode::SetDefault;
+				} else if (touching(touch, buttons[8])) {
+					return PatternMode::DefaultPattern;
+				}
+			}
+		}
+
+		if (page == 0) {
+			if (hDown & KEY_UP) {
+				if (selection > 0) selection--;
+			}
+
+			if (hDown & KEY_DOWN) {
+				if (selection < 5) selection++;
+			}
+
+			if (hDown & KEY_RIGHT) {
+				if (selection < 3) {
+					selection += 3;
+				}
+			}
+
+			if (hDown & KEY_LEFT) {
+				if (selection < 6 && selection > 2) {
+					selection -= 3;
+				}
+			}
+		} else {
+			if (hDown & KEY_RIGHT) {
+				if (selection == 0) selection = 1;
+			}
+
+			if (hDown & KEY_LEFT) {
+				if (selection == 1) selection = 0;
+			}
+
+			if (hDown & KEY_UP) {
+				if (selection == 2) selection = 0;
+			}
+
+			if (hDown & KEY_DOWN) {
+				if (selection == 0) selection = 2;
+			}
+		}
+
+		if (page == 0) {
+			if (hDown & KEY_A) {
+				switch(selection) {
+					case 0:
+						return PatternMode::Import;
+					case 1:
+						return PatternMode::Palette;
+					case 2:
+						return PatternMode::Credits;
+					case 3:
+						return PatternMode::Export;
+					case 4:
+						return PatternMode::Clear;
+					case 5:
+						return PatternMode::Exit;
+				}
+			}
+		} else {
+			if (hDown & KEY_A) {
+				switch(selection) {
+					case 0:
+						return PatternMode::LangSet;
+					case 1:
+						return PatternMode::SetDefault;
+					case 2:
+						return PatternMode::DefaultPattern;
+				}
 			}
 		}
 

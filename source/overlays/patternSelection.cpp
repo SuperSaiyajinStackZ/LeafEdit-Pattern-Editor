@@ -31,7 +31,7 @@
 #include <unistd.h>
 
 /* Draw the Top (file) browse. */
-static void DrawTop(uint Selection, std::vector<DirEntry> dirContents, bool romfs) {
+static void DrawTop(uint Selection, std::vector<DirEntry> dirContents, bool romfs, int sltMode) {
 	std::string files;
 	Gui::clearTextBufs();
 	C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
@@ -39,31 +39,31 @@ static void DrawTop(uint Selection, std::vector<DirEntry> dirContents, bool romf
 	C2D_TargetClear(Bottom, C2D_Color32(0, 0, 0, 0));
 
 	UI::DrawFileBrowseBG(true);
-	Gui::DrawStringCentered(0, -2, 0.9f, C2D_Color32(255, 255, 255, 255), std::string("Select a Pattern.") + " " + std::string(romfs ? "[RomFS]" : "[SD Card]"), 390, 0, fnt);
+	Gui::DrawStringCentered(0, -2, 0.9f, C2D_Color32(255, 255, 255, 255), (sltMode ? Lang::get("SELECT_DEFAULT_PATTERN") : Lang::get("SELECT_A_PATTERN")) + " " + std::string(romfs ? "[RomFS]" : "[" + Lang::get("SD_CARD") + "]"), 390, 0, fnt);
 
-	for (uint i = (Selection < 5) ? 0 : Selection - 5; i < dirContents.size() && i < ((Selection < 5) ? 6 : Selection + 1); i++) {
+	for (uint i = (Selection < 8) ? 0 : Selection - 8; i < dirContents.size() && i < ((Selection < 8) ? 9 : Selection + 1); i++) {
 		files += dirContents[i].name + "\n";
 	}
 
-	for (uint i = 0; i < ((dirContents.size() < 6) ? 6 - dirContents.size() : 0); i++) {
+	for (uint i = 0; i < ((dirContents.size() < 9) ? 9 - dirContents.size() : 0); i++) {
 		files += "\n";
 	}
 
 	if (Selection < 9) UI::DrawSelector(true, 24 + ((int)Selection * 21));
 	else UI::DrawSelector(true, 24 + (8 * 21));
 	Gui::DrawString(5, 25, 0.85f, C2D_Color32(0, 0, 0, 255), files, 360, 0, fnt);
-	Gui::DrawStringCentered(0, 217, 0.9f, C2D_Color32(255, 255, 255, 255), "Press START to refresh the list.", 390, 0, fnt);
+	Gui::DrawStringCentered(0, 217, 0.9f, C2D_Color32(255, 255, 255, 255), Lang::get("START_REFRESH"), 390, 0, fnt);
 	if (fadealpha > 0) Gui::Draw_Rect(0, 0, 400, 240, C2D_Color32(fadecolor, fadecolor, fadecolor, fadealpha));
 }
 
 static void DrawBottom() {
 	UI::DrawFileBrowseBG(false);
 	UI::DrawSprite(sprites_top_bar_idx, 0, 0);
-	Gui::DrawStringCentered(0, -2, 0.9f, C2D_Color32(255, 255, 255, 255), "Press \uE002 to change the Location.", 310, 0, fnt);
+	Gui::DrawStringCentered(0, -2, 0.9f, C2D_Color32(255, 255, 255, 255), Lang::get("CHANGE_LOCATION"), 310, 0, fnt);
 	C3D_FrameEnd(0);
 }
 
-std::string Overlays::SelectPattern() {
+std::string Overlays::SelectPattern(int sltMode) {
 	s32 selectedFile = 0;
 	bool romfsMode = true;
 	std::vector<DirEntry> dirContents;
@@ -81,7 +81,7 @@ std::string Overlays::SelectPattern() {
 
 	while (1) {
 		/* Screen draw part. */
-		DrawTop(selectedFile, dirContents, romfsMode);
+		DrawTop(selectedFile, dirContents, romfsMode, sltMode);
 		DrawBottom();
 
 		/* The input part. */

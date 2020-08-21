@@ -34,29 +34,33 @@ static void Draw(int page) {
 
 	UI::DrawBase(true, true);
 	UI::DrawSprite(sprites_bottom_bar_idx, 0, 209);
-	UI::DrawSprite(sprites_stackz_idx, 130, 74);
-	Gui::DrawStringCentered(0, -2, 0.9f, C2D_Color32(255, 255, 255, 255), "Credits", 395, 0, fnt);
-	Gui::DrawStringCentered(0, 30, 0.9f, C2D_Color32(0, 0, 0, 255), "Main Developer: SuperSaiyajinStackZ", 390, 0, fnt);
-	Gui::DrawString(395 - Gui::GetStringWidth(0.8, V_STRING, fnt), 219, 0.8, C2D_Color32(255, 255, 255, 255), V_STRING, 400, 0, fnt);
+	UI::DrawSprite(sprites_banner_idx, 137, 65);
+	UI::DrawSprite(sprites_stackz_idx, -2, 74);
+	Gui::DrawStringCentered(0, -2, 0.9f, C2D_Color32(255, 255, 255, 255), Lang::get("CREDITS"), 395, 0, fnt);
+	Gui::DrawStringCentered(0, 30, 0.9f, C2D_Color32(0, 0, 0, 255), Lang::get("MAIN_DEV"), 390, 0, fnt);
+	Gui::DrawString(395 - Gui::GetStringWidth(0.8, Lang::get("CURRENT_VERSION") + V_STRING, fnt), 218, 0.8, C2D_Color32(255, 255, 255, 255), Lang::get("CURRENT_VERSION") + V_STRING, 390, 0, fnt);
 
 	UI::DrawBase(false, true);
 	UI::DrawSprite(sprites_top_bar_idx, 0, 0);
-	Gui::DrawStringCentered(0, -2, 0.9f, C2D_Color32(255, 255, 255, 255), "Page: " + std::to_string(page + 1) + " | 2", 395, 0, fnt);
+	Gui::DrawStringCentered(0, -2, 0.9f, C2D_Color32(255, 255, 255, 255), Lang::get("PAGE") + std::to_string(page + 1) + " | 3", 310, 0, fnt);
 
 	if (page == 0) {
-		Gui::DrawStringCentered(0, 28, 0.8f, C2D_Color32(0, 0, 0, 255), "All LeafEdit-Core contributors", 395, 0, fnt);
-		Gui::DrawStringCentered(0, 48, 0.7f, C2D_Color32(0, 0, 0, 255), "- For helping on LeafEdit-Core.", 395, 0, fnt);
-		Gui::DrawStringCentered(0, 78, 0.8f, C2D_Color32(0, 0, 0, 255), "devkitPro", 395, 0, fnt);
-		Gui::DrawStringCentered(0, 98, 0.7f, C2D_Color32(0, 0, 0, 255), "- For Libctru, Citro2D & Citro3D.", 395, 0, fnt);
-		Gui::DrawStringCentered(0, 128, 0.8f, C2D_Color32(0, 0, 0, 255), "Slattz", 395, 0, fnt);
-		Gui::DrawStringCentered(0, 148, 0.7f, C2D_Color32(0, 0, 0, 255), "- For the game icons and region flags from NLTK.", 395, 0, fnt);
-		Gui::DrawStringCentered(0, 178, 0.8f, C2D_Color32(0, 0, 0, 255), "SuperSaiyajinStackZ", 395, 0, fnt);
-		Gui::DrawStringCentered(0, 198, 0.7f, C2D_Color32(0, 0, 0, 255), "- For creating this app.", 395, 0, fnt);
+		Gui::DrawStringCentered(0, 28, 0.8f, C2D_Color32(0, 0, 0, 255), Lang::get("ALL_LEAFEDIT_CORE"), 310, 0, fnt);
+		Gui::DrawStringCentered(0, 48, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("HELP_LEAFEDIT_CORE"), 310, 0, fnt);
+		Gui::DrawStringCentered(0, 78, 0.8f, C2D_Color32(0, 0, 0, 255), "devkitPro", 310, 0, fnt);
+		Gui::DrawStringCentered(0, 98, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("DEVKITPRO"), 310, 0, fnt);
+		Gui::DrawStringCentered(0, 128, 0.8f, C2D_Color32(0, 0, 0, 255), "Slattz", 310, 0, fnt);
+		Gui::DrawStringCentered(0, 148, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("NLTK_CREDIT"), 310, 0, fnt);
+		Gui::DrawStringCentered(0, 178, 0.8f, C2D_Color32(0, 0, 0, 255), "SuperSaiyajinStackZ", 310, 0, fnt);
+		Gui::DrawStringCentered(0, 198, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("CREATING_APP"), 310, 0, fnt);
+	} else if (page == 1) {
+		Gui::DrawStringCentered(0, 28, 0.8f, C2D_Color32(0, 0, 0, 255), "TotallyNotGuy", 310, 0, fnt);
+		Gui::DrawStringCentered(0, 48, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("LEAFEDIT_GRAPHICS"), 310, 0, fnt);
+		Gui::DrawStringCentered(0, 78, 0.8f, C2D_Color32(0, 0, 0, 255), "Universal-Team", 310, 0, fnt);
+		Gui::DrawStringCentered(0, 98, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("UT_CREDITS"), 310, 0, fnt);
 	} else {
-		Gui::DrawStringCentered(0, 28, 0.8f, C2D_Color32(0, 0, 0, 255), "TotallyNotGuy", 395, 0, fnt);
-		Gui::DrawStringCentered(0, 48, 0.7f, C2D_Color32(0, 0, 0, 255), "- For LeafEdit's awesome Graphics.", 395, 0, fnt);
-		Gui::DrawStringCentered(0, 78, 0.8f, C2D_Color32(0, 0, 0, 255), "Universal-Team", 395, 0, fnt);
-		Gui::DrawStringCentered(0, 98, 0.7f, C2D_Color32(0, 0, 0, 255), "- For LeafEdit's Pattern core and Universal-Core.", 395, 0, fnt);
+		Gui::DrawString(5, 45, 0.8f, C2D_Color32(0, 0, 0, 255), "Deutsch\nEnglish", 310, 0, fnt);
+		Gui::DrawString(150, 45, 0.8f, C2D_Color32(0, 0, 0, 255), "SuperSaiyajinStackZ\nSuperSaiyajinStackZ", 310, 0, fnt);
 	}
 	
 	C3D_FrameEnd(0);
@@ -73,11 +77,11 @@ void Overlays::CreditsOverlay() {
 		if (hidKeysDown() & KEY_B) doOut = true;
 
 		if (hidKeysDown() & KEY_R || hidKeysDown() & KEY_RIGHT) {
-			page = 1;
+			if (page < 2) page++;
 		}
 
 		if (hidKeysDown() & KEY_L || hidKeysDown() & KEY_LEFT) {
-			page = 0;
+			if (page > 0) page--;
 		}
 	}
 }

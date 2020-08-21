@@ -24,29 +24,16 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef _LEAFEDIT_PATTERN_EDITOR_UI_HPP
-#define _LEAFEDIT_PATTERN_EDITOR_UI_HPP
+#ifndef _LEAFEDIT_PATTERN_EDITOR_LANG_HPP
+#define _LEAFEDIT_PATTERN_EDITOR_LANG_HPP
 
-#include "common.hpp"
-#include "sprites.h"
+#include "json.hpp"
+#include <3ds.h>
+#include <string>
 
-struct Button {
-	int X;
-	int Y;
-	int XSize;
-	int YSize;
-	std::string Text;
-};
-
-namespace UI {
-	void DrawSprite(int index, int x, int y, float ScaleX = 1, float ScaleY = 1);
-	void DrawBase(bool onTop, bool bar);
-	void DrawFileBrowseBG(bool isTop);
-	void DrawSelector(bool top, int y);
-	void DrawBtn(int x, int y, int xLength, int yLength);
-	void DrawButton(Button btn, float TextSize = 0.5f);
-	void DrawPaletteGrid(float xPos, float yPos, float Width, float Height, u32 paletteColor, u32 gridColor);
-	void DrawBox(int y, u8 rows);
+namespace Lang {
+	std::string get(const std::string &key);
+	void load(int lang = 1);
 }
 
 #endif

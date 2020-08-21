@@ -60,6 +60,8 @@ int main() {
 	osSetSpeedupEnable(true); // Enable speed-up for New 3DS users.
 
 	Settings::Read();
+	Lang::load(Settings::getLang());
+	
 	Overlays::SplashOverlay();
 	Gui::setScreen(std::make_unique<PatternEditor>(), false, true);
 

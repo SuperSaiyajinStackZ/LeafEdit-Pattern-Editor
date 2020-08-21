@@ -32,6 +32,17 @@ void UI::DrawSprite(int index, int x, int y, float ScaleX, float ScaleY) {
 	Gui::DrawSprite(sprites, index, x, y, ScaleX, ScaleY);
 }
 
+void UI::DrawBox(int y, u8 rows) {
+	// Draw Top & Bottom.
+	UI::DrawSprite(sprites_box_top_idx, 0, y);
+	UI::DrawSprite(sprites_box_bot_idx, 0, y + 24 + (40 * rows));
+
+	C2D_Image sprite = C2D_SpriteSheetGetImage(sprites, sprites_box_middle_idx);
+	for (u8 row = 0; row < rows; row++) {
+		C2D_DrawImageAt(sprite, 0, y + 24 + ( row * sprite.subtex->height), 0.5f);
+	}
+}
+
 /* Code from PKSM. https://github.com/FlagBrew/PKSM/blob/master/3ds/source/gui/gui.cpp#L73. */
 Tex3DS_SubTexture _select_box(const C2D_Image& image, int x, int y, int endX, int endY) {
 	Tex3DS_SubTexture tex = *image.subtex;
@@ -166,7 +177,7 @@ void UI::DrawFileBrowseBG(bool isTop) {
 
 void UI::DrawButton(Button btn, float TextSize) {
 	DrawBtn(btn.X, btn.Y, btn.XSize, btn.YSize);
-	Gui::DrawStringCentered(btn.X - 160 + (btn.XSize / 2), btn.Y + (btn.YSize / 2) - 10, TextSize, C2D_Color32(0, 0, 0, 255), btn.Text, btn.XSize - 10, btn.YSize - 5);
+	Gui::DrawStringCentered(btn.X - 160 + (btn.XSize / 2), btn.Y + (btn.YSize / 2) - 10, TextSize, C2D_Color32(0, 0, 0, 255), Lang::get(btn.Text), btn.XSize - 15, btn.YSize - 10);
 }
 
 /* Special Grid for the Palettes. Universal-Core ones won't work well. */

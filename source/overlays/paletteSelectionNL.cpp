@@ -71,8 +71,7 @@ static const std::vector<Structs::ButtonPos> paletteGrid = {
 };
 
 static void Draw(std::shared_ptr<PatternImage> &pImg, C2D_Image &img, int index, bool instructions) {
-	const std::string instructs = "Press \uE000 to select." "\nPress \uE07B \uE07C to change palette index."
-									"\nPress touch to select a palette index.";
+	const std::string instructs = Lang::get("PALETTE_NL_INSTR1");
 
 	Gui::clearTextBufs();
 	C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
@@ -81,24 +80,23 @@ static void Draw(std::shared_ptr<PatternImage> &pImg, C2D_Image &img, int index,
 
 	UI::DrawBase(true, true);
 	UI::DrawSprite(sprites_bottom_bar_idx, 0, 209);
-	Gui::DrawStringCentered(0, -2, 0.9, C2D_Color32(255, 255, 255, 255), "Palette Editor", 310, 100, fnt);
+	Gui::DrawStringCentered(0, -2, 0.9, C2D_Color32(255, 255, 255, 255), Lang::get("PALETTE_EDITOR"), 395, 100, fnt);
 	if (img.subtex != nullptr) C2D_DrawImageAt(img, 125, 45, 0.5f, nullptr, 5, 5); // 160x160. 160/32 -> 5.
-	Gui::DrawStringCentered(0, 217, 0.9f, C2D_Color32(255, 255, 255, 255), "Press \uE001 to exit overlay.", 395, 0, fnt);
+	Gui::DrawStringCentered(0, 217, 0.9f, C2D_Color32(255, 255, 255, 255), Lang::get("EXIT_OVERLAY"), 395, 0, fnt);
 
 	if (instructions) {
 		Gui::Draw_Rect(0, 0, 400, 240, C2D_Color32(0, 0, 0, 190));
 		int textBoxHeight = Gui::GetStringHeight(0.7f, instructs, fnt) + 5;
 
-		Gui::Draw_Rect(40, 211 - textBoxHeight, 320, textBoxHeight, C2D_Color32(0, 0, 180, 255));
-		Gui::Draw_Rect(44, 215 - textBoxHeight, 312, textBoxHeight - 8, C2D_Color32(0, 0, 230, 255));
-		Gui::DrawStringCentered(0, 215 - textBoxHeight, 0.7, C2D_Color32(255, 255, 255, 255), instructs, 305, Gui::GetStringHeight(0.7f, instructs), fnt);
+		UI::DrawBox(textBoxHeight, 1);
+		Gui::DrawStringCentered(0, textBoxHeight + 10, 0.7, C2D_Color32(255, 255, 255, 255), instructs, 305, Gui::GetStringHeight(0.7f, instructs, fnt), fnt);
 	}
 
 
 	UI::DrawBase(false, true);
 	UI::DrawSprite(sprites_top_bar_idx, 0, 0);
-	Gui::DrawStringCentered(0, -2, 0.9, C2D_Color32(255, 255, 255, 255), "Press SELECT to show instructions.", 395, 0, fnt);
-	Gui::DrawStringCentered(0, 50, 0.9f, C2D_Color32(0, 0, 0, 255), "Select a palette index.", 310, 100, fnt);
+	Gui::DrawStringCentered(0, -2, 0.9, C2D_Color32(255, 255, 255, 255), Lang::get("SHOW_INSTRUCTION"), 310, 0, fnt);
+	Gui::DrawStringCentered(0, 50, 0.9f, C2D_Color32(0, 0, 0, 255), Lang::get("SELECT_PALETTE_INDEX"), 310, 100, fnt);
 
 	/* Drawing Palette. */
 	for (int i = 0; i < 15; i++) {
@@ -127,8 +125,7 @@ static const std::vector<Structs::ButtonPos> colorGrid = {
 };
 
 static void DrawPaletteSelection(C2D_Image &img, int colorGroup, int selection, bool instructions) {
-	const std::string instructs = "Press \uE000 to select." "\nPress \uE052 | \uE053 to switch color groups." "\nPress \uE079 \uE07A \uE07B \uE07C to change color index."
-									"\nPress touch to select a color.";
+	const std::string instructs = Lang::get("PALETTE_NL_INSTR2");
 
 	Gui::clearTextBufs();
 	C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
@@ -137,22 +134,21 @@ static void DrawPaletteSelection(C2D_Image &img, int colorGroup, int selection, 
 
 	UI::DrawBase(true, true);
 	UI::DrawSprite(sprites_bottom_bar_idx, 0, 209);
-	Gui::DrawStringCentered(0, -2, 0.9, C2D_Color32(255, 255, 255, 255), "Palette Editor", 310, 100, fnt);
+	Gui::DrawStringCentered(0, -2, 0.9, C2D_Color32(255, 255, 255, 255), Lang::get("PALETTE_EDITOR"), 395, 100, fnt);
 	if (img.subtex != nullptr) C2D_DrawImageAt(img, 125, 45, 0.5f, nullptr, 5, 5); // 160x160. 160/32 -> 5.
 
 	if (instructions) {
 		Gui::Draw_Rect(0, 0, 400, 240, C2D_Color32(0, 0, 0, 190));
 		int textBoxHeight = Gui::GetStringHeight(0.7f, instructs, fnt) + 5;
 
-		Gui::Draw_Rect(40, 211 - textBoxHeight, 320, textBoxHeight, C2D_Color32(0, 0, 180, 255));
-		Gui::Draw_Rect(44, 215 - textBoxHeight, 312, textBoxHeight - 8, C2D_Color32(0, 0, 230, 255));
-		Gui::DrawStringCentered(0, 215 - textBoxHeight, 0.7, C2D_Color32(255, 255, 255, 255), instructs, 305, Gui::GetStringHeight(0.7f, instructs), fnt);
+		UI::DrawBox(textBoxHeight, 1);
+		Gui::DrawStringCentered(0, textBoxHeight + 10, 0.7, C2D_Color32(255, 255, 255, 255), instructs, 305, Gui::GetStringHeight(0.7f, instructs, fnt), fnt);
 	}
 	
 	UI::DrawBase(false, true);
 	UI::DrawSprite(sprites_top_bar_idx, 0, 0);
-	Gui::DrawStringCentered(0, -2, 0.9, C2D_Color32(255, 255, 255, 255), "Press SELECT to show instructions.", 395, 0, fnt);
-	Gui::DrawStringCentered(0, 50, 0.9f, C2D_Color32(0, 0, 0, 255), "Color Group: " + std::to_string(colorGroup + 1) + " | 17", 310, 100, fnt);
+	Gui::DrawStringCentered(0, -2, 0.9, C2D_Color32(255, 255, 255, 255), Lang::get("SHOW_INSTRUCTION"), 310, 0, fnt);
+	Gui::DrawStringCentered(0, 50, 0.9f, C2D_Color32(0, 0, 0, 255), Lang::get("COLOR_GROUP") + std::to_string(colorGroup + 1) + " | 17", 310, 100, fnt);
 
 	if (colorGroup < 16) {
 		for (int i = 0; i < 9; i++) {

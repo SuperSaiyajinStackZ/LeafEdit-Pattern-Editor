@@ -42,6 +42,8 @@ enum class PatternMode {
 	Credits,
 	Exit,
 	SetDefault,
+	LangSet,
+	DefaultPattern,
 
 	/* Pattern changing stuff. TODO. */
 	Name,
@@ -55,9 +57,10 @@ enum class PatternMode {
 namespace Overlays {
 	void SplashOverlay();
 	void CreditsOverlay();
+	void SelectLang();
 
 	std::string SelectFile(std::string initialPath, std::vector<std::string> extensions, std::string txt);
-	std::string SelectPattern();
+	std::string SelectPattern(int sltMode = 0);
 	std::string SelectDestination(std::string txt, std::string defaultDest);
 
 	void PaletteToolWW(std::shared_ptr<PatternImage> &pImg, C2D_Image &img);

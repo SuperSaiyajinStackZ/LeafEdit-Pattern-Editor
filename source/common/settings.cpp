@@ -24,19 +24,57 @@
 *         reasonable ways as different from the original version.
 */
 
-#include "inifile.hpp"
+#include "json.hpp"
 #include "settings.hpp"
+#include <unistd.h>
 
+static nlohmann::json config;
+static bool configChanged = false;
 
-std::string Settings::DefaultPath;
-
-void Settings::Read() {
-	CIniFile settingsfile("sdmc:/3ds/LeafEdit/Pattern-Editor/Settings.ini");
-	Settings::DefaultPath = settingsfile.GetString("Defaults", "defaultPattern ", "romfs:/pattern/empty/nl.acnl");
+/* Return Language. */
+int Settings::getLang() {
+	if (config.contains("Language")) return config["Language"];
+	else return 1; // English.
 }
 
+/* Set Language. */
+void Settings::setLang(int lang) {
+	config["Language"] = lang;
+	if (!configChanged) configChanged = true;
+}
+
+/* Get Default Pattern. */
+std::string Settings::getDefaultPath() {
+	if (config.contains("Default_Pattern")) return config["Default_Pattern"];
+	else return "romfs:/pattern/empty/nl.acnl"; // Default pattern.
+}
+
+/* Set Default Pattern. */
+void Settings::setDefaultPath(std::string path) {
+	config["Default_Pattern"] = path;
+	if (!configChanged) configChanged = true;
+}
+
+/* Read Config. */
+void Settings::Read() {
+	if (access("sdmc:/3ds/LeafEdit/Pattern-Editor/Settings.json", F_OK) != 0) {
+		FILE *file = fopen("sdmc:/3ds/LeafEdit/Pattern-Editor/Settings.json", "w");
+
+		config["Language"] = 1;
+		config["Default_Pattern"] = "romfs:/pattern/empty/nl.acnl";
+
+		const std::string dump = config.dump(1, '\t');
+		fwrite(dump.c_str(), 1, config.dump(1, '\t').size(), file);
+		fclose(file); // Now we have the file and can properly access it.
+	}
+}
+
+/* Save Config. */
 void Settings::Save() {
-	CIniFile settingsfile("sdmc:/3ds/LeafEdit/Pattern-Editor/Settings.ini");
-	settingsfile.SetString("Defaults", "defaultPattern ", Settings::DefaultPath);
-	settingsfile.SaveIniFileModified("sdmc:/3ds/LeafEdit/Pattern-Editor/Settings.ini");
+	if (configChanged) {
+		FILE *file = fopen("sdmc:/3ds/LeafEdit/Pattern-Editor/Settings.json", "w");
+		const std::string dump = config.dump(1, '\t');
+		fwrite(dump.c_str(), 1, config.dump(1, '\t').size(), file);
+		fclose(file);
+	}
 }

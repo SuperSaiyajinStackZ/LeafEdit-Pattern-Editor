@@ -50,7 +50,7 @@ endif
 VERSION_MAJOR := 0
 VERSION_MINOR := 1
 VERSION_MICRO := 0
-VERSION := "Version: $(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_MICRO)"
+VERSION := "$(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_MICRO)"
 
 #---------------------------------------------------------------------------------
 TARGET		:=	LeafEdit-Pattern-Editor

@@ -175,18 +175,6 @@ void PatternEditor::load(const std::string ptrnFile, bool fromFile) {
 				break;
 		}
 
-		PatternInformations info = CoreUtils::getDefaultInformation(this->savetype, this->saveregion);
-
-		/* Strings. */
-		this->pattern->creatorid(info.CreatorID);
-		this->pattern->origtownid(info.TownID);
-		this->pattern->creatorGender(info.CreatorGender);
-
-		/* ID's. */
-		this->pattern->creatorname(info.CreatorName);
-		this->pattern->origtownname(info.TownName);
-		this->pattern->name(info.PatternName);
-
 		C3D_FrameEnd(0);
 		this->image = this->pattern->image(0);
 		this->patternImage = CoreUtils::patternImage(this->image, this->savetype);
@@ -195,7 +183,18 @@ void PatternEditor::load(const std::string ptrnFile, bool fromFile) {
 
 /* Load Empty Pattern. */
 PatternEditor::PatternEditor() {
-	this->load(Settings::DefaultPath, true);
+	this->load(Settings::getDefaultPath(), true);
+	PatternInformations info = CoreUtils::getDefaultInformation(this->savetype, this->saveregion);
+
+	/* Strings. */
+	this->pattern->creatorid(info.CreatorID);
+	this->pattern->origtownid(info.TownID);
+	this->pattern->creatorGender(info.CreatorGender);
+
+	/* ID's. */
+	this->pattern->creatorname(info.CreatorName);
+	this->pattern->origtownname(info.TownName);
+	this->pattern->name(info.PatternName);
 }
 
 /* Destroy C2D_Image, if exist. */
@@ -210,30 +209,30 @@ void PatternEditor::Draw(void) const {
 	UI::DrawSprite(sprites_bottom_bar_idx, 0, 209);
 
 	if (this->isValid) {
-		Gui::DrawStringCentered(0, -2, 0.9f, C2D_Color32(255, 255, 255, 255), "Pattern Editor", 395, 0, fnt);
-		Gui::DrawStringCentered(0, 35, 0.7f, C2D_Color32(0, 0, 0, 255), "Pattern Name: " + StringUtils::UTF16toUTF8(this->pattern->name()), 395, 0, fnt);
-		Gui::DrawStringCentered(0, 55, 0.7f, C2D_Color32(0, 0, 0, 255), "Creator Name: " + StringUtils::UTF16toUTF8(this->pattern->creatorname()), 395, 0, fnt);
-		Gui::DrawStringCentered(0, 75, 0.7f, C2D_Color32(0, 0, 0, 255), "Creator ID: " + std::to_string(this->pattern->creatorid()), 395, 0, fnt);
-		Gui::DrawStringCentered(0, 95, 0.7f, C2D_Color32(0, 0, 0, 255), "Origin Town Name: " + StringUtils::UTF16toUTF8(this->pattern->origtownname()), 395, 0, fnt);
-		Gui::DrawStringCentered(0, 115, 0.7f, C2D_Color32(0, 0, 0, 255), "Origin Town ID: " + std::to_string(this->pattern->origtownid()), 395, 0, fnt);
+		Gui::DrawStringCentered(0, -2, 0.9f, C2D_Color32(255, 255, 255, 255), Lang::get("PATTERN_EDITOR"), 395, 0, fnt);
+		Gui::DrawStringCentered(0, 35, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("PATTERN_NAME") + StringUtils::UTF16toUTF8(this->pattern->name()), 395, 0, fnt);
+		Gui::DrawStringCentered(0, 55, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("PATTERN_CREATOR_NAME") + StringUtils::UTF16toUTF8(this->pattern->creatorname()), 395, 0, fnt);
+		Gui::DrawStringCentered(0, 75, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("PATTERN_CREATOR_ID") + std::to_string(this->pattern->creatorid()), 395, 0, fnt);
+		Gui::DrawStringCentered(0, 95, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("PATTERN_ORIGIN_TOWNNAME") + StringUtils::UTF16toUTF8(this->pattern->origtownname()), 395, 0, fnt);
+		Gui::DrawStringCentered(0, 115, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("PATTERN_ORIGIN_TOWNID") + std::to_string(this->pattern->origtownid()), 395, 0, fnt);
 
 		if (this->pattern->creatorGender()) {
-			Gui::DrawStringCentered(0, 135, 0.7f, C2D_Color32(0, 0, 0, 255), "Creator Gender: Female", 395, 0, fnt);
+			Gui::DrawStringCentered(0, 135, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("PATTERN_CREATOR_GENDER") + Lang::get("FEMALE"), 395, 0, fnt);
 		} else {
-			Gui::DrawStringCentered(0, 135, 0.7f, C2D_Color32(0, 0, 0, 255), "Creator Gender: Male", 395, 0, fnt);
+			Gui::DrawStringCentered(0, 135, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("PATTERN_CREATOR_GENDER") + Lang::get("MALE"), 395, 0, fnt);
 		}
 		
-		Gui::DrawStringCentered(0, 155, 0.7f, C2D_Color32(0, 0, 0, 255), "Designtype " + std::to_string(this->pattern->designtype()), 395, 0, fnt);
+		Gui::DrawStringCentered(0, 155, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("DESIGNTYPE") + std::to_string(this->pattern->designtype()), 395, 0, fnt);
 
 		/* Display Savetype. */
-		Gui::DrawStringCentered(0, 175, 0.7f, C2D_Color32(0, 0, 0, 255), "Savetype: " + this->getSaveName(), 395, 0, fnt);
+		Gui::DrawStringCentered(0, 175, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("SAVETYPE") + this->getSaveName(), 395, 0, fnt);
 
 		/* Display Region, if on AC:WW. */
 		if (this->savetype == SaveType::WW) {
-			Gui::DrawStringCentered(0, 195, 0.7f, C2D_Color32(0, 0, 0, 255), "Region: " + this->getRegionName(), 395, 0, fnt);
+			Gui::DrawStringCentered(0, 195, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("REGION") + this->getRegionName(), 395, 0, fnt);
 		}
 
-		Gui::DrawStringCentered(0, 217, 0.9f, C2D_Color32(255, 255, 255, 255), "Press SELECT to show instructions.", 395, 0, fnt);
+		Gui::DrawStringCentered(0, 217, 0.9f, C2D_Color32(255, 255, 255, 255), Lang::get("SHOW_INSTRUCTION"), 395, 0, fnt);
 		if (fadealpha > 0) Gui::Draw_Rect(0, 0, 400, 240, C2D_Color32(fadecolor, fadecolor, fadecolor, fadealpha));
 		UI::DrawBase(false, false);
 		if (this->patternImage.subtex) C2D_DrawImageAt(this->patternImage, 8, 8, 0.5f, nullptr, 7, 7); // 224x224. 224/32 -> 7.
@@ -247,6 +246,7 @@ void PatternEditor::Draw(void) const {
 					UI::DrawPaletteGrid(palettePos[i].x, palettePos[i].y, palettePos[i].w, palettePos[i].h, WWPaletteColors[this->image->getPaletteColor(i)], C2D_Color32(20, 20, 20, 255));
 				}
 			}
+
 		} else if (this->savetype == SaveType::NL || this->savetype == SaveType::WA) {
 			for (int i = 0; i < 15; i++) {
 				if (i == this->color) {
@@ -261,7 +261,7 @@ void PatternEditor::Draw(void) const {
 
 		/* Invalid!! */
 	} else {
-		Gui::DrawStringCentered(0, -2, 0.9f, C2D_Color32(255, 255, 255, 255), "Pattern Editor - Invalid Pattern!", 395, 0, fnt);
+		Gui::DrawStringCentered(0, -2, 0.9f, C2D_Color32(255, 255, 255, 255), Lang::get("PATTERN_EDITOR") + " - " + Lang::get("INVALID_PATTERN"), 395, 0, fnt);
 		if (fadealpha > 0) Gui::Draw_Rect(0, 0, 400, 240, C2D_Color32(fadecolor, fadecolor, fadecolor, fadealpha));
 		UI::DrawBase(false, false);
 		if (fadealpha > 0) Gui::Draw_Rect(0, 0, 320, 240, C2D_Color32(fadecolor, fadecolor, fadecolor, fadealpha));
@@ -281,6 +281,19 @@ void PatternEditor::Logic(u32 hDown, u32 hHeld, touchPosition touch) {
 	/* Credits Mode. */
 	if (this->mode == PatternMode::Credits) {
 		Overlays::CreditsOverlay();
+		this->mode = PatternMode::Draw;
+	}
+
+	/* Default Pattern Set Mode. */
+	if (this->mode == PatternMode::DefaultPattern) {
+		const std::string file = Overlays::SelectPattern(1);
+		if (file != "!NO_PATTERN") Settings::setDefaultPath(file);
+		this->mode = PatternMode::Draw;
+	}
+
+	/* Language Selection Mode. */
+	if (this->mode == PatternMode::LangSet) {
+		Overlays::SelectLang();
 		this->mode = PatternMode::Draw;
 	}
 
@@ -330,10 +343,10 @@ void PatternEditor::Logic(u32 hDown, u32 hHeld, touchPosition touch) {
 	if (this->mode == PatternMode::Export) {
 		if (this->patternSize > 0 && this->data != nullptr) {
 			/* Here we save the pattern. */
-			std::string destination = Overlays::SelectDestination("Select the destination for the pattern.", "sdmc:/3ds/LeafEdit/Pattern-Editor/Pattern/");
+			std::string destination = Overlays::SelectDestination(Lang::get("SELECT_PATTERN_DEST"), "sdmc:/3ds/LeafEdit/Pattern-Editor/Pattern/");
 
 			/* Enter the name of the pattern. */
-			destination += KBD::kbdString(20, "Enter the Pattern name (without extension).");
+			destination += KBD::kbdString(20, Lang::get("ENTER_PATTERN_NAME"));
 
 			/* Get the extension for the Pattern. */
 			switch(this->savetype) {
@@ -352,7 +365,7 @@ void PatternEditor::Logic(u32 hDown, u32 hHeld, touchPosition touch) {
 			FILE *file = fopen(destination.c_str(), "wb");
 			fwrite(this->data.get(), 1, this->patternSize, file);
 			fclose(file);
-			Msg::DisplayWaitMsg("Properly saved file to:\n\n" + destination + ".");
+			Msg::DisplayWaitMsg(Lang::get("SAVED_TO_PROMPT") + "\n" + destination + ".");
 		}
 
 		this->mode = PatternMode::Draw;
@@ -395,8 +408,6 @@ void PatternEditor::Logic(u32 hDown, u32 hHeld, touchPosition touch) {
 
 	/* Instructions. */
 	if (hHeld & KEY_SELECT) {
-		Msg::HelperBox("Press START to open the pattern tool menu."
-						"\nTouch the pattern to draw."
-						"\nTouch the palette colors on the side to select a color.");
+		Msg::HelperBox(Lang::get("EDITOR_INSTRUCTIONS"));
 	}
 }

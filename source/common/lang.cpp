@@ -24,29 +24,24 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef _LEAFEDIT_PATTERN_EDITOR_UI_HPP
-#define _LEAFEDIT_PATTERN_EDITOR_UI_HPP
+#include "lang.hpp"
+#include <stdio.h>
 
-#include "common.hpp"
-#include "sprites.h"
+nlohmann::json appJson;
 
-struct Button {
-	int X;
-	int Y;
-	int XSize;
-	int YSize;
-	std::string Text;
-};
-
-namespace UI {
-	void DrawSprite(int index, int x, int y, float ScaleX = 1, float ScaleY = 1);
-	void DrawBase(bool onTop, bool bar);
-	void DrawFileBrowseBG(bool isTop);
-	void DrawSelector(bool top, int y);
-	void DrawBtn(int x, int y, int xLength, int yLength);
-	void DrawButton(Button btn, float TextSize = 0.5f);
-	void DrawPaletteGrid(float xPos, float yPos, float Width, float Height, u32 paletteColor, u32 gridColor);
-	void DrawBox(int y, u8 rows);
+std::string Lang::get(const std::string &key) {
+	if (!appJson.contains(key)) {
+		return "";
+	}
+	
+	return appJson.at(key).get_ref<const std::string&>();
 }
 
-#endif
+std::string langs[] = {"de", "en", "es", "fr", "it", "lt", "pt", "jp"};
+
+void Lang::load(int lang) {
+	FILE* values;
+	values = fopen(("romfs:/lang/"+langs[lang]+"/app.json").c_str(), "rt");
+	if (values) appJson = nlohmann::json::parse(values, nullptr, false);
+	fclose(values);
+}

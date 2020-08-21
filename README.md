@@ -1,29 +1,38 @@
 # LeafEdit-Pattern-Editor
 This is LeafEdit's Pattern Editor as a separate app as well!
 
-This app is made for fun, those Features will be part of LeafEdit itself as well.
+NOTE: This is not a save editor, for a save editor, please use [LeafEdit](https://github.com/Universal-Team/LeafEdit) instead.
 
-This app is mainly used, to test Pattern Editing, before it gets officially implemented into LeafEdit itself.
 
 ## Current Features
 - [x] Open `.acnl` and `.acww` files.
+
 - [x] Automatically detection of Pattern format.
+
 - [x] Have pre-included pattern for AC:NL & AC:WW.
+
 - [x] Creation of empty pattern.
+
 - [x] Edit Palettes through the Palette Menu.
+
 - [x] Edit Pattern.
+
 - [x] Export pattern to `.acnl` or `.acww` format, depending on the Pattern format.
+
 - [x] Include a font, which should be able to display all characters.
+
 - [x] A Pattern Tool Overlay. // TODO: Second page for Pattern Name, Creator Name etc.
-- [x] Ability, to load a default pattern on each startup from the SD Card through the `Settings.ini` file. // TODO: Do a Selection from the app itself, instead of manually modifying.
+
+- [x] Ability, to load a default pattern on each startup from the SD Card through the `Settings.json` file.
+
 - [x] Ability to load Pattern "default" information, such as Pattern Name, Creator Name, Town Name, Creator ID, Town ID & Creator Gender.
 
-## TODOs
-- [ ] Add Pattern Name, Creator Name & Origin Town Name editing.
-- [ ] Add Player ID, Origin Town ID editing.
-- [ ] Add Creator Gender editing.
-- [ ] Add a proper banner & icon.
-- [ ] Fix Inifile's stuff. For some reason it'll save stuff 2 times... Or maybe.. switch to JSON?
+- [x] Added a proper banner & icon.
+
+- [x] German & English support.
+
+## Planned | TODOs
+- [ ] 16-bit BMP images to Pattern conversion.
 
 ## Screenshots of LeafEdit-Pattern-Editor
 ### Credits
@@ -42,7 +51,7 @@ This app is mainly used, to test Pattern Editing, before it gets officially impl
 ![](https://github.com/SuperSaiyajinStackZ/LeafEdit-Pattern-Editor/blob/master/screenshots/toolMenu.png)
 
 ### Selections
-![](https://github.com/SuperSaiyajinStackZ/LeafEdit-Pattern-Editor/blob/master/screenshots/saveSelect.png) ![](https://github.com/SuperSaiyajinStackZ/LeafEdit-Pattern-Editor/blob/master/screenshots/regionSelect.png)
+![](https://github.com/SuperSaiyajinStackZ/LeafEdit-Pattern-Editor/blob/master/screenshots/saveSelect.png) ![](https://github.com/SuperSaiyajinStackZ/LeafEdit-Pattern-Editor/blob/master/screenshots/regionSelect.png) ![](https://github.com/SuperSaiyajinStackZ/LeafEdit-Pattern-Editor/blob/master/screenshots/langSelect.png)
 
 
 ## Compilation:
@@ -51,6 +60,9 @@ You need devkitARM along with Libctru, Citro2D & Citro3D for this to compile. Yo
 ## Credits
 ### Main Developer
 - [SuperSaiyajinStackZ](https://github.com/SuperSaiyajinStackZ): For creating this app.
+
+### Translators
+- [SuperSaiyajinStackZ](https://github.com/SuperSaiyajinStackZ): German & English.
 
 ### Other
 - [devkitPro](https://github.com/devkitPro), [Fincs](https://github.com/fincs), [Smealum](https://github.com/smealum), [Wintermute](https://github.com/WinterMute): For devkitARM, Citro2D, Citro3D and Libctru.

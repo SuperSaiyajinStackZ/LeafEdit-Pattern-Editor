@@ -34,7 +34,11 @@ namespace Settings {
 	void Read();
 	void Save();
 
-	extern std::string DefaultPath;
+	int getLang();
+	void setLang(int lang);
+
+	std::string getDefaultPath();
+	void setDefaultPath(std::string path);
 }
 
 #endif

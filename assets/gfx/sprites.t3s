@@ -1,7 +1,11 @@
 --atlas -f rgba -z auto
 
+sprites/banner.png
 sprites/bar.png
 sprites/bottom_bar.png
+sprites/box_bot.png
+sprites/box_middle.png
+sprites/box_top.png
 sprites/button_corner.png
 sprites/dev_by.png
 sprites/europe.png
