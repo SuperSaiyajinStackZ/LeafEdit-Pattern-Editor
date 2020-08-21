@@ -25,7 +25,10 @@
 */
 
 #include "coreUtils.hpp"
+#include "saveUtils.hpp"
+#include "stringUtils.hpp"
 #include "utils.hpp"
+#include <unistd.h>
 
 /* Generate an empty pattern using the empty pattern files of the romfs. */
 void CoreUtils::generateEmptyPattern(SaveType ST, WWRegion region, std::shared_ptr<u8[]> &data, u32 &size) {
@@ -142,4 +145,192 @@ C2D_Image CoreUtils::patternImage(std::shared_ptr<PatternImage> image, SaveType 
 	}
 
 	return {nullptr};
+}
+
+/* Get the default file. */
+std::string CoreUtils::getDefaultFile(SaveType ST, WWRegion region) {
+	switch(ST) {
+		case SaveType::WW:
+			/* Switch Region. */
+			switch(region) {
+				case WWRegion::JPN_REV0:
+				case WWRegion::JPN_REV1:
+					if (access("sdmc:/3ds/LeafEdit/Pattern-Editor/defaults/wwJPNDefault.pt", F_OK) == 0) {
+						return "sdmc:/3ds/LeafEdit/Pattern-Editor/defaults/wwJPNDefault.pt";
+					} else {
+						return "romfs:/defaults/wwJPNDefault.pt";
+					}
+
+				case WWRegion::USA_REV0:
+				case WWRegion::USA_REV1:
+					if (access("sdmc:/3ds/LeafEdit/Pattern-Editor/defaults/wwUSADefault.pt", F_OK) == 0) {
+						return "sdmc:/3ds/LeafEdit/Pattern-Editor/defaults/wwUSADefault.pt";
+					} else {
+						return "romfs:/defaults/wwUSADefault.pt";
+					}
+
+				case WWRegion::EUR_REV1:
+					if (access("sdmc:/3ds/LeafEdit/Pattern-Editor/defaults/wwEURDefault.pt", F_OK) == 0) {
+						return "sdmc:/3ds/LeafEdit/Pattern-Editor/defaults/wwEURDefault.pt";
+					} else {
+						return "romfs:/defaults/wwEURDefault.pt";
+					}
+
+				case WWRegion::KOR_REV1:
+					if (access("sdmc:/3ds/LeafEdit/Pattern-Editor/defaults/wwKORDefault.pt", F_OK) == 0) {
+						return "sdmc:/3ds/LeafEdit/Pattern-Editor/defaults/wwKORDefault.pt";
+					} else {
+						return "romfs:/defaults/wwKORDefault.pt";
+					}
+
+				case WWRegion::UNKNOWN:
+					return "";
+			}
+
+		case SaveType::NL:
+			if (access("sdmc:/3ds/LeafEdit/Pattern-Editor/defaults/nlDefault.pt", F_OK) == 0) {
+				return "sdmc:/3ds/LeafEdit/Pattern-Editor/defaults/nlDefault.pt";
+			} else {
+				return "romfs:/defaults/nlDefault.pt";
+			}
+
+		case SaveType::WA:
+			if (access("sdmc:/3ds/LeafEdit/Pattern-Editor/defaults/waDefault.pt", F_OK) == 0) {
+				return "sdmc:/3ds/LeafEdit/Pattern-Editor/defaults/waDefault.pt";
+			} else {
+				return "romfs:/defaults/waDefault.pt";
+			}
+
+		case SaveType::UNUSED:
+			return "";
+	}
+
+	return "";
+}
+
+
+PatternInformations CoreUtils::getDefaultInformation(SaveType ST, WWRegion region) {
+	PatternInformations output = {StringUtils::UTF8toUTF16("?"), StringUtils::UTF8toUTF16("?"), StringUtils::UTF8toUTF16("?"), 0, 0, 0}; // Default.
+
+	bool UTF8Read = true; /* If UTF-8 or UTF-16 Read. */
+	u8 patternLength = 0, creatorLength = 0, townLength = 0; /* Name Reading Length. */
+	u32 creatorNameStart = 0, townNameStart = 0, creatorIDStart = 0, townIDStart = 0, creatorGenderStart = 0;
+	u32 pSize = 0;
+
+	switch(ST) {
+		case SaveType::WW:
+			/* Switch Region. */
+			switch(region) {
+				case WWRegion::JPN_REV0:
+				case WWRegion::JPN_REV1:
+					patternLength = 9;
+					creatorNameStart = 0x9;
+					creatorLength = 6;
+					townNameStart = 0xF;
+					townLength = 6;
+					creatorIDStart = 0x15;
+					townIDStart = 0x17;
+					creatorGenderStart = 0x19;
+					pSize = 0x1A;
+					break;
+
+				case WWRegion::USA_REV0:
+				case WWRegion::USA_REV1:
+				case WWRegion::EUR_REV1:
+					patternLength = 15;
+					creatorNameStart = 0xF;
+					creatorLength = 7;
+					townNameStart = 0x16;
+					townLength = 7;
+					creatorIDStart = 0x1D;
+					townIDStart = 0x1F;
+					creatorGenderStart = 0x21;
+					pSize = 0x22;
+					break;
+
+				case WWRegion::KOR_REV1:
+					patternLength = 10;
+					creatorNameStart = 0x14;
+					creatorLength = 6;
+					townNameStart = 0x20;
+					townLength = 6;
+					creatorIDStart = 0x2C;
+					townIDStart = 0x2E;
+					creatorGenderStart = 0x30;
+					pSize = 0x31;
+					UTF8Read = false;
+					break;
+
+				case WWRegion::UNKNOWN:
+					break; // Because invalid.
+			}
+
+			break;
+
+		case SaveType::NL:
+			patternLength = 20;
+			creatorNameStart = 0x28;
+			creatorLength = 8;
+			townNameStart = 0x38;
+			townLength = 9;
+			creatorIDStart = 0x48;
+			townIDStart = 0x4A;
+			creatorGenderStart = 0x4C;
+			pSize = 0x4D;
+			UTF8Read = false;
+			break;
+
+		case SaveType::WA:
+			patternLength = 20;
+			creatorNameStart = 0x28;
+			creatorLength = 8;
+			townNameStart = 0x38;
+			townLength = 9;
+			creatorIDStart = 0x48;
+			townIDStart = 0x4A;
+			creatorGenderStart = 0x4C;
+			pSize = 0x4D;
+			UTF8Read = false;
+			break;
+
+		case SaveType::UNUSED:
+			break;
+	}
+
+	/* Real part here with fetching data. */
+	if (CoreUtils::getDefaultFile(ST, region) != "") {
+
+		FILE *file = fopen(CoreUtils::getDefaultFile(ST, region).c_str(), "rb");
+		if (file) {
+			fseek(file, 0, SEEK_END);
+			u32 size = ftell(file);
+			if (size < (pSize)) return output;
+			fseek(file, 0, SEEK_SET);
+			std::shared_ptr<u8[]> data = std::shared_ptr<u8[]>(new u8[size]);
+			fread(data.get(), 1, size, file);
+			fclose(file);
+
+			/* fetch! */
+			if (data) {
+			
+				/* String read. */
+				if (UTF8Read) {
+					output.PatternName = StringUtils::ReadUTF8String(data.get(), 0, patternLength, region);
+					output.CreatorName = StringUtils::ReadUTF8String(data.get(), creatorNameStart, creatorLength, region);
+					output.TownName = StringUtils::ReadUTF8String(data.get(), townNameStart, townLength, region);
+				} else {
+					output.PatternName = StringUtils::ReadUTF16String(data.get(), 0, patternLength);
+					output.CreatorName = StringUtils::ReadUTF16String(data.get(), creatorNameStart, creatorLength);
+					output.TownName = StringUtils::ReadUTF16String(data.get(), townNameStart, townLength);
+				}
+
+				/* ID read. */
+				output.CreatorID = SaveUtils::Read<u16>(data.get(), creatorIDStart);
+				output.TownID = SaveUtils::Read<u16>(data.get(), townIDStart);
+				output.CreatorGender = data.get()[creatorGenderStart];
+			}
+		}
+	}
+
+	return output;
 }

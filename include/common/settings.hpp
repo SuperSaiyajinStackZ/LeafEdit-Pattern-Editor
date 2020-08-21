@@ -34,9 +34,7 @@ namespace Settings {
 	void Read();
 	void Save();
 
-	extern std::string DefaultPath, DefaultCreatorName, DefaultTownName;
-	extern u16 DefaultCreatorID, DefaultTownID;
-	extern u8 DefaultGender;
+	extern std::string DefaultPath;
 }
 
 #endif

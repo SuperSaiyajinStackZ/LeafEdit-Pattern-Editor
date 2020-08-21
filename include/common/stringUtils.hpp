@@ -40,7 +40,7 @@ namespace StringUtils {
 	std::u16string& toFullWidth(std::u16string& in);
 
 	// Read and Writes to UTF8 & UTF16.
-	std::u16string ReadUTF16String(const u8* data, int ofs, int len, char16_t term);
+	std::u16string ReadUTF16String(u8* data, int ofs, int len);
 	void WriteUTF16String(u8 *data, const std::u16string &str, u32 offset, u32 maxSize);
 	std::u16string ReadUTF8String(u8 *data, u32 offset, u32 maxSize, WWRegion region);
 	void WriteUTF8String(u8 *data, const std::u16string &str, u32 offset, u32 maxSize, WWRegion region);

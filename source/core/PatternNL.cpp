@@ -33,7 +33,7 @@
 
 // Pattern Name.
 std::u16string PatternNL::name() {
-	return StringUtils::ReadUTF16String(patternPointer(), 0, 20, u'\uFFFF');
+	return StringUtils::ReadUTF16String(patternPointer(), 0, 20);
 }
 void PatternNL::name(std::u16string v) {
 	StringUtils::WriteUTF16String(patternPointer(), v, 0, 20);
@@ -49,7 +49,7 @@ void PatternNL::creatorid(u16 v) {
 
 // Creator Name.
 std::u16string PatternNL::creatorname() {
-	return StringUtils::ReadUTF16String(patternPointer(), 0x2C, 8, u'\uFFFF');
+	return StringUtils::ReadUTF16String(patternPointer(), 0x2C, 8);
 }
 void PatternNL::creatorname(std::u16string v) {
 	StringUtils::WriteUTF16String(patternPointer(), v, 0x2C, 8);
@@ -73,10 +73,10 @@ void PatternNL::origtownid(u16 v) {
 
 // Town Name.
 std::u16string PatternNL::origtownname() {
-	return StringUtils::ReadUTF16String(patternPointer(), 0x42, 9, u'\uFFFF');
+	return StringUtils::ReadUTF16String(patternPointer(), 0x42, 8);
 }
 void PatternNL::origtownname(std::u16string v) {
-	StringUtils::WriteUTF16String(patternPointer(), v, 0x42, 9);
+	StringUtils::WriteUTF16String(patternPointer(), v, 0x42, 8);
 }
 
 // Design Type.

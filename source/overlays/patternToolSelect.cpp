@@ -95,6 +95,11 @@ PatternMode Overlays::ToolSelect() {
 			if (selection < 5) selection++;
 		}
 
+		/* TODO: Second page for this. */
+		if (hDown & KEY_X) {
+			return PatternMode::SetDefault;
+		}
+
 		if (hDown & KEY_RIGHT) {
 			if (selection < 3) {
 				selection += 3;

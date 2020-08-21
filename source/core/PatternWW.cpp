@@ -42,7 +42,7 @@ std::u16string PatternWW::name() {
 		case WWRegion::JPN_REV1:
 			return StringUtils::ReadUTF8String(patternPointer(), 0x212, 9, this->region);
 		case WWRegion::KOR_REV1:
-			return StringUtils::ReadUTF16String(patternPointer(), 0x21E, 10, u'\uFFFF');
+			return StringUtils::ReadUTF16String(patternPointer(), 0x21E, 10);
 		case WWRegion::UNKNOWN:
 			return StringUtils::UTF8toUTF16("?");
 	}
@@ -116,7 +116,7 @@ std::u16string PatternWW::creatorname() {
 		case WWRegion::JPN_REV1:
 			return StringUtils::ReadUTF8String(patternPointer(), 0x20A, 6, this->region);
 		case WWRegion::KOR_REV1:
-			return StringUtils::ReadUTF16String(patternPointer(), 0x210, 6, u'\uFFFF');
+			return StringUtils::ReadUTF16String(patternPointer(), 0x210, 6);
 		case WWRegion::UNKNOWN:
 			return StringUtils::UTF8toUTF16("?");
 	}
@@ -148,11 +148,12 @@ u8 PatternWW::creatorGender() {
 		case WWRegion::USA_REV0:
 		case WWRegion::USA_REV1:
 		case WWRegion::EUR_REV1:
+			return this->patternPointer()[0x214];
 		case WWRegion::JPN_REV0:
 		case WWRegion::JPN_REV1:
-			return 0;
+			return this->patternPointer()[0x210];
 		case WWRegion::KOR_REV1:
-			return 0;
+			return this->patternPointer()[0x21C];
 		case WWRegion::UNKNOWN:
 			return 0;
 	}
@@ -164,9 +165,15 @@ void PatternWW::creatorGender(u8 v) {
 		case WWRegion::USA_REV0:
 		case WWRegion::USA_REV1:
 		case WWRegion::EUR_REV1:
+			SaveUtils::Write<u8>(patternPointer(), 0x214, v);
+			break;
 		case WWRegion::JPN_REV0:
 		case WWRegion::JPN_REV1:
+			SaveUtils::Write<u8>(patternPointer(), 0x210, v);
+			break;
 		case WWRegion::KOR_REV1:
+			SaveUtils::Write<u8>(patternPointer(), 0x21C, v);
+			break;
 		case WWRegion::UNKNOWN:
 			break;
 	}
@@ -214,7 +221,7 @@ std::u16string PatternWW::origtownname() {
 		case WWRegion::JPN_REV1:
 			return StringUtils::ReadUTF8String(patternPointer(), 0x202, 6, this->region);
 		case WWRegion::KOR_REV1:
-			return StringUtils::ReadUTF16String(patternPointer(), 0x202, 6, u'\uFFFF');
+			return StringUtils::ReadUTF16String(patternPointer(), 0x202, 6);
 		case WWRegion::UNKNOWN:
 			return StringUtils::UTF8toUTF16("?");
 	}

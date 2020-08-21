@@ -175,6 +175,18 @@ void PatternEditor::load(const std::string ptrnFile, bool fromFile) {
 				break;
 		}
 
+		PatternInformations info = CoreUtils::getDefaultInformation(this->savetype, this->saveregion);
+
+		/* Strings. */
+		this->pattern->creatorid(info.CreatorID);
+		this->pattern->origtownid(info.TownID);
+		this->pattern->creatorGender(info.CreatorGender);
+
+		/* ID's. */
+		this->pattern->creatorname(info.CreatorName);
+		this->pattern->origtownname(info.TownName);
+		this->pattern->name(info.PatternName);
+
 		C3D_FrameEnd(0);
 		this->image = this->pattern->image(0);
 		this->patternImage = CoreUtils::patternImage(this->image, this->savetype);
@@ -269,6 +281,22 @@ void PatternEditor::Logic(u32 hDown, u32 hHeld, touchPosition touch) {
 	/* Credits Mode. */
 	if (this->mode == PatternMode::Credits) {
 		Overlays::CreditsOverlay();
+		this->mode = PatternMode::Draw;
+	}
+
+	if (this->mode == PatternMode::SetDefault) {
+		PatternInformations info = CoreUtils::getDefaultInformation(this->savetype, this->saveregion);
+		
+		/* ID's. */
+		this->pattern->creatorid(info.CreatorID);
+		this->pattern->origtownid(info.TownID);
+		this->pattern->creatorGender(info.CreatorGender);
+
+		/* Strings. */
+		this->pattern->creatorname(info.CreatorName);
+		this->pattern->origtownname(info.TownName);
+		this->pattern->name(info.PatternName);
+
 		this->mode = PatternMode::Draw;
 	}
 

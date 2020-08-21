@@ -44,54 +44,55 @@ bool touching(touchPosition touch, Structs::ButtonPos button) {
 }
 
 int main() {
-    /* Init all services. */
-    romfsInit();
-    gfxInitDefault();
-    Gui::init();
+	/* Init all services. */
+	romfsInit();
+	gfxInitDefault();
+	Gui::init();
 
 	/* Create Directories. */
-    mkdir("sdmc:/3ds/LeafEdit", 0777);
+	mkdir("sdmc:/3ds/LeafEdit", 0777);
 	mkdir("sdmc:/3ds/LeafEdit/Pattern-Editor", 0777); // Main path.
-    mkdir("sdmc:/3ds/LeafEdit/Pattern-Editor/Pattern", 0777); // Pattern path.
+	mkdir("sdmc:/3ds/LeafEdit/Pattern-Editor/Pattern", 0777); // Pattern path.
+	mkdir("sdmc:/3ds/LeafEdit/Pattern-Editor/defaults", 0777); // Defaults path.
 
 	Gui::loadSheet("romfs:/gfx/sprites.t3x", sprites);
-    Gui::loadFont(fnt, "romfs:/gfx/font.bcfnt");
+	Gui::loadFont(fnt, "romfs:/gfx/font.bcfnt");
 	osSetSpeedupEnable(true); // Enable speed-up for New 3DS users.
 
-    Settings::Read();
-    Overlays::SplashOverlay();
-    Gui::setScreen(std::make_unique<PatternEditor>(), false, true);
+	Settings::Read();
+	Overlays::SplashOverlay();
+	Gui::setScreen(std::make_unique<PatternEditor>(), false, true);
 
-    /* MainLoop part here. */
-    while(aptMainLoop() && !exiting) {
-        u32 hDown = hidKeysDown();
-        u32 hHeld = hidKeysHeld();
-        touchPosition touch;
-        hidScanInput();
-        hidTouchRead(&touch);
+	/* MainLoop part here. */
+	while(aptMainLoop() && !exiting) {
+		u32 hDown = hidKeysDown();
+		u32 hHeld = hidKeysHeld();
+		touchPosition touch;
+		hidScanInput();
+		hidTouchRead(&touch);
 
-        /* Drawing part. */
-        Gui::clearTextBufs();
-        C2D_TargetClear(Top, C2D_Color32(0, 0, 0, 0));
-        C2D_TargetClear(Bottom, C2D_Color32(0, 0, 0, 0));
-        C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
-        Gui::DrawScreen(true);
-        Gui::ScreenLogic(hDown, hHeld, touch, true, true);
-        C3D_FrameEnd(0);
+		/* Drawing part. */
+		Gui::clearTextBufs();
+		C2D_TargetClear(Top, C2D_Color32(0, 0, 0, 0));
+		C2D_TargetClear(Bottom, C2D_Color32(0, 0, 0, 0));
+		C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+		Gui::DrawScreen(true);
+		Gui::ScreenLogic(hDown, hHeld, touch, true, true);
+		C3D_FrameEnd(0);
 
-        if (exiting) {
-            if (fadeout) break;
-        }
+		if (exiting) {
+			if (fadeout) break;
+		}
 
-        Gui::fadeEffects(16, 16, true);
-    }
-    
-    /* Unload and deinit. */
-    Gui::unloadSheet(sprites);
-    Gui::unloadFont(fnt);
-    Settings::Save();
-    Gui::exit();
-    gfxExit();
-    romfsExit();
-    return 0;
+		Gui::fadeEffects(16, 16, true);
+	}
+	
+	/* Unload and deinit. */
+	Gui::unloadSheet(sprites);
+	Gui::unloadFont(fnt);
+	Settings::Save();
+	Gui::exit();
+	gfxExit();
+	romfsExit();
+	return 0;
 }

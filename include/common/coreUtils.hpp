@@ -32,9 +32,20 @@
 #include "types.hpp"
 #include <citro2d.h>
 
+struct PatternInformations {
+	std::u16string PatternName;
+	std::u16string CreatorName;
+	std::u16string TownName;
+	u16 CreatorID;
+	u16 TownID;
+	u8 CreatorGender;
+};
+
 namespace CoreUtils {
 	void generateEmptyPattern(SaveType ST, WWRegion region, std::shared_ptr<u8[]> &data, u32 &size);
 	C2D_Image patternImage(std::shared_ptr<PatternImage> image, SaveType ST = SaveType::UNUSED);
+	std::string getDefaultFile(SaveType ST, WWRegion region);
+	PatternInformations getDefaultInformation(SaveType ST, WWRegion region);
 }
 
 #endif

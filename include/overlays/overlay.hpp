@@ -41,6 +41,7 @@ enum class PatternMode {
 	Palette,
 	Credits,
 	Exit,
+	SetDefault,
 
 	/* Pattern changing stuff. TODO. */
 	Name,

@@ -16,6 +16,7 @@ This app is mainly used, to test Pattern Editing, before it gets officially impl
 - [x] Include a font, which should be able to display all characters.
 - [x] A Pattern Tool Overlay. // TODO: Second page for Pattern Name, Creator Name etc.
 - [x] Ability, to load a default pattern on each startup from the SD Card through the `Settings.ini` file. // TODO: Do a Selection from the app itself, instead of manually modifying.
+- [x] Ability to load Pattern "default" information, such as Pattern Name, Creator Name, Town Name, Creator ID, Town ID & Creator Gender.
 
 ## TODOs
 - [ ] Add Pattern Name, Creator Name & Origin Town Name editing.
