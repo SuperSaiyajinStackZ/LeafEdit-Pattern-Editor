@@ -28,6 +28,7 @@
 #define _LEAFEDIT_PATTERN_EDITOR_OVERLAY_HPP
 
 #include "common.hpp"
+#include "Pattern.hpp"
 #include "PatternImage.hpp"
 #include <string>
 #include <vector>
@@ -45,6 +46,7 @@ enum class PatternMode {
 	LangSet,
 	DefaultPattern,
 	ExportInformation,
+	Share,
 
 	/* These are TODO's. */
 	DrawToolSelect,
@@ -70,6 +72,7 @@ namespace Overlays {
 	void SplashOverlay();
 	void CreditsOverlay();
 	void SelectLang();
+	void ShareOverlay(std::shared_ptr<PatternImage> &pImg, C2D_Image &img, std::shared_ptr<Pattern> &ptrn, const std::string &msg);
 
 	bool SelectPattern(int sltMode, std::string &file);
 	bool SelectDestination(std::string txt, std::string &file);

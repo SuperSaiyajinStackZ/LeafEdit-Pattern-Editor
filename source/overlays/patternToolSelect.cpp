@@ -38,7 +38,8 @@ static const std::vector<Button> buttons = {
 	{15, 34, 130, 48, "LANGUAGE"},
 	{175, 34, 130, 48, "SET_DEFAULT"},
 	{15, 97, 130, 48, "SET_DEFAULT_PATTERN"},
-	{175, 97, 130, 48, "EXPORT_INFORMATION"}
+	{175, 97, 130, 48, "EXPORT_INFORMATION"},
+	{15, 159, 130, 48, "SHARE"}
 };
 
 /* If button Position pressed -> Do something. */
@@ -66,7 +67,7 @@ static void Draw(int select, int page, C2D_Image &Img) {
 
 		UI::DrawSprite(sprites_pointer_idx, buttons[select].X + 100, buttons[select].Y + 30);
 	} else {
-		for (int i = 6; i < 10; i++) {
+		for (int i = 6; i < 11; i++) {
 			UI::DrawButton(buttons[i], 0.55);
 		}
 
@@ -126,6 +127,8 @@ PatternMode Overlays::ToolSelect(C2D_Image &Img) {
 					return PatternMode::DefaultPattern;
 				} else if (touching(touch, buttons[9])) {
 					return PatternMode::ExportInformation;
+				} else if (touching(touch, buttons[10])) {
+					return PatternMode::Share;
 				}
 			}
 		}
@@ -166,11 +169,13 @@ PatternMode Overlays::ToolSelect(C2D_Image &Img) {
 			if (hDown & KEY_UP) {
 				if (selection == 2) selection = 0;
 				else if (selection == 3) selection = 1;
+				else if (selection == 4) selection = 2;
 			}
 
 			if (hDown & KEY_DOWN) {
 				if (selection == 0) selection = 2;
 				else if (selection == 1) selection = 3;
+				else if (selection == 2) selection = 4;
 			}
 		}
 
@@ -200,6 +205,8 @@ PatternMode Overlays::ToolSelect(C2D_Image &Img) {
 						return PatternMode::DefaultPattern;
 					case 3:
 						return PatternMode::ExportInformation;
+					case 4:
+						return PatternMode::Share;
 				}
 			}
 		}

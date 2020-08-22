@@ -313,6 +313,17 @@ void PatternEditor::Logic(u32 hDown, u32 hHeld, touchPosition touch) {
 		this->mode = PatternMode::Draw;
 	}
 
+	/* Share Mode. */
+	if (this->mode == PatternMode::Share) {
+		std::string comment = "";
+		if (Msg::promptMsg("ENTER_COMMENT_PROMPT")) {
+			comment = KBD::kbdString(40, Lang::get("ENTER_COMMENT"));
+		}
+		
+		Overlays::ShareOverlay(this->image, this->patternImage, this->pattern, comment);
+		this->mode = PatternMode::Draw;
+	}
+
 	if (this->mode == PatternMode::SetDefault) {
 		if (Msg::promptMsg("SET_DEFAULT_PROMPT")) {
 			PatternInformations info = CoreUtils::getDefaultInformation(this->savetype, this->saveregion);
