@@ -55,7 +55,7 @@ NOTE: This is not a save editor, for a save editor, please use [LeafEdit](https:
 ![](https://github.com/SuperSaiyajinStackZ/LeafEdit-Pattern-Editor/blob/master/screenshots/toolMenu.png)
 
 ### Selections
-![](https://github.com/SuperSaiyajinStackZ/LeafEdit-Pattern-Editor/blob/master/screenshots/saveSelect.png) ![](https://github.com/SuperSaiyajinStackZ/LeafEdit-Pattern-Editor/blob/master/screenshots/regionSelect.png) ![](https://github.com/SuperSaiyajinStackZ/LeafEdit-Pattern-Editor/blob/master/screenshots/langSelect.png)
+![](https://github.com/SuperSaiyajinStackZ/LeafEdit-Pattern-Editor/blob/master/screenshots/gameSelect.png) ![](https://github.com/SuperSaiyajinStackZ/LeafEdit-Pattern-Editor/blob/master/screenshots/regionSelect.png) ![](https://github.com/SuperSaiyajinStackZ/LeafEdit-Pattern-Editor/blob/master/screenshots/langSelect.png)
 
 
 ## Compilation:
