@@ -227,7 +227,7 @@ void PatternEditor::Draw(void) const {
 		Gui::DrawStringCentered(0, 155, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("DESIGNTYPE") + std::to_string(this->pattern->designtype()), 395, 0, fnt);
 
 		/* Display Savetype. */
-		Gui::DrawStringCentered(0, 175, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("SAVETYPE") + this->getSaveName(), 395, 0, fnt);
+		Gui::DrawStringCentered(0, 175, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("GAME") + this->getSaveName(), 395, 0, fnt);
 
 		/* Display Region, if on AC:WW. */
 		if (this->savetype == SaveType::WW) {
