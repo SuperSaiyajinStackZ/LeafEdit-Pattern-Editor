@@ -27,6 +27,60 @@
 #include "common.hpp"
 #include "screenCommon.hpp"
 
+/* If button Position pressed -> Do something. */
+static bool touching(touchPosition touch, Button button) {
+	if (touch.px >= button.X && touch.px <= (button.X + button.XSize) && touch.py >= button.Y && touch.py <= (button.Y + button.YSize)) return true;
+	else return false;
+}
+
+const std::vector<Button> promptBtn = {
+	{0, 85, 149, 52, "YES"}, // Yes.
+	{162, 85, 149, 52, "NO"} // No.
+};
+
+/* Display a Message, which needs to be confirmed with A/B. */
+bool Msg::promptMsg(std::string promptMsg) {
+	s32 selection = 1;
+
+	while(1) {
+		Gui::clearTextBufs();
+		C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+		C2D_TargetClear(Top, C2D_Color32(0, 0, 0, 0));
+		C2D_TargetClear(Bottom, C2D_Color32(0, 0, 0, 0));
+		UI::DrawBase(true, false);
+		UI::DrawBox(80, 1);
+
+		Gui::DrawStringCentered(0, (240-Gui::GetStringHeight(0.8f, Lang::get(promptMsg), fnt)) / 2, 0.8f, C2D_Color32(255, 255, 255, 255), Lang::get(promptMsg), 390, 70, fnt);
+
+		UI::DrawBase(false, true);
+		/* Draw Bottom Screen part. */
+		for (int i = 0; i < 2; i++) {
+			UI::DrawButton(promptBtn[i], 0.65);
+			if (i == selection)	UI::DrawSprite(sprites_pointer_idx, promptBtn[i].X + 100, promptBtn[i].Y + 30);
+		}
+
+		C3D_FrameEnd(0);
+
+		/* Selection part. */
+		gspWaitForVBlank();
+		touchPosition touch;
+		hidScanInput();
+		hidTouchRead(&touch);
+
+		if (hidKeysDown() & KEY_LEFT) selection = 0;
+		else if(hidKeysDown() & KEY_RIGHT) selection = 1;
+
+		if (hidKeysDown() & KEY_A) {
+			if (selection == 0) return true;
+			else return false;
+		}
+
+		if (hidKeysDown() & KEY_TOUCH && touching(touch, promptBtn[0])) return true;
+
+		if (hidKeysDown() & KEY_TOUCH && touching(touch, promptBtn[1])) return false;
+	}
+}
+
 // Displays a Warn Message.
 void Msg::DisplayWarnMsg(std::string Text) {
 	Gui::clearTextBufs();

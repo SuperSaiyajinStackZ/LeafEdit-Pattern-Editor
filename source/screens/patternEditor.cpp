@@ -289,17 +289,21 @@ void PatternEditor::Logic(u32 hDown, u32 hHeld, touchPosition touch) {
 	}
 
 	if (this->mode == PatternMode::ExportInformation) {
-		CoreUtils::dumpPatternInformation(this->savetype, this->saveregion, this->pattern);
-		Msg::DisplayWaitMsg(Lang::get("EXPORT_INFORMATION_PROMPT"));
+		if (Msg::promptMsg("EXPORT_INF_PROMPT")) {
+			CoreUtils::dumpPatternInformation(this->savetype, this->saveregion, this->pattern);
+			Msg::DisplayWaitMsg(Lang::get("EXPORT_INFORMATION_PROMPT"));
+		}
 		this->mode = PatternMode::Draw;
 	}
 
 	/* Default Pattern Set Mode. */
 	if (this->mode == PatternMode::DefaultPattern) {
-		std::string file;
-		bool result = Overlays::SelectPattern(1, file);
+		if (Msg::promptMsg("DEFAULT_PATTERN_PROMPT")) {
+			std::string file;
+			bool result = Overlays::SelectPattern(1, file);
 
-		if (result) Settings::setDefaultPath(file);
+			if (result) Settings::setDefaultPath(file);
+		}
 		this->mode = PatternMode::Draw;
 	}
 
@@ -310,17 +314,19 @@ void PatternEditor::Logic(u32 hDown, u32 hHeld, touchPosition touch) {
 	}
 
 	if (this->mode == PatternMode::SetDefault) {
-		PatternInformations info = CoreUtils::getDefaultInformation(this->savetype, this->saveregion);
+		if (Msg::promptMsg("SET_DEFAULT_PROMPT")) {
+			PatternInformations info = CoreUtils::getDefaultInformation(this->savetype, this->saveregion);
 		
-		/* ID's. */
-		this->pattern->creatorid(info.CreatorID);
-		this->pattern->origtownid(info.TownID);
-		this->pattern->creatorGender(info.CreatorGender);
+			/* ID's. */
+			this->pattern->creatorid(info.CreatorID);
+			this->pattern->origtownid(info.TownID);
+			this->pattern->creatorGender(info.CreatorGender);
 
-		/* Strings. */
-		this->pattern->creatorname(info.CreatorName);
-		this->pattern->origtownname(info.TownName);
-		this->pattern->name(info.PatternName);
+			/* Strings. */
+			this->pattern->creatorname(info.CreatorName);
+			this->pattern->origtownname(info.TownName);
+			this->pattern->name(info.PatternName);
+		}
 
 		this->mode = PatternMode::Draw;
 	}
@@ -345,11 +351,13 @@ void PatternEditor::Logic(u32 hDown, u32 hHeld, touchPosition touch) {
 
 	/* Import mode. */
 	if (this->mode == PatternMode::Import) {
-		std::string file;
-		bool result = Overlays::SelectPattern(0, file);
+		if (Msg::promptMsg("IMPORT_PROMPT")) {
+			std::string file;
+			bool result = Overlays::SelectPattern(0, file);
 
-		if (result) {
-			this->load(file, true);
+			if (result) {
+				this->load(file, true);
+			}
 		}
 
 		this->mode = PatternMode::Draw;
@@ -357,33 +365,35 @@ void PatternEditor::Logic(u32 hDown, u32 hHeld, touchPosition touch) {
 
 	/* Export mode. */
 	if (this->mode == PatternMode::Export) {
-		if (this->patternSize > 0 && this->data != nullptr) {
-			/* Here we save the pattern. */
-			std::string destination;
-			bool result = Overlays::SelectDestination(Lang::get("SELECT_PATTERN_DEST"), destination);
+		if (Msg::promptMsg("EXPORT_PTRN_PROMPT")) {
+			if (this->patternSize > 0 && this->data != nullptr) {
+				/* Here we save the pattern. */
+				std::string destination;
+				bool result = Overlays::SelectDestination(Lang::get("SELECT_PATTERN_DEST"), destination);
 
-			if (result) {
-				/* Enter the name of the pattern. */
-				destination += KBD::kbdString(20, Lang::get("ENTER_PATTERN_NAME"));
+				if (result) {
+					/* Enter the name of the pattern. */
+					destination += KBD::kbdString(20, Lang::get("ENTER_PATTERN_NAME"));
 
-				/* Get the extension for the Pattern. */
-				switch(this->savetype) {
-					case SaveType::WW:
-						destination += ".acww";
-						break;
-					case SaveType::NL:
-					case SaveType::WA:
-						destination += ".acnl";
-						break;
-					case SaveType::UNUSED:
-						destination += ".invalid";
-						break;
+					/* Get the extension for the Pattern. */
+					switch(this->savetype) {
+						case SaveType::WW:
+							destination += ".acww";
+							break;
+						case SaveType::NL:
+						case SaveType::WA:
+							destination += ".acnl";
+							break;
+						case SaveType::UNUSED:
+							destination += ".invalid";
+							break;
+					}
+
+					FILE *file = fopen(destination.c_str(), "wb");
+					fwrite(this->data.get(), 1, this->patternSize, file);
+					fclose(file);
+					Msg::DisplayWaitMsg(Lang::get("SAVED_TO_PROMPT") + "\n" + destination + ".");
 				}
-
-				FILE *file = fopen(destination.c_str(), "wb");
-				fwrite(this->data.get(), 1, this->patternSize, file);
-				fclose(file);
-				Msg::DisplayWaitMsg(Lang::get("SAVED_TO_PROMPT") + "\n" + destination + ".");
 			}
 		}
 
