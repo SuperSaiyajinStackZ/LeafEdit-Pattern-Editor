@@ -85,5 +85,9 @@ void Overlays::SelectLang() {
 				}
 			}
 		}
+
+		if (hidKeysDown() & KEY_B) {
+			doOut = true;
+		}
 	}
 }

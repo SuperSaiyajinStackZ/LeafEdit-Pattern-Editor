@@ -34,9 +34,11 @@ static const std::vector<Button> buttons = {
 	{175, 34, 130, 48, "EXPORT_PATTERN"},
 	{175, 97, 130, 48, "CLEAR_PATTERN"},
 	{175, 159, 130, 48, "EXIT"},
+
 	{15, 34, 130, 48, "LANGUAGE"},
 	{175, 34, 130, 48, "SET_DEFAULT"},
-	{15, 97, 130, 48, "SET_DEFAULT_PATTERN"}
+	{15, 97, 130, 48, "SET_DEFAULT_PATTERN"},
+	{175, 97, 130, 48, "EXPORT_INFORMATION"}
 };
 
 /* If button Position pressed -> Do something. */
@@ -45,7 +47,7 @@ bool touching(touchPosition touch, Button button) {
 	else return false;
 }
 
-static void Draw(int select, int page) {
+static void Draw(int select, int page, C2D_Image &Img) {
 	Gui::clearTextBufs();
 	C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
 	C2D_TargetClear(Top, C2D_Color32(0, 0, 0, 0));
@@ -53,6 +55,7 @@ static void Draw(int select, int page) {
 
 	UI::DrawBase(true, true);
 	Gui::DrawStringCentered(0, -2, 0.9f, C2D_Color32(255, 255, 255, 255), Lang::get("PATTERN_TOOL_MENU"), 395, 0, fnt);
+	if (Img.subtex != nullptr) C2D_DrawImageAt(Img, 125, 45, 0.5f, nullptr, 5, 5); // 160x160. 160/32 -> 5.
 	UI::DrawBase(false, true);
 
 	/* TODO: Buttons. */
@@ -63,7 +66,7 @@ static void Draw(int select, int page) {
 
 		UI::DrawSprite(sprites_pointer_idx, buttons[select].X + 100, buttons[select].Y + 30);
 	} else {
-		for (int i = 6; i < 9; i++) {
+		for (int i = 6; i < 10; i++) {
 			UI::DrawButton(buttons[i], 0.55);
 		}
 
@@ -76,10 +79,10 @@ static void Draw(int select, int page) {
 	C3D_FrameEnd(0);
 }
 
-PatternMode Overlays::ToolSelect() {
+PatternMode Overlays::ToolSelect(C2D_Image &Img) {
 	int selection = 0, page = 0;
 	while(1) {
-		Draw(selection, page);
+		Draw(selection, page, Img);
 		u32 hDown = hidKeysDown();
 		touchPosition touch;
 		hidScanInput();
@@ -99,8 +102,8 @@ PatternMode Overlays::ToolSelect() {
 			}
 		}
 
-		if (page == 0) {
-			if (hDown & KEY_TOUCH) {
+		if (hDown & KEY_TOUCH) {
+			if (page == 0) {
 				if (touching(touch, buttons[0])) {
 					return PatternMode::Import;
 				} else if (touching(touch, buttons[1])) {
@@ -114,15 +117,15 @@ PatternMode Overlays::ToolSelect() {
 				} else if (touching(touch, buttons[5])) {
 					return PatternMode::Exit;
 				}
-			}
-		} else {
-			if (hDown & KEY_TOUCH) {
+			} else {
 				if (touching(touch, buttons[6])) {
 					return PatternMode::LangSet;
 				} else if (touching(touch, buttons[7])) {
 					return PatternMode::SetDefault;
 				} else if (touching(touch, buttons[8])) {
 					return PatternMode::DefaultPattern;
+				} else if (touching(touch, buttons[9])) {
+					return PatternMode::ExportInformation;
 				}
 			}
 		}
@@ -147,26 +150,32 @@ PatternMode Overlays::ToolSelect() {
 					selection -= 3;
 				}
 			}
+
+
 		} else {
 			if (hDown & KEY_RIGHT) {
 				if (selection == 0) selection = 1;
+				else if (selection == 2) selection = 3;
 			}
 
 			if (hDown & KEY_LEFT) {
 				if (selection == 1) selection = 0;
+				else if (selection == 3) selection = 2;
 			}
 
 			if (hDown & KEY_UP) {
 				if (selection == 2) selection = 0;
+				else if (selection == 3) selection = 1;
 			}
 
 			if (hDown & KEY_DOWN) {
 				if (selection == 0) selection = 2;
+				else if (selection == 1) selection = 3;
 			}
 		}
 
-		if (page == 0) {
-			if (hDown & KEY_A) {
+		if (hDown & KEY_A) {
+			if (page == 0) {
 				switch(selection) {
 					case 0:
 						return PatternMode::Import;
@@ -181,9 +190,7 @@ PatternMode Overlays::ToolSelect() {
 					case 5:
 						return PatternMode::Exit;
 				}
-			}
-		} else {
-			if (hDown & KEY_A) {
+			} else {
 				switch(selection) {
 					case 0:
 						return PatternMode::LangSet;
@@ -191,6 +198,8 @@ PatternMode Overlays::ToolSelect() {
 						return PatternMode::SetDefault;
 					case 2:
 						return PatternMode::DefaultPattern;
+					case 3:
+						return PatternMode::ExportInformation;
 				}
 			}
 		}

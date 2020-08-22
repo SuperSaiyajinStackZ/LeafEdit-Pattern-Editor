@@ -49,7 +49,7 @@ static void Draw(int mode, int selection) {
 
 	UI::DrawBase(true, true);
 	if (mode == 0) {
-		Gui::DrawStringCentered(0, -2, 0.9f, C2D_Color32(255, 255, 255, 255), Lang::get("SELECT_SAVETYPE"), 395, 0, fnt);
+		Gui::DrawStringCentered(0, -2, 0.9f, C2D_Color32(255, 255, 255, 255), Lang::get("SELECT_GAME"), 395, 0, fnt);
 		UI::DrawBase(false, true);
 
 		
@@ -82,12 +82,11 @@ static void Draw(int mode, int selection) {
 	C3D_FrameEnd(0);
 }
 
-void Overlays::SaveSelect(SaveType &ST, WWRegion &region) {
+bool Overlays::SaveSelect(SaveType &ST, WWRegion &region) {
 	int mode = 0, selection = 0;
-	bool doOut = false;
 
 	gspWaitForVBlank();
-	while(!doOut) {
+	while(1) {
 		Draw(mode, selection);
 		touchPosition touch;
 		u32 hDown = hidKeysDown();
@@ -95,6 +94,8 @@ void Overlays::SaveSelect(SaveType &ST, WWRegion &region) {
 		hidTouchRead(&touch);
 
 		if (mode == 0) {
+			if (hDown & KEY_B) return false;
+
 			/* SaveType Select. */
 			if (hDown & KEY_RIGHT) {
 				if (selection < 2) selection++;
@@ -107,10 +108,10 @@ void Overlays::SaveSelect(SaveType &ST, WWRegion &region) {
 			if (hDown & KEY_TOUCH) {
 				if (touching(touch, types[0])) {
 					ST = SaveType::NL;
-					doOut = true;
+					return true;
 				} else if (touching(touch, types[1])) {
 					ST = SaveType::WA;
-					doOut = true;
+					return true;
  				} else if (touching(touch, types[2])) {
 					ST = SaveType::WW;
 					gspWaitForVBlank();
@@ -123,11 +124,11 @@ void Overlays::SaveSelect(SaveType &ST, WWRegion &region) {
 				switch(selection) {
 					case 0:
 						ST = SaveType::NL;
-						doOut = true;
+						return true;
 						break;
 					case 1:
 						ST = SaveType::WA;
-						doOut = true;
+						return true;
 						break;
 					case 2:
 						ST = SaveType::WW;
@@ -151,16 +152,16 @@ void Overlays::SaveSelect(SaveType &ST, WWRegion &region) {
 			if (hDown & KEY_TOUCH) {
 				if (touching(touch, regions[0])) {
 					region = WWRegion::JPN_REV1;
-					doOut = true;
+					return true;
 				} else if (touching(touch, regions[1])) {
 					region = WWRegion::USA_REV1;
-					doOut = true;
+					return true;
  				} else if (touching(touch, regions[2])) {
 					region = WWRegion::EUR_REV1;
-					doOut = true;
+					return true;
 				} else if (touching(touch, regions[3])) {
 					region = WWRegion::KOR_REV1;
-					doOut = true;
+					return true;
 				}
 			}
 
@@ -168,19 +169,19 @@ void Overlays::SaveSelect(SaveType &ST, WWRegion &region) {
 				switch(selection) {
 					case 0:
 						region = WWRegion::JPN_REV1;
-						doOut = true;
+						return true;
 						break;
 					case 1:
 						region = WWRegion::USA_REV1;
-						doOut = true;
+						return true;
 						break;
 					case 2:
 						region = WWRegion::EUR_REV1;
-						doOut = true;
+						return true;
 						break;
 					case 3:
 						region = WWRegion::KOR_REV1;
-						doOut = true;
+						return true;
 						break;
 				}
 			}

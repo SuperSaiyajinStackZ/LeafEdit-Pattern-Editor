@@ -28,6 +28,7 @@
 #define _LEAFEDIT_PATTERN_EDITOR_CORE_UTILS_HPP
 
 #include "common.hpp"
+#include "Pattern.hpp"
 #include "PatternImage.hpp"
 #include "types.hpp"
 #include <citro2d.h>
@@ -46,6 +47,7 @@ namespace CoreUtils {
 	C2D_Image patternImage(std::shared_ptr<PatternImage> image, SaveType ST = SaveType::UNUSED);
 	std::string getDefaultFile(SaveType ST, WWRegion region);
 	PatternInformations getDefaultInformation(SaveType ST, WWRegion region);
+	void dumpPatternInformation(SaveType ST, WWRegion region, std::shared_ptr<Pattern> &ptrn);
 }
 
 #endif

@@ -44,6 +44,12 @@ enum class PatternMode {
 	SetDefault,
 	LangSet,
 	DefaultPattern,
+	ExportInformation,
+
+	/* These are TODO's. */
+	DrawToolSelect,
+	ImportBMP,
+	ExportBMP,
 
 	/* Pattern changing stuff. TODO. */
 	Name,
@@ -54,21 +60,26 @@ enum class PatternMode {
 	CreatorGender
 };
 
+/* TODO. */
+enum class DrawTool {
+	Normal,
+	Line
+};
+
 namespace Overlays {
 	void SplashOverlay();
 	void CreditsOverlay();
 	void SelectLang();
 
-	std::string SelectFile(std::string initialPath, std::vector<std::string> extensions, std::string txt);
-	std::string SelectPattern(int sltMode = 0);
-	std::string SelectDestination(std::string txt, std::string defaultDest);
+	bool SelectPattern(int sltMode, std::string &file);
+	bool SelectDestination(std::string txt, std::string &file);
 
 	void PaletteToolWW(std::shared_ptr<PatternImage> &pImg, C2D_Image &img);
 	void PaletteToolNL(std::shared_ptr<PatternImage> &pImg, C2D_Image &img);
 	void PaletteTool(std::shared_ptr<PatternImage> &pImg, C2D_Image &img, SaveType ST);
 
-	PatternMode ToolSelect();
-	void SaveSelect(SaveType &ST, WWRegion &region);
+	PatternMode ToolSelect(C2D_Image &Img);
+	bool SaveSelect(SaveType &ST, WWRegion &region);
 }
 
 #endif

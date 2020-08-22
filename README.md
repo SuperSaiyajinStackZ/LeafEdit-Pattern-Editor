@@ -34,6 +34,8 @@ NOTE: This is not a save editor, for a save editor, please use [LeafEdit](https:
 ## Planned | TODOs
 - [ ] 16-bit BMP images to Pattern conversion.
 
+- [ ] Add "Draw Modes".. for example: Line Mode, Normal Mode etc.
+
 ## Screenshots of LeafEdit-Pattern-Editor
 ### Credits
 ![](https://github.com/SuperSaiyajinStackZ/LeafEdit-Pattern-Editor/blob/master/screenshots/splash.png) ![](https://github.com/SuperSaiyajinStackZ/LeafEdit-Pattern-Editor/blob/master/screenshots/credits.png)

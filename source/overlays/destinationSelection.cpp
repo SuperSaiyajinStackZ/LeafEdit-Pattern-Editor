@@ -52,7 +52,7 @@ static void DrawTop(std::string txt, uint Selection, std::vector<DirEntry> dirCo
 	if (Selection < 9) UI::DrawSelector(true, 24 + ((int)Selection * 21));
 	else UI::DrawSelector(true, 24 + (8 * 21));
 	Gui::DrawString(5, 25, 0.85f, C2D_Color32(0, 0, 0, 255), files, 360, 0, fnt);
-	Gui::DrawStringCentered(0, 217, 0.9f, C2D_Color32(255, 255, 255, 255), Lang::get("START_REFRESH"), 390, 0, fnt);
+	Gui::DrawStringCentered(0, 218, 0.9f, C2D_Color32(255, 255, 255, 255), Lang::get("START_REFRESH"), 390, 0, fnt);
 	if (fadealpha > 0) Gui::Draw_Rect(0, 0, 400, 240, C2D_Color32(fadecolor, fadecolor, fadecolor, fadealpha));
 }
 
@@ -63,7 +63,7 @@ static void DrawBottom() {
 	C3D_FrameEnd(0);
 }
 
-std::string Overlays::SelectDestination(std::string txt, std::string defaultDest) {
+bool Overlays::SelectDestination(std::string txt, std::string &file) {
 	s32 selectedDir = 0;
 	std::vector<DirEntry> dirContents;
 	bool dirChanged = true;
@@ -113,7 +113,8 @@ std::string Overlays::SelectDestination(std::string txt, std::string defaultDest
 		if (hDown & KEY_Y) {
 			char path[PATH_MAX];
 			getcwd(path, PATH_MAX);
-			return path;
+			file = path;
+			return true;
 		}
 
 		if (hRepeat & KEY_UP) {
@@ -132,7 +133,7 @@ std::string Overlays::SelectDestination(std::string txt, std::string defaultDest
 			char path[PATH_MAX];
 			getcwd(path, PATH_MAX);
 			if (strcmp(path, "sdmc:/") == 0 || strcmp(path, "/") == 0) {
-				return defaultDest;
+				return false;
 			} else {
 				chdir("..");
 				selectedDir = 0;

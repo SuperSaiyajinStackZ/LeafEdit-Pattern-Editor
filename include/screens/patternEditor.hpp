@@ -52,6 +52,7 @@ private:
 	const std::string getRegionName() const;
 
 	PatternMode mode = PatternMode::Draw;
+	DrawTool drawMode = DrawTool::Normal;
 	
 	/* Save / Region Related stuff. */
 	bool isValid = false;

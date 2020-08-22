@@ -81,8 +81,9 @@ const std::string PatternEditor::getSaveName() const {
 		case SaveType::WW:
 			return "Wild World";
 		case SaveType::NL:
+			return "New Leaf";
 		case SaveType::WA:
-			return "New Leaf | Welcome Amiibo";
+			return "Welcome Amiibo";
 		case SaveType::UNUSED:
 			return "?";
 	}
@@ -97,9 +98,10 @@ const std::string PatternEditor::getRegionName() const {
 		case WWRegion::JPN_REV1:
 			return "Japanese";
 		case WWRegion::USA_REV0:
+			return "USA";
 		case WWRegion::USA_REV1:
 		case WWRegion::EUR_REV1:
-			return "Europe | USA";
+			return "Europe";
 		case WWRegion::KOR_REV1:
 			return "Korean";
 		case WWRegion::UNKNOWN:
@@ -232,8 +234,9 @@ void PatternEditor::Draw(void) const {
 			Gui::DrawStringCentered(0, 195, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("REGION") + this->getRegionName(), 395, 0, fnt);
 		}
 
-		Gui::DrawStringCentered(0, 217, 0.9f, C2D_Color32(255, 255, 255, 255), Lang::get("SHOW_INSTRUCTION"), 395, 0, fnt);
+		Gui::DrawStringCentered(0, 218, 0.9f, C2D_Color32(255, 255, 255, 255), Lang::get("SHOW_INSTRUCTION"), 395, 0, fnt);
 		if (fadealpha > 0) Gui::Draw_Rect(0, 0, 400, 240, C2D_Color32(fadecolor, fadecolor, fadecolor, fadealpha));
+
 		UI::DrawBase(false, false);
 		if (this->patternImage.subtex) C2D_DrawImageAt(this->patternImage, 8, 8, 0.5f, nullptr, 7, 7); // 224x224. 224/32 -> 7.
 
@@ -269,8 +272,9 @@ void PatternEditor::Draw(void) const {
 }
 
 void PatternEditor::Logic(u32 hDown, u32 hHeld, touchPosition touch) {
+	/* Pattern Tool Menu. */
 	if (hDown & KEY_START) {
-		this->mode = Overlays::ToolSelect();
+		this->mode = Overlays::ToolSelect(this->patternImage);
 	}
 
 	/* Exit the app. */
@@ -284,10 +288,18 @@ void PatternEditor::Logic(u32 hDown, u32 hHeld, touchPosition touch) {
 		this->mode = PatternMode::Draw;
 	}
 
+	if (this->mode == PatternMode::ExportInformation) {
+		CoreUtils::dumpPatternInformation(this->savetype, this->saveregion, this->pattern);
+		Msg::DisplayWaitMsg(Lang::get("EXPORT_INFORMATION_PROMPT"));
+		this->mode = PatternMode::Draw;
+	}
+
 	/* Default Pattern Set Mode. */
 	if (this->mode == PatternMode::DefaultPattern) {
-		const std::string file = Overlays::SelectPattern(1);
-		if (file != "!NO_PATTERN") Settings::setDefaultPath(file);
+		std::string file;
+		bool result = Overlays::SelectPattern(1, file);
+
+		if (result) Settings::setDefaultPath(file);
 		this->mode = PatternMode::Draw;
 	}
 
@@ -316,9 +328,12 @@ void PatternEditor::Logic(u32 hDown, u32 hHeld, touchPosition touch) {
 	/* Clear Mode. */
 	if (this->mode == PatternMode::Clear) {
 		/* Select SaveType. */
-		Overlays::SaveSelect(this->savetype, this->saveregion);
-		CoreUtils::generateEmptyPattern(this->savetype, this->saveregion, this->data, this->patternSize);
-		this->load("", false);
+		bool result = Overlays::SaveSelect(this->savetype, this->saveregion);
+		if (result) {
+			CoreUtils::generateEmptyPattern(this->savetype, this->saveregion, this->data, this->patternSize);
+			this->load("", false);
+		}
+
 		this->mode = PatternMode::Draw;
 	}
 
@@ -330,9 +345,10 @@ void PatternEditor::Logic(u32 hDown, u32 hHeld, touchPosition touch) {
 
 	/* Import mode. */
 	if (this->mode == PatternMode::Import) {
-		const std::string file = Overlays::SelectPattern();
+		std::string file;
+		bool result = Overlays::SelectPattern(0, file);
 
-		if (file != "!NO_PATTERN") {
+		if (result) {
 			this->load(file, true);
 		}
 
@@ -343,29 +359,32 @@ void PatternEditor::Logic(u32 hDown, u32 hHeld, touchPosition touch) {
 	if (this->mode == PatternMode::Export) {
 		if (this->patternSize > 0 && this->data != nullptr) {
 			/* Here we save the pattern. */
-			std::string destination = Overlays::SelectDestination(Lang::get("SELECT_PATTERN_DEST"), "sdmc:/3ds/LeafEdit/Pattern-Editor/Pattern/");
+			std::string destination;
+			bool result = Overlays::SelectDestination(Lang::get("SELECT_PATTERN_DEST"), destination);
 
-			/* Enter the name of the pattern. */
-			destination += KBD::kbdString(20, Lang::get("ENTER_PATTERN_NAME"));
+			if (result) {
+				/* Enter the name of the pattern. */
+				destination += KBD::kbdString(20, Lang::get("ENTER_PATTERN_NAME"));
 
-			/* Get the extension for the Pattern. */
-			switch(this->savetype) {
-				case SaveType::WW:
-					destination += ".acww";
-					break;
-				case SaveType::NL:
-				case SaveType::WA:
-					destination += ".acnl";
-					break;
-				case SaveType::UNUSED:
-					destination += ".invalid";
-					break;
+				/* Get the extension for the Pattern. */
+				switch(this->savetype) {
+					case SaveType::WW:
+						destination += ".acww";
+						break;
+					case SaveType::NL:
+					case SaveType::WA:
+						destination += ".acnl";
+						break;
+					case SaveType::UNUSED:
+						destination += ".invalid";
+						break;
+				}
+
+				FILE *file = fopen(destination.c_str(), "wb");
+				fwrite(this->data.get(), 1, this->patternSize, file);
+				fclose(file);
+				Msg::DisplayWaitMsg(Lang::get("SAVED_TO_PROMPT") + "\n" + destination + ".");
 			}
-
-			FILE *file = fopen(destination.c_str(), "wb");
-			fwrite(this->data.get(), 1, this->patternSize, file);
-			fclose(file);
-			Msg::DisplayWaitMsg(Lang::get("SAVED_TO_PROMPT") + "\n" + destination + ".");
 		}
 
 		this->mode = PatternMode::Draw;
@@ -375,33 +394,42 @@ void PatternEditor::Logic(u32 hDown, u32 hHeld, touchPosition touch) {
 	/* Pattern drawing mode. */
 	if (this->mode == PatternMode::Draw) {
 		if (this->isValid) {
-			if (hHeld & KEY_TOUCH) {
-				bool didTouch = false;
-				for (int x = 0; x < 32; x++) {
-					for (int y = 0; y < 32; y++) {
-						if (touch.px <= (8 + 7 + x * 7) && touch.px >= (8 + x * 7) && touch.py <= (8 + 7 + y * 7) && touch.py >= (8 + y * 7)) {
-							if (this->savetype == SaveType::WW) this->image->setPixel(x, y, this->color + 1);
-							else if (this->savetype == SaveType::NL || this->savetype == SaveType::WA) this->image->setPixel(x, y, this->color);
-							didTouch = true;
-							break;
+
+			/* Normal 1x1 PX mode. */
+			if (this->drawMode == DrawTool::Normal) {
+
+				if (hHeld & KEY_TOUCH) {
+					bool didTouch = false;
+					for (int x = 0; x < 32; x++) {
+						for (int y = 0; y < 32; y++) {
+							if (touch.px <= (8 + 7 + x * 7) && touch.px >= (8 + x * 7) && touch.py <= (8 + 7 + y * 7) && touch.py >= (8 + y * 7)) {
+								if (this->savetype == SaveType::WW) this->image->setPixel(x, y, this->color + 1);
+								else if (this->savetype == SaveType::NL || this->savetype == SaveType::WA) this->image->setPixel(x, y, this->color);
+								didTouch = true;
+								break;
+							}
 						}
+					}
+
+					/* If we didn't touched the Pattern. */
+					if (!didTouch) {
+						for (int i = 0; i < 15; i++) {
+							if (touching(touch, palettePos[i])) {
+								this->color = i;
+							}
+						}
+					}
+
+					if (didTouch) {
+						C3D_FrameEnd(0);
+						if (this->patternImage.subtex != nullptr) C2DUtils::C2D_ImageDelete(this->patternImage);
+						this->patternImage = CoreUtils::patternImage(this->image, this->savetype);
 					}
 				}
 
-				/* If we didn't touched the Pattern. */
-				if (!didTouch) {
-					for (int i = 0; i < 15; i++) {
-						if (touching(touch, palettePos[i])) {
-							this->color = i;
-						}
-					}
-				}
+				/* Line Mode. TODO.*/
+			} else if (this->drawMode == DrawTool::Line) {
 
-				if (didTouch) {
-					C3D_FrameEnd(0);
-					if (this->patternImage.subtex != nullptr) C2DUtils::C2D_ImageDelete(this->patternImage);
-					this->patternImage = CoreUtils::patternImage(this->image, this->savetype);
-				}
 			}
 		}
 	}

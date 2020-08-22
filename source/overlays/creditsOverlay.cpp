@@ -38,7 +38,7 @@ static void Draw(int page) {
 	UI::DrawSprite(sprites_stackz_idx, -2, 74);
 	Gui::DrawStringCentered(0, -2, 0.9f, C2D_Color32(255, 255, 255, 255), Lang::get("CREDITS"), 395, 0, fnt);
 	Gui::DrawStringCentered(0, 30, 0.9f, C2D_Color32(0, 0, 0, 255), Lang::get("MAIN_DEV"), 390, 0, fnt);
-	Gui::DrawString(395 - Gui::GetStringWidth(0.8, Lang::get("CURRENT_VERSION") + V_STRING, fnt), 218, 0.8, C2D_Color32(255, 255, 255, 255), Lang::get("CURRENT_VERSION") + V_STRING, 390, 0, fnt);
+	Gui::DrawString(395 - Gui::GetStringWidth(0.8, Lang::get("CURRENT_VERSION") + V_STRING, fnt), 219, 0.8, C2D_Color32(255, 255, 255, 255), Lang::get("CURRENT_VERSION") + V_STRING, 390, 0, fnt);
 
 	UI::DrawBase(false, true);
 	UI::DrawSprite(sprites_top_bar_idx, 0, 0);
