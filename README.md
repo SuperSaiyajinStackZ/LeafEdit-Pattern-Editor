@@ -31,6 +31,8 @@ NOTE: This is not a save editor, for a save editor, please use [LeafEdit](https:
 
 - [x] German & English support.
 
+- [x] Export Pattern Informations. // For the defaults.
+
 ## Planned | TODOs
 - [ ] 16-bit BMP images to Pattern conversion.
 
