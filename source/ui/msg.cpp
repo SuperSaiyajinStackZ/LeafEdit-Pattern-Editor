@@ -47,7 +47,7 @@ bool Msg::promptMsg(std::string promptMsg) {
 		C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
 		C2D_TargetClear(Top, C2D_Color32(0, 0, 0, 0));
 		C2D_TargetClear(Bottom, C2D_Color32(0, 0, 0, 0));
-		UI::DrawBase(true, false);
+		UI::DrawBase(true, true);
 		UI::DrawBox(80, 1);
 
 		Gui::DrawStringCentered(0, (240-Gui::GetStringHeight(0.8f, Lang::get(promptMsg), fnt)) / 2, 0.8f, C2D_Color32(255, 255, 255, 255), Lang::get(promptMsg), 390, 70, fnt);
