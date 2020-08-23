@@ -1,7 +1,7 @@
 # LeafEdit-Pattern-Editor
 This is LeafEdit's Pattern Editor as a separate app as well!
 
-NOTE: This is not a save editor, for a save editor, please use [LeafEdit](https://github.com/Universal-Team/LeafEdit) instead.
+NOTE: This tool can _only_ edit pattern. For a more featured Save Editor please use [LeafEdit](https://github.com/Universal-Team/LeafEdit) instead.
 
 
 ## Current Features
@@ -32,6 +32,8 @@ NOTE: This is not a save editor, for a save editor, please use [LeafEdit](https:
 - [x] German & English support.
 
 - [x] Export Pattern Informations. // For the defaults.
+
+- [x] Edit Pattern from AC:WW, AC:NL & AC:WA's savefile directly.
 
 ## Planned | TODOs
 - [ ] 16-bit BMP images to Pattern conversion.
@@ -75,6 +77,6 @@ You need devkitARM along with Libctru, Citro2D & Citro3D for this to compile. Yo
 
 - [Slattz](https://github.com/Slattz): For the region flags & game icons from [NLTK](https://github.com/Slattz/NLTK).
 
-- [Universal-Team](https://github.com/Universal-Team): For [LeafEdit's](https://github.com/Universal-Team/LeafEdit) pattern core and [Universal-Core](https://github.com/Universal-Team/Universal-Core).
+- [Universal-Team](https://github.com/Universal-Team): For [LeafEdit's](https://github.com/Universal-Team/LeafEdit) core and [Universal-Core](https://github.com/Universal-Team/Universal-Core).
 
 - [TotallyNotGuy](https://github.com/TotallyNotGuy): For the amazing Graphics from LeafEdit.

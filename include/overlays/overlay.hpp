@@ -30,6 +30,7 @@
 #include "common.hpp"
 #include "Pattern.hpp"
 #include "PatternImage.hpp"
+#include "Sav.hpp"
 #include <string>
 #include <vector>
 
@@ -47,6 +48,10 @@ enum class PatternMode {
 	DefaultPattern,
 	ExportInformation,
 	Share,
+	LoadSave,
+	LoadFromSave,
+	DoSave,
+	UnloadSave,
 
 	/* These are TODO's. */
 	DrawToolSelect,
@@ -83,6 +88,9 @@ namespace Overlays {
 
 	PatternMode ToolSelect(C2D_Image &Img);
 	bool SaveSelect(SaveType &ST, WWRegion &region);
+
+	bool SelectSavePattern(std::shared_ptr<Sav> &savefile, std::shared_ptr<Pattern> &ptrn);
+	bool SelectSaveFile(std::shared_ptr<Sav> &savefile);
 }
 
 #endif

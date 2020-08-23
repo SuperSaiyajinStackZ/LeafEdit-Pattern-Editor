@@ -34,6 +34,7 @@
 #include "PatternWA.hpp"
 #include "PatternWW.hpp"
 #include "PatternImage.hpp"
+#include "Sav.hpp"
 #include "structs.hpp"
 
 #include <vector>
@@ -50,6 +51,11 @@ private:
 	void getPattern(const std::string ptrnFile);
 	const std::string getSaveName() const;
 	const std::string getRegionName() const;
+	void saveStuff();
+	void overloadSaveStuff();
+	void unloadSave();
+	void loadSave();
+	void PatternFromSaveLoad();
 
 	PatternMode mode = PatternMode::Draw;
 	DrawTool drawMode = DrawTool::Normal;
@@ -58,6 +64,10 @@ private:
 	bool isValid = false;
 	SaveType savetype = SaveType::UNUSED;
 	WWRegion saveregion = WWRegion::UNKNOWN;
+
+	std::shared_ptr<Sav> savefile = nullptr;
+	bool saveLoaded = false;
+	bool patternFromSave = false;
 
 	/* Data. */
 	std::shared_ptr<u8[]> data;

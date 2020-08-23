@@ -36,10 +36,15 @@ static const std::vector<Button> buttons = {
 	{175, 159, 130, 48, "EXIT"},
 
 	{15, 34, 130, 48, "LANGUAGE"},
-	{175, 34, 130, 48, "SET_DEFAULT"},
 	{15, 97, 130, 48, "SET_DEFAULT_PATTERN"},
+	{15, 159, 130, 48, "SHARE"},
+	{175, 34, 130, 48, "SET_DEFAULT"},
 	{175, 97, 130, 48, "EXPORT_INFORMATION"},
-	{15, 159, 130, 48, "SHARE"}
+	{175, 159, 130, 48, "LOAD_SAVE"},
+
+	{15, 34, 130, 48, "LOAD_FROM_SAVE"},
+	{175, 34, 130, 48, "SAVE_SAVE"},
+	{15, 97, 130, 48, "UNLOAD_SAVE"}
 };
 
 /* If button Position pressed -> Do something. */
@@ -62,20 +67,26 @@ static void Draw(int select, int page, C2D_Image &Img) {
 	/* TODO: Buttons. */
 	if (page == 0) {
 		for (int i = 0; i < 6; i++) {
-			UI::DrawButton(buttons[i], 0.55);
+			UI::DrawButton(buttons[i], 0.5);
 		}
 
 		UI::DrawSprite(sprites_pointer_idx, buttons[select].X + 100, buttons[select].Y + 30);
-	} else {
-		for (int i = 6; i < 11; i++) {
-			UI::DrawButton(buttons[i], 0.55);
+	} else if (page == 1) {
+		for (int i = 6; i < 12; i++) {
+			UI::DrawButton(buttons[i], 0.5);
 		}
 
 		UI::DrawSprite(sprites_pointer_idx, buttons[6 + select].X + 100, buttons[6 + select].Y + 30);
+	} else {
+		for (int i = 12; i < 15; i++) {
+			UI::DrawButton(buttons[i], 0.5);
+		}
+
+		UI::DrawSprite(sprites_pointer_idx, buttons[12 + select].X + 100, buttons[12 + select].Y + 30);
 	}
 
 	UI::DrawSprite(sprites_top_bar_idx, 0, 0);
-	Gui::DrawStringCentered(0, -2, 0.9f, C2D_Color32(255, 255, 255, 255), Lang::get("PAGE") + std::to_string(page + 1) + " | 2", 310, 0, fnt);
+	Gui::DrawStringCentered(0, -2, 0.9f, C2D_Color32(255, 255, 255, 255), Lang::get("PAGE") + std::to_string(page + 1) + " | 3", 310, 0, fnt);
 
 	C3D_FrameEnd(0);
 }
@@ -90,16 +101,16 @@ PatternMode Overlays::ToolSelect(C2D_Image &Img) {
 		hidTouchRead(&touch);
 
 		if (hDown & KEY_R) {
-			if (page == 0) {
+			if (page < 2) {
 				selection = 0;
-				page = 1;
+				page++;
 			}
 		}
 
 		if (hDown & KEY_L) {
-			if (page == 1) {
+			if (page > 0) {
 				selection = 0;
-				page = 0;
+				page--;
 			}
 		}
 
@@ -118,7 +129,7 @@ PatternMode Overlays::ToolSelect(C2D_Image &Img) {
 				} else if (touching(touch, buttons[5])) {
 					return PatternMode::Exit;
 				}
-			} else {
+			} else if (page == 1) {
 				if (touching(touch, buttons[6])) {
 					return PatternMode::LangSet;
 				} else if (touching(touch, buttons[7])) {
@@ -129,11 +140,21 @@ PatternMode Overlays::ToolSelect(C2D_Image &Img) {
 					return PatternMode::ExportInformation;
 				} else if (touching(touch, buttons[10])) {
 					return PatternMode::Share;
+				} else if (touching(touch, buttons[11])) {
+					return PatternMode::LoadSave;
+				}
+			} else {
+				if (touching(touch, buttons[12])) {
+					return PatternMode::LoadFromSave;
+				} else if (touching(touch, buttons[13])) {
+					return PatternMode::DoSave;
+				} else if (touching(touch, buttons[14])) {
+					return PatternMode::UnloadSave;
 				}
 			}
 		}
 
-		if (page == 0) {
+		if (page == 0 || page == 1) {
 			if (hDown & KEY_UP) {
 				if (selection > 0) selection--;
 			}
@@ -158,24 +179,18 @@ PatternMode Overlays::ToolSelect(C2D_Image &Img) {
 		} else {
 			if (hDown & KEY_RIGHT) {
 				if (selection == 0) selection = 1;
-				else if (selection == 2) selection = 3;
 			}
 
 			if (hDown & KEY_LEFT) {
 				if (selection == 1) selection = 0;
-				else if (selection == 3) selection = 2;
-			}
-
-			if (hDown & KEY_UP) {
-				if (selection == 2) selection = 0;
-				else if (selection == 3) selection = 1;
-				else if (selection == 4) selection = 2;
 			}
 
 			if (hDown & KEY_DOWN) {
 				if (selection == 0) selection = 2;
-				else if (selection == 1) selection = 3;
-				else if (selection == 2) selection = 4;
+			}
+
+			if (hDown & KEY_UP) {
+				if (selection == 2) selection = 0;
 			}
 		}
 
@@ -194,8 +209,10 @@ PatternMode Overlays::ToolSelect(C2D_Image &Img) {
 						return PatternMode::Clear;
 					case 5:
 						return PatternMode::Exit;
+					case 6:
+						return PatternMode::LoadSave;
 				}
-			} else {
+			} else if (page == 1) {
 				switch(selection) {
 					case 0:
 						return PatternMode::LangSet;
@@ -207,6 +224,17 @@ PatternMode Overlays::ToolSelect(C2D_Image &Img) {
 						return PatternMode::ExportInformation;
 					case 4:
 						return PatternMode::Share;
+					case 5:
+						return PatternMode::LoadSave;
+				}
+			} else {
+				switch(selection) {
+					case 0:
+						return PatternMode::LoadFromSave;
+					case 1:
+						return PatternMode::DoSave;
+					case 2:
+						return PatternMode::UnloadSave;
 				}
 			}
 		}
