@@ -33,6 +33,7 @@
 	"INJECT_PATTERN": "Muster injizieren",
 	"INJECT_PROMPT": "Möchtest du ein Muster injizieren?",
 	"INVALID_PATTERN": "Ungültiges Muster!",
+	"INVALID_PATTERN_FORMAT": "Ungültiges Muster format!",
 	"LANGUAGE": "Sprache",
 	"LEAFEDIT_GRAPHICS": "- Für LeafEdit's geniale Grafiken.",
 	"LOAD_FROM_SAVE": "Lade Muster vom Speicherstand",

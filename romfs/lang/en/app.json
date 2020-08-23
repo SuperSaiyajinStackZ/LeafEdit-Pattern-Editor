@@ -33,6 +33,7 @@
 	"INJECT_PATTERN": "Inject Pattern",
 	"INJECT_PROMPT": "Would you like to inject a Pattern?",
 	"INVALID_PATTERN": "Invalid Pattern!",
+	"INVALID_PATTERN_FORMAT": "Invalid Pattern format!",
 	"LANGUAGE": "Language",
 	"LEAFEDIT_GRAPHICS": "- For LeafEdit's awesome Graphics.",
 	"LOAD_FROM_SAVE": "Load pattern from save",

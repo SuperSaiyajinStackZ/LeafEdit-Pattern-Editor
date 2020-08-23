@@ -24,6 +24,9 @@
 *         reasonable ways as different from the original version.
 */
 
+#include "lang.hpp"
+#include "msg.hpp"
+
 #include "PatternNL.hpp"
 #include "saveUtils.hpp"
 #include "stringUtils.hpp"
@@ -99,41 +102,42 @@ void PatternNL::dumpPattern(const std::string fileName) {
 
 	// Open File.
 	FILE* ptrn = fopen(fileName.c_str(), "wb");
-	// Set Buffer.
-	u8 *patternData = new u8[size];
-	// Write Pattern data to Buffer.
-	for(int i = 0; i < (int)size; i++) {
-		SaveUtils::Write<u8>(patternData, i, this->patternPointer()[i]);
-	}
 
 	// Write to file and close.
-	fwrite(patternData, 1, size, ptrn);
+	fwrite(this->patternPointer(), 1, size, ptrn);
 	fclose(ptrn);
-	// Free Buffer.
-	delete(patternData);
 }
 
 // Inject a Pattern from file.
 void PatternNL::injectPattern(const std::string fileName) {
 	if ((access(fileName.c_str(), F_OK) != 0))	return; // File not found. Do NOTHING.
-	u32 size;
 	// Open file and get size.
 	FILE* ptrn = fopen(fileName.c_str(), "rb");
-	fseek(ptrn, 0, SEEK_END);
-	size = ftell(ptrn);
-	fseek(ptrn, 0, SEEK_SET);
-	// Create Buffer with the size and read the file.
-	u8 *patternData = new u8[size];
-	fread(patternData, 1, size, ptrn);
-	// Set Buffer data to save.
-	for(int i = 0; i < (int)size; i++){
-		SaveUtils::Write<u8>(this->patternPointer(), i, patternData[i]);
-	}
+	if (ptrn) {
+		fseek(ptrn, 0, SEEK_END);
+		u32 size = ftell(ptrn);
+		fseek(ptrn, 0, SEEK_SET);
+
+		if (size == 620 || size == 2160) {
+			// Create Buffer with the size and read the file.
+			u8 *patternData = new u8[size];
+			fread(patternData, 1, size, ptrn);
+
+			// Set Buffer data to save.
+			for(int i = 0; i < (int)size; i++){
+				SaveUtils::Write<u8>(this->patternPointer(), i, patternData[i]);
+			}
 	
-	// Close File, cause we don't need it.
-	fclose(ptrn);
-	// Free Buffer.
-	delete(patternData);
+			// Close File, cause we don't need it.
+			fclose(ptrn);
+			// Free Buffer.
+			delete(patternData);
+
+		} else {
+			Msg::DisplayWaitMsg(Lang::get("INVALID_PATTERN_FORMAT"));
+			fclose(ptrn);
+		}
+	}
 }
 
 std::shared_ptr<PatternImage> PatternNL::image(const int pattern) {
