@@ -48,8 +48,6 @@ static const u32 WWPaletteColors[] = {
 };
 
 static void Draw(std::shared_ptr<PatternImage> &pImg, C2D_Image &img, bool instructions) {
-	const std::string instructs = Lang::get("PALETTE_WW_INSTR");
-
 	Gui::clearTextBufs();
 	C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
 	C2D_TargetClear(Top, C2D_Color32(0, 0, 0, 0));
@@ -58,15 +56,15 @@ static void Draw(std::shared_ptr<PatternImage> &pImg, C2D_Image &img, bool instr
 	UI::DrawBase(true, true);
 	UI::DrawSprite(sprites_bottom_bar_idx, 0, 209);
 	Gui::DrawStringCentered(0, -2, 0.9, C2D_Color32(255, 255, 255, 255), Lang::get("PALETTE_EDITOR"), 395, 0, fnt);
-	if (img.subtex != nullptr) C2D_DrawImageAt(img, 125, 45, 0.5f, nullptr, 5, 5); // 160x160. 160/32 -> 5.
+	if (img.subtex != nullptr) C2D_DrawImageAt(img, 125, 40, 0.5f, nullptr, 5, 5); // 160x160. 160/32 -> 5.
 	Gui::DrawStringCentered(0, 218, 0.9f, C2D_Color32(255, 255, 255, 255), Lang::get("EXIT_OVERLAY"), 395, 0, fnt);
 
 	if (instructions) {
 		Gui::Draw_Rect(0, 0, 400, 240, C2D_Color32(0, 0, 0, 190));
-		int textBoxHeight = Gui::GetStringHeight(0.7f, instructs, fnt) + 5;
+		int textBoxHeight = Gui::GetStringHeight(0.7f, Lang::get("PALETTE_WW_INSTR"), fnt) + 5;
 
 		UI::DrawBox(textBoxHeight, 1);
-		Gui::DrawStringCentered(0, textBoxHeight + 10, 0.7, C2D_Color32(255, 255, 255, 255), instructs, 305, Gui::GetStringHeight(0.7f, instructs, fnt), fnt);
+		Gui::DrawStringCentered(0, textBoxHeight + 10, 0.7, C2D_Color32(255, 255, 255, 255), Lang::get("PALETTE_WW_INSTR"), 305, Gui::GetStringHeight(0.7f, Lang::get("PALETTE_WW_INSTR"), fnt), fnt);
 	}
 
 	UI::DrawBase(false, true);

@@ -81,7 +81,7 @@ bool Msg::promptMsg(std::string promptMsg) {
 	}
 }
 
-// Displays a Warn Message.
+/* Displays a Warn Message. */
 void Msg::DisplayWarnMsg(std::string Text) {
 	Gui::clearTextBufs();
 	C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
@@ -100,7 +100,7 @@ void Msg::DisplayWarnMsg(std::string Text) {
 	}
 }
 
-// Display a Message, which can be skipped with A.
+/* Display a Message, which can be skipped with A. */
 void Msg::DisplayWaitMsg(std::string waitMsg, ...) {
 	Gui::clearTextBufs();
 	C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
@@ -122,6 +122,7 @@ void Msg::DisplayWaitMsg(std::string waitMsg, ...) {
 	}
 }
 
+/* Helperbox for instructions. */
 void Msg::HelperBox(std::string Msg) {
 	Gui::clearTextBufs();
 	C3D_FrameBegin(C3D_FRAME_SYNCDRAW);

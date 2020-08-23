@@ -56,7 +56,7 @@ static void Draw(int select, int page, C2D_Image &Img) {
 
 	UI::DrawBase(true, true);
 	Gui::DrawStringCentered(0, -2, 0.9f, C2D_Color32(255, 255, 255, 255), Lang::get("PATTERN_TOOL_MENU"), 395, 0, fnt);
-	if (Img.subtex != nullptr) C2D_DrawImageAt(Img, 125, 45, 0.5f, nullptr, 5, 5); // 160x160. 160/32 -> 5.
+	if (Img.subtex != nullptr) C2D_DrawImageAt(Img, 125, 42, 0.5f, nullptr, 5, 5); // 160x160. 160/32 -> 5.
 	UI::DrawBase(false, true);
 
 	/* TODO: Buttons. */

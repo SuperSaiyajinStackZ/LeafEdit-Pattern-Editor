@@ -207,31 +207,34 @@ PatternEditor::~PatternEditor() {
 }
 
 void PatternEditor::Draw(void) const {
+	bool isAcww = false;
+	if (this->savetype == SaveType::WW) isAcww = true;
+
 	UI::DrawBase(true, true);
 	UI::DrawSprite(sprites_bottom_bar_idx, 0, 209);
 
 	if (this->isValid) {
 		Gui::DrawStringCentered(0, -2, 0.9f, C2D_Color32(255, 255, 255, 255), Lang::get("PATTERN_EDITOR"), 395, 0, fnt);
-		Gui::DrawStringCentered(0, 35, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("PATTERN_NAME") + StringUtils::UTF16toUTF8(this->pattern->name()), 395, 0, fnt);
-		Gui::DrawStringCentered(0, 55, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("PATTERN_CREATOR_NAME") + StringUtils::UTF16toUTF8(this->pattern->creatorname()), 395, 0, fnt);
-		Gui::DrawStringCentered(0, 75, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("PATTERN_CREATOR_ID") + std::to_string(this->pattern->creatorid()), 395, 0, fnt);
-		Gui::DrawStringCentered(0, 95, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("PATTERN_ORIGIN_TOWNNAME") + StringUtils::UTF16toUTF8(this->pattern->origtownname()), 395, 0, fnt);
-		Gui::DrawStringCentered(0, 115, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("PATTERN_ORIGIN_TOWNID") + std::to_string(this->pattern->origtownid()), 395, 0, fnt);
+		Gui::DrawStringCentered(0, isAcww ? 30 : 40, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("PATTERN_NAME") + StringUtils::UTF16toUTF8(this->pattern->name()), 395, 0, fnt);
+		Gui::DrawStringCentered(0, isAcww ? 50 : 60, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("PATTERN_CREATOR_NAME") + StringUtils::UTF16toUTF8(this->pattern->creatorname()), 395, 0, fnt);
+		Gui::DrawStringCentered(0, isAcww ? 70 : 80, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("PATTERN_CREATOR_ID") + std::to_string(this->pattern->creatorid()), 395, 0, fnt);
+		Gui::DrawStringCentered(0, isAcww ? 90 : 100, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("PATTERN_ORIGIN_TOWNNAME") + StringUtils::UTF16toUTF8(this->pattern->origtownname()), 395, 0, fnt);
+		Gui::DrawStringCentered(0, isAcww ? 110 : 120, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("PATTERN_ORIGIN_TOWNID") + std::to_string(this->pattern->origtownid()), 395, 0, fnt);
 
 		if (this->pattern->creatorGender()) {
-			Gui::DrawStringCentered(0, 135, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("PATTERN_CREATOR_GENDER") + Lang::get("FEMALE"), 395, 0, fnt);
+			Gui::DrawStringCentered(0, isAcww ? 130 : 140, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("PATTERN_CREATOR_GENDER") + Lang::get("FEMALE"), 395, 0, fnt);
 		} else {
-			Gui::DrawStringCentered(0, 135, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("PATTERN_CREATOR_GENDER") + Lang::get("MALE"), 395, 0, fnt);
+			Gui::DrawStringCentered(0, isAcww ? 130 : 140, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("PATTERN_CREATOR_GENDER") + Lang::get("MALE"), 395, 0, fnt);
 		}
 		
-		Gui::DrawStringCentered(0, 155, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("DESIGNTYPE") + std::to_string(this->pattern->designtype()), 395, 0, fnt);
+		Gui::DrawStringCentered(0, isAcww ? 150 : 160, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("DESIGNTYPE") + std::to_string(this->pattern->designtype()), 395, 0, fnt);
 
 		/* Display Savetype. */
-		Gui::DrawStringCentered(0, 175, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("GAME") + this->getSaveName(), 395, 0, fnt);
+		Gui::DrawStringCentered(0, isAcww ? 170 : 180, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("GAME") + this->getSaveName(), 395, 0, fnt);
 
 		/* Display Region, if on AC:WW. */
 		if (this->savetype == SaveType::WW) {
-			Gui::DrawStringCentered(0, 195, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("REGION") + this->getRegionName(), 395, 0, fnt);
+			Gui::DrawStringCentered(0, 190, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("REGION") + this->getRegionName(), 395, 0, fnt);
 		}
 
 		Gui::DrawStringCentered(0, 218, 0.9f, C2D_Color32(255, 255, 255, 255), Lang::get("SHOW_INSTRUCTION"), 395, 0, fnt);
