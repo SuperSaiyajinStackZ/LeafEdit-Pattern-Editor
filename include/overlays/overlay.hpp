@@ -39,6 +39,7 @@ enum class PatternMode {
 	Draw, // Always the default mode.
 	Clear,
 	Import,
+	Inject,
 	Export,
 	Palette,
 	Credits,
@@ -86,7 +87,7 @@ namespace Overlays {
 	void PaletteToolNL(std::shared_ptr<PatternImage> &pImg, C2D_Image &img);
 	void PaletteTool(std::shared_ptr<PatternImage> &pImg, C2D_Image &img, SaveType ST);
 
-	PatternMode ToolSelect(C2D_Image &Img);
+	PatternMode ToolSelect(C2D_Image &Img, bool isSave = false);
 	bool SaveSelect(SaveType &ST, WWRegion &region);
 
 	bool SelectSavePattern(std::shared_ptr<Sav> &savefile, std::shared_ptr<Pattern> &ptrn);

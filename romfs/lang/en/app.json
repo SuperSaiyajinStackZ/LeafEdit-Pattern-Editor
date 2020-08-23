@@ -30,6 +30,8 @@
 	"HELP_LEAFEDIT_CORE": "- For helping on LeafEdit-Core.",
 	"IMPORT_PATTERN": "Import Pattern",
 	"IMPORT_PROMPT": "Would you like to import a pattern?",
+	"INJECT_PATTERN": "Inject Pattern",
+	"INJECT_PROMPT": "Would you like to inject a Pattern?",
 	"INVALID_PATTERN": "Invalid Pattern!",
 	"LANGUAGE": "Language",
 	"LEAFEDIT_GRAPHICS": "- For LeafEdit's awesome Graphics.",

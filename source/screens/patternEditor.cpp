@@ -347,19 +347,22 @@ void PatternEditor::Draw(void) const {
 void PatternEditor::Logic(u32 hDown, u32 hHeld, touchPosition touch) {
 	/* Pattern Tool Menu. */
 	if (hDown & KEY_START) {
-		this->mode = Overlays::ToolSelect(this->patternImage);
+		this->mode = Overlays::ToolSelect(this->patternImage, this->saveLoaded);
 	}
 
+	/* Load a save Mode. */
 	if (this->mode == PatternMode::LoadSave) {
 		this->loadSave();
 		this->mode = PatternMode::Draw;
 	}
 
+	/* Load Pattern from save Mode. */
 	if (this->mode == PatternMode::LoadFromSave) {
 		this->PatternFromSaveLoad();
 		this->mode = PatternMode::Draw;
 	}
 
+	/* Unload a save Mode. */
 	if (this->mode == PatternMode::UnloadSave) {
 		this->unloadSave();
 		CoreUtils::generateEmptyPattern(this->savetype, this->saveregion, this->data, this->patternSize);
@@ -367,6 +370,25 @@ void PatternEditor::Logic(u32 hDown, u32 hHeld, touchPosition touch) {
 		this->mode = PatternMode::Draw;
 	}
 
+	/* Injection Mode. */
+	if (this->mode == PatternMode::Inject) {
+		
+		if (Msg::promptMsg("INJECT_PROMPT")) {
+			std::string file;
+			bool result = Overlays::SelectPattern(0, file);
+
+			if (result) {
+				this->pattern->injectPattern(file);
+				this->image = this->pattern->image(0);
+				this->patternImage = CoreUtils::patternImage(this->image, this->savetype);
+				C3D_FrameEnd(0);
+			}
+		}
+
+		this->mode = PatternMode::Draw;
+	}
+
+	/* Save your changes Mode. */
 	if (this->mode == PatternMode::DoSave) {
 		this->saveStuff();
 		CoreUtils::generateEmptyPattern(this->savetype, this->saveregion, this->data, this->patternSize);
@@ -385,6 +407,7 @@ void PatternEditor::Logic(u32 hDown, u32 hHeld, touchPosition touch) {
 		this->mode = PatternMode::Draw;
 	}
 
+	/* Export informations Mode. */
 	if (this->mode == PatternMode::ExportInformation) {
 		if (Msg::promptMsg("EXPORT_INF_PROMPT")) {
 			CoreUtils::dumpPatternInformation(this->savetype, this->saveregion, this->pattern);
@@ -423,6 +446,7 @@ void PatternEditor::Logic(u32 hDown, u32 hHeld, touchPosition touch) {
 		this->mode = PatternMode::Draw;
 	}
 
+	/* Set to default Mode. */
 	if (this->mode == PatternMode::SetDefault) {
 		if (Msg::promptMsg("SET_DEFAULT_PROMPT")) {
 			PatternInformations info = CoreUtils::getDefaultInformation(this->savetype, this->saveregion);

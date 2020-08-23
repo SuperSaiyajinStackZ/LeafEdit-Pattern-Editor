@@ -47,13 +47,33 @@ static const std::vector<Button> buttons = {
 	{15, 97, 130, 48, "UNLOAD_SAVE"}
 };
 
+static const std::vector<Button> buttonsSave = {
+	{15, 34, 130, 48, "INJECT_PATTERN"},
+	{15, 97, 130, 48, "CHANGE_PALETTE"},
+	{15, 159, 130, 48, "CREDITS"},
+	{175, 34, 130, 48, "EXPORT_PATTERN"},
+	{175, 97, 130, 48, "CLEAR_PATTERN"},
+	{175, 159, 130, 48, "EXIT"},
+
+	{15, 34, 130, 48, "LANGUAGE"},
+	{15, 97, 130, 48, "SET_DEFAULT_PATTERN"},
+	{15, 159, 130, 48, "SHARE"},
+	{175, 34, 130, 48, "SET_DEFAULT"},
+	{175, 97, 130, 48, "EXPORT_INFORMATION"},
+	{175, 159, 130, 48, "LOAD_SAVE"},
+
+	{15, 34, 130, 48, "LOAD_FROM_SAVE"},
+	{175, 34, 130, 48, "SAVE_SAVE"},
+	{15, 97, 130, 48, "UNLOAD_SAVE"}
+};
+
 /* If button Position pressed -> Do something. */
 bool touching(touchPosition touch, Button button) {
 	if (touch.px >= button.X && touch.px <= (button.X + button.XSize) && touch.py >= button.Y && touch.py <= (button.Y + button.YSize)) return true;
 	else return false;
 }
 
-static void Draw(int select, int page, C2D_Image &Img) {
+static void Draw(int select, int page, C2D_Image &Img, bool isSave) {
 	Gui::clearTextBufs();
 	C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
 	C2D_TargetClear(Top, C2D_Color32(0, 0, 0, 0));
@@ -67,19 +87,19 @@ static void Draw(int select, int page, C2D_Image &Img) {
 	/* TODO: Buttons. */
 	if (page == 0) {
 		for (int i = 0; i < 6; i++) {
-			UI::DrawButton(buttons[i], 0.5);
+			UI::DrawButton(isSave ? buttonsSave[i] : buttons[i], 0.5);
 		}
 
 		UI::DrawSprite(sprites_pointer_idx, buttons[select].X + 100, buttons[select].Y + 30);
 	} else if (page == 1) {
 		for (int i = 6; i < 12; i++) {
-			UI::DrawButton(buttons[i], 0.5);
+			UI::DrawButton(isSave ? buttonsSave[i] : buttons[i], 0.5);
 		}
 
 		UI::DrawSprite(sprites_pointer_idx, buttons[6 + select].X + 100, buttons[6 + select].Y + 30);
 	} else {
 		for (int i = 12; i < 15; i++) {
-			UI::DrawButton(buttons[i], 0.5);
+			UI::DrawButton(isSave ? buttonsSave[i] : buttons[i], 0.5);
 		}
 
 		UI::DrawSprite(sprites_pointer_idx, buttons[12 + select].X + 100, buttons[12 + select].Y + 30);
@@ -91,10 +111,10 @@ static void Draw(int select, int page, C2D_Image &Img) {
 	C3D_FrameEnd(0);
 }
 
-PatternMode Overlays::ToolSelect(C2D_Image &Img) {
+PatternMode Overlays::ToolSelect(C2D_Image &Img, bool isSave) {
 	int selection = 0, page = 0;
 	while(1) {
-		Draw(selection, page, Img);
+		Draw(selection, page, Img, isSave);
 		u32 hDown = hidKeysDown();
 		touchPosition touch;
 		hidScanInput();
@@ -117,7 +137,7 @@ PatternMode Overlays::ToolSelect(C2D_Image &Img) {
 		if (hDown & KEY_TOUCH) {
 			if (page == 0) {
 				if (touching(touch, buttons[0])) {
-					return PatternMode::Import;
+					return isSave ? PatternMode::Inject : PatternMode::Import;
 				} else if (touching(touch, buttons[1])) {
 					return PatternMode::Palette;
 				} else if (touching(touch, buttons[2])) {
@@ -198,7 +218,7 @@ PatternMode Overlays::ToolSelect(C2D_Image &Img) {
 			if (page == 0) {
 				switch(selection) {
 					case 0:
-						return PatternMode::Import;
+						return isSave ? PatternMode::Inject : PatternMode::Import;
 					case 1:
 						return PatternMode::Palette;
 					case 2:

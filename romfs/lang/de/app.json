@@ -30,6 +30,8 @@
 	"HELP_LEAFEDIT_CORE": "- Für das helfen am LeafEdit-Core.",
 	"IMPORT_PATTERN": "Muster importieren",
 	"IMPORT_PROMPT": "Möchtest du ein Muster importieren?",
+	"INJECT_PATTERN": "Muster injizieren",
+	"INJECT_PROMPT": "Möchtest du ein Muster injizieren?",
 	"INVALID_PATTERN": "Ungültiges Muster!",
 	"LANGUAGE": "Sprache",
 	"LEAFEDIT_GRAPHICS": "- Für LeafEdit's geniale Grafiken.",
