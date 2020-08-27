@@ -27,7 +27,7 @@
 #include "overlay.hpp"
 #include "stringUtils.hpp"
 
-static void Draw(std::shared_ptr<PatternImage> &pImg, C2D_Image &img, std::shared_ptr<Pattern> &ptrn, const std::string &msg) {
+static void Draw(std::unique_ptr<PatternImage> &pImg, C2D_Image &img, std::unique_ptr<Pattern> &ptrn, const std::string &msg) {
 	Gui::clearTextBufs();
 	C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
 	C2D_TargetClear(Top, C2D_Color32(0, 0, 0, 0));
@@ -58,7 +58,7 @@ static void Draw(std::shared_ptr<PatternImage> &pImg, C2D_Image &img, std::share
 	C3D_FrameEnd(0);
 }
 
-void Overlays::ShareOverlay(std::shared_ptr<PatternImage> &pImg, C2D_Image &img, std::shared_ptr<Pattern> &ptrn, const std::string &msg) {
+void Overlays::ShareOverlay(std::unique_ptr<PatternImage> &pImg, C2D_Image &img, std::unique_ptr<Pattern> &ptrn, const std::string &msg) {
 	bool doOut = false;
 
 	while(!doOut) {

@@ -45,17 +45,17 @@ public:
 	virtual ~SavWA() {}
 	void Finish(void) override;
 
-	bool PlayerExist(int player) override;
+	bool PlayerExist(int player) const override;
 	
 	/* Pattern. */
-	std::unique_ptr<Pattern> playerPattern(int player, int pattern) override;
-	int getPlayerAmount() override { return 10; }
-	std::unique_ptr<Pattern> ableSisterPattern(int pattern) override;
-	int getAbleSisterAmount() override { return 8; }
-	std::unique_ptr<Pattern> townflag() override;
+	std::unique_ptr<Pattern> playerPattern(int player, int pattern) const override;
+	int getPlayerAmount() const override { return 10; }
+	std::unique_ptr<Pattern> ableSisterPattern(int pattern) const override;
+	int getAbleSisterAmount() const override { return 8; }
+	std::unique_ptr<Pattern> townflag() const override;
 	
-	SaveType getType() override { return SaveType::WA; }
-	WWRegion getRegion() override { return WWRegion::UNKNOWN; }
+	SaveType getType() const override { return SaveType::WA; }
+	WWRegion getRegion() const override { return WWRegion::UNKNOWN; }
 	
 private:
 	u8 *savePointer() const {

@@ -29,14 +29,14 @@
 #include "SavWA.hpp"
 
 /* Return if player exist. */
-bool SavWA::PlayerExist(int player) {
+bool SavWA::PlayerExist(int player) const {
 	if (player > 3) return false;
 
 	return SaveUtils::Read<u16>(this->savePointer(), (0xA0 + (player * 0xA480)) + 0x55A6) != 0;
 }
 
 /* Get Player Pattern. */
-std::unique_ptr<Pattern> SavWA::playerPattern(int player, int pattern) {
+std::unique_ptr<Pattern> SavWA::playerPattern(int player, int pattern) const {
 	if (player > 3 || pattern > 9) return nullptr;
 
 	u32 playerOffset = 0xA0 + (player * 0xA480);
@@ -50,14 +50,14 @@ std::unique_ptr<Pattern> SavWA::playerPattern(int player, int pattern) {
 }
 
 /* Get Able Sister Pattern. */
-std::unique_ptr<Pattern> SavWA::ableSisterPattern(int pattern) {
+std::unique_ptr<Pattern> SavWA::ableSisterPattern(int pattern) const {
 	if (pattern > 7) return nullptr;
 	
 	return std::make_unique<PatternWA>(this->dataPointer, 0x62338 + pattern * 0x870);
 }
 
 /* Get TownFlag Pattern. */
-std::unique_ptr<Pattern> SavWA::townflag() {
+std::unique_ptr<Pattern> SavWA::townflag() const {
 	return std::make_unique<PatternWA>(this->dataPointer, 0x70F1C);
 }
 

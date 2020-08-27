@@ -153,13 +153,13 @@ PatternMode Overlays::ToolSelect(C2D_Image &Img, bool isSave) {
 				if (touching(touch, buttons[6])) {
 					return PatternMode::LangSet;
 				} else if (touching(touch, buttons[7])) {
-					return PatternMode::SetDefault;
-				} else if (touching(touch, buttons[8])) {
 					return PatternMode::DefaultPattern;
-				} else if (touching(touch, buttons[9])) {
-					return PatternMode::ExportInformation;
-				} else if (touching(touch, buttons[10])) {
+				} else if (touching(touch, buttons[8])) {
 					return PatternMode::Share;
+				} else if (touching(touch, buttons[9])) {
+					return PatternMode::SetDefault;
+				} else if (touching(touch, buttons[10])) {
+					return PatternMode::ExportInformation;
 				} else if (touching(touch, buttons[11])) {
 					return PatternMode::LoadSave;
 				}
@@ -237,13 +237,13 @@ PatternMode Overlays::ToolSelect(C2D_Image &Img, bool isSave) {
 					case 0:
 						return PatternMode::LangSet;
 					case 1:
-						return PatternMode::SetDefault;
-					case 2:
 						return PatternMode::DefaultPattern;
-					case 3:
-						return PatternMode::ExportInformation;
-					case 4:
+					case 2:
 						return PatternMode::Share;
+					case 3:
+						return PatternMode::SetDefault;
+					case 4:
+						return PatternMode::ExportInformation;
 					case 5:
 						return PatternMode::LoadSave;
 				}

@@ -29,14 +29,14 @@
 #include "SavNL.hpp"
 
 /* Return if player exist. */
-bool SavNL::PlayerExist(int player) {
+bool SavNL::PlayerExist(int player) const {
 	if (player > 3) return false;
 
 	return SaveUtils::Read<u16>(this->savePointer(), (0xA0 + (player * 0x9F10)) + 0x55A6) != 0;
 }
 
 /* Get Player Pattern. */
-std::unique_ptr<Pattern> SavNL::playerPattern(int player, int pattern) {
+std::unique_ptr<Pattern> SavNL::playerPattern(int player, int pattern) const {
 	if (player > 3 || pattern > 9) return nullptr;
 
 	u32 playerOffset = 0xA0 + (player * 0x9F10);
@@ -50,14 +50,14 @@ std::unique_ptr<Pattern> SavNL::playerPattern(int player, int pattern) {
 }
 
 /* Get Able Sister Pattern. */
-std::unique_ptr<Pattern> SavNL::ableSisterPattern(int pattern) {
+std::unique_ptr<Pattern> SavNL::ableSisterPattern(int pattern) const {
 	if (pattern > 7) return nullptr;
 	
 	return std::make_unique<PatternNL>(this->dataPointer, 0x5C934 + pattern * 0x870);
 }
 
 /* Get TownFlag Pattern. */
-std::unique_ptr<Pattern> SavNL::townflag() {
+std::unique_ptr<Pattern> SavNL::townflag() const {
 	return std::make_unique<PatternNL>(this->dataPointer, 0x6B4EC);
 }
 

@@ -78,20 +78,20 @@ namespace Overlays {
 	void SplashOverlay();
 	void CreditsOverlay();
 	void SelectLang();
-	void ShareOverlay(std::shared_ptr<PatternImage> &pImg, C2D_Image &img, std::shared_ptr<Pattern> &ptrn, const std::string &msg);
+	void ShareOverlay(std::unique_ptr<PatternImage> &pImg, C2D_Image &img, std::unique_ptr<Pattern> &ptrn, const std::string &msg);
 
 	bool SelectPattern(int sltMode, std::string &file);
 	bool SelectDestination(std::string txt, std::string &file);
 
-	void PaletteToolWW(std::shared_ptr<PatternImage> &pImg, C2D_Image &img);
-	void PaletteToolNL(std::shared_ptr<PatternImage> &pImg, C2D_Image &img);
-	void PaletteTool(std::shared_ptr<PatternImage> &pImg, C2D_Image &img, SaveType ST);
+	void PaletteToolWW(std::unique_ptr<PatternImage> &pImg, C2D_Image &img);
+	void PaletteToolNL(std::unique_ptr<PatternImage> &pImg, C2D_Image &img);
+	void PaletteTool(std::unique_ptr<PatternImage> &pImg, C2D_Image &img, SaveType ST);
 
 	PatternMode ToolSelect(C2D_Image &Img, bool isSave = false);
 	bool SaveSelect(SaveType &ST, WWRegion &region);
 
-	bool SelectSavePattern(std::shared_ptr<Sav> &savefile, std::shared_ptr<Pattern> &ptrn);
-	bool SelectSaveFile(std::shared_ptr<Sav> &savefile);
+	bool SelectSavePattern(std::unique_ptr<Sav> &savefile, std::unique_ptr<Pattern> &ptrn);
+	bool SelectSaveFile(std::unique_ptr<Sav> &savefile);
 }
 
 #endif

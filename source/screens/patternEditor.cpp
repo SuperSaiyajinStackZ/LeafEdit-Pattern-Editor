@@ -229,13 +229,13 @@ void PatternEditor::load(const std::string ptrnFile, bool fromFile) {
 	if (this->isValid && this->data != nullptr) {
 		switch(this->savetype) {
 			case SaveType::NL:
-				this->pattern = std::make_shared<PatternNL>(this->data, 0);
+				this->pattern = std::make_unique<PatternNL>(this->data, 0);
 				break;
 			case SaveType::WA:
-				this->pattern = std::make_shared<PatternWA>(this->data, 0);
+				this->pattern = std::make_unique<PatternWA>(this->data, 0);
 				break;
 			case SaveType::WW:
-				this->pattern = std::make_shared<PatternWW>(this->data, 0, this->saveregion);
+				this->pattern = std::make_unique<PatternWW>(this->data, 0, this->saveregion);
 				break;
 			case SaveType::UNUSED:
 				break;

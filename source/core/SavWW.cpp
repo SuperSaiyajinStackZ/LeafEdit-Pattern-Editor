@@ -31,7 +31,7 @@
 #include <cstring>
 
 /* Return if player exist. */
-bool SavWW::PlayerExist(int player) {
+bool SavWW::PlayerExist(int player) const {
 	if (player > 3) return false;
 
 	switch(this->region) {
@@ -52,7 +52,7 @@ bool SavWW::PlayerExist(int player) {
 }
 
 /* Get Player Pattern. */
-std::unique_ptr<Pattern> SavWW::playerPattern(int player, int pattern) {
+std::unique_ptr<Pattern> SavWW::playerPattern(int player, int pattern) const {
 	if (player > 3 || pattern > 9) return nullptr;
 
 	u32 offset = 0; /* Offset to read. */
@@ -83,7 +83,7 @@ std::unique_ptr<Pattern> SavWW::playerPattern(int player, int pattern) {
 }
 
 /* Get Able Sister Pattern. */
-std::unique_ptr<Pattern> SavWW::ableSisterPattern(int pattern) {
+std::unique_ptr<Pattern> SavWW::ableSisterPattern(int pattern) const {
 	if (pattern > 7) return nullptr;
 
 	switch(this->region) {
@@ -104,7 +104,7 @@ std::unique_ptr<Pattern> SavWW::ableSisterPattern(int pattern) {
 }
 
 /* Get TownFlag Pattern. */
-std::unique_ptr<Pattern> SavWW::townflag() {
+std::unique_ptr<Pattern> SavWW::townflag() const {
 	switch(this->region) {
 		case WWRegion::USA_REV0:
 		case WWRegion::USA_REV1:

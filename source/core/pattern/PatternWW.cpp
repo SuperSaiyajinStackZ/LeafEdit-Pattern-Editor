@@ -34,8 +34,8 @@
 #include <cstring>
 #include <unistd.h>
 
-// Pattern Name.
-std::u16string PatternWW::name() {
+/* Pattern Name. */
+std::u16string PatternWW::name() const {
 	switch(this->region) {
 		case WWRegion::USA_REV0:
 		case WWRegion::USA_REV1:
@@ -71,8 +71,8 @@ void PatternWW::name(std::u16string v) {
 	}
 }
 
-// Creator ID.
-u16 PatternWW::creatorid() {
+/* Creator ID. */
+u16 PatternWW::creatorid() const {
 	switch(this->region) {
 		case WWRegion::USA_REV0:
 		case WWRegion::USA_REV1:
@@ -108,8 +108,8 @@ void PatternWW::creatorid(u16 v) {
 	}
 }
 
-// Creator Name.
-std::u16string PatternWW::creatorname() {
+/* Creator Name. */
+std::u16string PatternWW::creatorname() const {
 	switch(this->region) {
 		case WWRegion::USA_REV0:
 		case WWRegion::USA_REV1:
@@ -145,8 +145,8 @@ void PatternWW::creatorname(std::u16string v) {
 	}
 }
 
-// Creator Gender.
-u8 PatternWW::creatorGender() {
+/* Creator Gender. */
+u8 PatternWW::creatorGender() const {
 	switch(this->region) {
 		case WWRegion::USA_REV0:
 		case WWRegion::USA_REV1:
@@ -182,8 +182,8 @@ void PatternWW::creatorGender(u8 v) {
 	}
 }
 
-// Town ID.
-u16 PatternWW::origtownid() {
+/* Town ID. */
+u16 PatternWW::origtownid() const {
 	switch(this->region) {
 		case WWRegion::USA_REV0:
 		case WWRegion::USA_REV1:
@@ -213,8 +213,8 @@ void PatternWW::origtownid(u16 v) {
 	}
 }
 
-// Town Name.
-std::u16string PatternWW::origtownname() {
+/* Town Name. */
+std::u16string PatternWW::origtownname() const {
 	switch(this->region) {
 		case WWRegion::USA_REV0:
 		case WWRegion::USA_REV1:
@@ -250,8 +250,8 @@ void PatternWW::origtownname(std::u16string v) {
 	}
 }
 
-// Design Type.
-u8 PatternWW::designtype() {
+/* Design Type. */
+u8 PatternWW::designtype() const {
 	switch(this->region) {
 		case WWRegion::USA_REV0:
 		case WWRegion::USA_REV1:
@@ -287,12 +287,12 @@ void PatternWW::designtype(u8 v) {
 	}
 }
 
-// Needs checking. Dump a Pattern to file.
+/* Dump a Pattern to file. */
 void PatternWW::dumpPattern(const std::string fileName) {
-	// If region == UNKNOWN -> Do NOTHING.
+	/* If region == UNKNOWN -> Do NOTHING. */
 	if (this->region != WWRegion::UNKNOWN) {
 		u32 size = 0;
-		// Get size.
+		/* Get size. */
 		switch(this->region) {
 			case WWRegion::USA_REV0:
 			case WWRegion::USA_REV1:
@@ -310,29 +310,29 @@ void PatternWW::dumpPattern(const std::string fileName) {
 				break;
 		}
 	
-		// Open File.
+		/* Open File. */
 		FILE* ptrn = fopen(fileName.c_str(), "wb");
 
-		// Write to file and close.
+		/* Write to file and close. */
 		fwrite(this->patternPointer(), 1, size, ptrn);
 		fclose(ptrn);
 	}
 }
 
-// Needs checking. Inject a Pattern from a file.
+/* Inject a Pattern from a file. */
 void PatternWW::injectPattern(const std::string fileName) {
-	// If region == UNKNOWN -> Do NOTHING.
+	/* If region == UNKNOWN -> Do NOTHING. */
 	if (this->region != WWRegion::UNKNOWN) {
 		if ((access(fileName.c_str(), F_OK) != 0)) return; // File not found. Do NOTHING.
 		bool allowInject = false;
-		// Open file and get size.
+		/* Open file and get size. */
 		FILE* ptrn = fopen(fileName.c_str(), "rb");
 		if (ptrn) {
 			fseek(ptrn, 0, SEEK_END);
 			u32 size = ftell(ptrn);
 			fseek(ptrn, 0, SEEK_SET);
 
-			// Get size.
+			/* Get size. */
 			switch(this->region) {
 				case WWRegion::USA_REV0:
 				case WWRegion::USA_REV1:
@@ -354,25 +354,25 @@ void PatternWW::injectPattern(const std::string fileName) {
 				u8 *patternData = new u8[size];
 				fread(patternData, 1, size, ptrn);
 
-				// Set Buffer data to save.
+				/* Set Buffer data to save. */
 				for(int i = 0; i < (int)size; i++) {
 					SaveUtils::Write<u8>(this->patternPointer(), i, patternData[i]);
 				}
 
-				// Free Buffer.
+				/* Free Buffer. */
 				delete(patternData);
 
 			} else {
 				Msg::DisplayWaitMsg(Lang::get("INVALID_PATTERN_FORMAT"));
 			}
 
-			// Close File, cause we don't need it.
+			/* Close File, cause we don't need it. */
 			fclose(ptrn);
 		}
 	}
 }
 
-std::shared_ptr<PatternImage> PatternWW::image(const int pattern) {
+std::unique_ptr<PatternImage> PatternWW::image(const int pattern) const {
 	u32 patternOffset = this->Offset + 0;
 	u32 pltOffset = this->Offset + 0;
 
@@ -393,9 +393,9 @@ std::shared_ptr<PatternImage> PatternWW::image(const int pattern) {
 			pltOffset = this->Offset + 0x232;
 			break;
 		case WWRegion::UNKNOWN:
-			return nullptr; // What else should be returned? :P
+			return nullptr; // What else should be returned?
 			break;
 	}
 
-	return std::make_shared<PatternImageWW>(this->data, patternOffset, pltOffset);
+	return std::make_unique<PatternImageWW>(this->data, patternOffset, pltOffset);
 }
