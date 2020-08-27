@@ -25,6 +25,7 @@
 */
 
 #include "coreUtils.hpp"
+#include "kbd.hpp"
 #include "overlay.hpp"
 #include "storage.hpp"
 #include "stringUtils.hpp"
@@ -214,6 +215,16 @@ static void injectToGame(std::unique_ptr<Pattern> &ptrn, std::unique_ptr<Pattern
 	}
 }
 
+static void handleResize(std::unique_ptr<Storage> &storage) {
+	int boxAmount = storage->boxes();
+
+	int temp = KBD::setInt(10, Lang::get("ENTER_BOX_AMOUNT"));
+	if (temp > 0 && temp < 11) {
+		boxAmount = temp;
+	}
+
+	storage->resize(boxAmount);
+}
 
 void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_ptr<Sav> &savefile) {
 	if (!storage) return;
@@ -653,7 +664,7 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 
 					} else {
 						if (topSelect) {
-							storageInject(storage, grabInf.second ? bankPattern[grabInf.first] : savePattern[grabInf.first], selection);
+							storageInject(storage, grabInf.second ? bankPattern[grabInf.first] : savePattern[grabInf.first], (box * 10) + selection);
 							refreshBank = true;
 						} else {
 							injectToGame(grabInf.second ? bankPattern[grabInf.first] : savePattern[grabInf.first], savePattern[selection]);
@@ -674,6 +685,26 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 							if (selection < maxSavePTN - 1) selection++;
 						}
 					}
+				}
+
+				if (hDown & KEY_R) {
+					if (box < storage->boxes() - 1) {
+						box++;
+						refreshBank = true;
+					}
+				}
+
+				if (hDown & KEY_L) {
+					if (box > 0) {
+						box--;
+						refreshBank = true;
+					}
+				}
+
+				if (hDown & KEY_SELECT) {
+					handleResize(storage);
+					box = 0;
+					refreshBank = true;
 				}
 
 				if (hDown & KEY_LEFT) {

@@ -42,3 +42,22 @@ std::string KBD::kbdString(uint maxLength, std::string Text) {
 
 	return "";
 }
+
+int KBD::setInt(int maxValue, std::string Text) {
+	Gui::clearTextBufs();
+	C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+	C2D_TargetClear(Top, C2D_Color32(0, 0, 0, 0));
+	UI::DrawBase(true, true);
+	Gui::DrawStringCentered(0, -2, 0.9f, C2D_Color32(255, 255, 255, 255), Text, 395, 0, fnt);
+	C3D_FrameEnd(0);
+
+	SwkbdState state;
+	swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, 3);
+	swkbdSetFeatures(&state, SWKBD_FIXED_WIDTH);
+	swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
+	char input[4]   = {0};
+	SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
+	input[3] = '\0';
+
+	return (ret == SWKBD_BUTTON_CONFIRM ? (int)std::min(std::stoi(input), maxValue) : -1);
+}

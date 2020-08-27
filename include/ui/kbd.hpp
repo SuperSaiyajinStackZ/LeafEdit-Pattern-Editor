@@ -32,6 +32,7 @@
 
 namespace KBD {
 	std::string kbdString(uint maxLength, std::string Text);
+	int setInt(int maxValue, std::string Text);
 }
 
 #endif
