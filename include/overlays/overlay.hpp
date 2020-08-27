@@ -31,6 +31,7 @@
 #include "Pattern.hpp"
 #include "PatternImage.hpp"
 #include "Sav.hpp"
+#include "storage.hpp"
 #include <string>
 #include <vector>
 
@@ -53,6 +54,7 @@ enum class PatternMode {
 	LoadFromSave,
 	DoSave,
 	UnloadSave,
+	StorageHandling,
 
 	/* These are TODO's. */
 	DrawToolSelect,
@@ -92,6 +94,8 @@ namespace Overlays {
 
 	bool SelectSavePattern(std::unique_ptr<Sav> &savefile, std::unique_ptr<Pattern> &ptrn);
 	bool SelectSaveFile(std::unique_ptr<Sav> &savefile);
+
+	void StorageHandling(std::unique_ptr<Storage> &storage, std::unique_ptr<Sav> &savefile);
 }
 
 #endif

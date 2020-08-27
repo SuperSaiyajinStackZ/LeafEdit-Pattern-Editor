@@ -31,7 +31,7 @@
 #include <unistd.h>
 
 /* Generate an empty pattern using the empty pattern files of the romfs. */
-void CoreUtils::generateEmptyPattern(SaveType ST, WWRegion region, std::shared_ptr<u8[]> &data, u32 &size) {
+void CoreUtils::generateEmptyPattern(SaveType ST, WWRegion region, std::unique_ptr<u8[]> &data, u32 &size) {
 	data = nullptr; // Reset here.
 	std::string path;
 
@@ -68,7 +68,7 @@ void CoreUtils::generateEmptyPattern(SaveType ST, WWRegion region, std::shared_p
 	fseek(file, 0, SEEK_END);
 	size = ftell(file);
 	fseek(file, 0, SEEK_SET);
-	data = std::shared_ptr<u8[]>(new u8[size]);
+	data = std::unique_ptr<u8[]>(new u8[size]);
 	fread(data.get(), 1, size, file);
 	fclose(file);
 }

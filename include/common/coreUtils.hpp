@@ -43,7 +43,7 @@ struct PatternInformations {
 };
 
 namespace CoreUtils {
-	void generateEmptyPattern(SaveType ST, WWRegion region, std::shared_ptr<u8[]> &data, u32 &size);
+	void generateEmptyPattern(SaveType ST, WWRegion region, std::unique_ptr<u8[]> &data, u32 &size);
 	C2D_Image savePatternImage(std::unique_ptr<PatternImage> image, SaveType ST = SaveType::UNUSED);
 	C2D_Image patternImage(std::unique_ptr<PatternImage> &image, SaveType ST = SaveType::UNUSED);
 	std::string getDefaultFile(SaveType ST, WWRegion region);

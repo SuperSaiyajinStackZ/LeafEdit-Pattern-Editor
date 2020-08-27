@@ -38,11 +38,11 @@ class PatternImageWW;
 class PatternWW : public Pattern {
 protected:
 	u32 Offset;
-	std::shared_ptr<u8[]> data;
+	u8 *data;
 	WWRegion region;
 public:
 	virtual ~PatternWW() {}
-	PatternWW(std::shared_ptr<u8[]> patternData, u32 offset, WWRegion Region) : Pattern(patternData, offset), Offset(offset), data(patternData), region(Region) { }
+	PatternWW(u8 *patternData, u32 offset, WWRegion Region) : Pattern(patternData, offset), Offset(offset), data(patternData), region(Region) { }
 
 	std::u16string name() const override;
 	void name(std::u16string v) override;
@@ -59,15 +59,21 @@ public:
 	u8 designtype() const override;
 	void designtype(u8 v) override;
 
+	u32 getSize() const override;
+
+	WWRegion getRegion() const override { return this->region; };
+	SaveType getType() const override { return SaveType::WW; };
+	
 	/* Pattern Misc. */
 	void dumpPattern(const std::string fileName) override;
+	void injectData(u8 *buffer, u32 size) override;
 	void injectPattern(const std::string fileName) override;
 
 	/* Pattern Image. */
 	std::unique_ptr<PatternImage> image(const int pattern) const override;
 private:
 	u8* patternPointer() const {
-		return data.get() + Offset;
+		return data + Offset;
 	}
 };
 

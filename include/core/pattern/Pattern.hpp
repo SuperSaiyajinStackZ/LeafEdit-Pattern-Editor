@@ -35,11 +35,11 @@
 class PatternImage;
 class Pattern {
 protected:
-	std::shared_ptr<u8[]> data;
+	u8 *data;
 	u32 Offset;
 public:
 	virtual ~Pattern() {}
-	Pattern(std::shared_ptr<u8[]> dt, u32 offset) : data(dt), Offset(offset) {}
+	Pattern(u8 *dt, u32 offset) : data(dt), Offset(offset) {}
 	Pattern(const Pattern& pattern) = delete;
 	Pattern& operator=(const Pattern& pattern) = delete;
 
@@ -60,7 +60,17 @@ public:
 
 	/* Pattern Misc. */
 	virtual void dumpPattern(const std::string fileName) = 0;
+	virtual void injectData(u8 *buffer, u32 size) = 0;
 	virtual void injectPattern(const std::string fileName) = 0;
+
+	virtual u32 getSize() const = 0;
+
+	const u8 *returnData() const {
+		return this->data + this->Offset;
+	}
+
+	virtual WWRegion getRegion() const = 0;
+	virtual SaveType getType() const = 0;
 
 	/* Pattern Image. */
 	virtual std::unique_ptr<PatternImage> image(const int pattern) const = 0;

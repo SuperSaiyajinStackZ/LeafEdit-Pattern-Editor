@@ -76,7 +76,7 @@ std::unique_ptr<Pattern> SavWW::playerPattern(int player, int pattern) const {
 
 	/* Check, if Player exist. */
 	if (this->PlayerExist(player)) {
-		return std::make_unique<PatternWW>(this->dataPointer, offset, this->region);
+		return std::make_unique<PatternWW>(this->dataPointer.get(), offset, this->region);
 	}
 
 	return nullptr;
@@ -90,12 +90,12 @@ std::unique_ptr<Pattern> SavWW::ableSisterPattern(int pattern) const {
 		case WWRegion::USA_REV0:
 		case WWRegion::USA_REV1:
 		case WWRegion::EUR_REV1:
-			return std::make_unique<PatternWW>(this->dataPointer, 0xFAFC + pattern * 0x228, this->region);
+			return std::make_unique<PatternWW>(this->dataPointer.get(), 0xFAFC + pattern * 0x228, this->region);
 		case WWRegion::JPN_REV0:
 		case WWRegion::JPN_REV1:
-			return std::make_unique<PatternWW>(this->dataPointer, 0xDAF8 + pattern * 0x220, this->region);
+			return std::make_unique<PatternWW>(this->dataPointer.get(), 0xDAF8 + pattern * 0x220, this->region);
 		case WWRegion::KOR_REV1:
-			return std::make_unique<PatternWW>(this->dataPointer, 0x10AD0 + pattern * 0x234, this->region);
+			return std::make_unique<PatternWW>(this->dataPointer.get(), 0x10AD0 + pattern * 0x234, this->region);
 		case WWRegion::UNKNOWN:
 			return nullptr;
 	}
@@ -109,12 +109,12 @@ std::unique_ptr<Pattern> SavWW::townflag() const {
 		case WWRegion::USA_REV0:
 		case WWRegion::USA_REV1:
 		case WWRegion::EUR_REV1:
-			return std::make_unique<PatternWW>(this->dataPointer, 0x15930, this->region);
+			return std::make_unique<PatternWW>(this->dataPointer.get(), 0x15930, this->region);
 		case WWRegion::JPN_REV0:
 		case WWRegion::JPN_REV1:
-			return std::make_unique<PatternWW>(this->dataPointer, 0x11C5C, this->region);
+			return std::make_unique<PatternWW>(this->dataPointer.get(), 0x11C5C, this->region);
 		case WWRegion::KOR_REV1:
-			return std::make_unique<PatternWW>(this->dataPointer, 0x16D0C, this->region);
+			return std::make_unique<PatternWW>(this->dataPointer.get(), 0x16D0C, this->region);
 		case WWRegion::UNKNOWN:
 			return nullptr;
 	}

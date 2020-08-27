@@ -319,6 +319,32 @@ void PatternWW::dumpPattern(const std::string fileName) {
 	}
 }
 
+/* Inject a Pattern from buffer. */
+void PatternWW::injectData(u8 *buffer, u32 size) {
+	/* Get size. */
+	switch(this->region) {
+		case WWRegion::USA_REV0:
+		case WWRegion::USA_REV1:
+		case WWRegion::EUR_REV1:
+			if (size != 0x228) return;
+			break;
+		case WWRegion::JPN_REV0:
+		case WWRegion::JPN_REV1:
+			if (size != 0x220) return;
+			break;
+		case WWRegion::KOR_REV1:
+			if (size != 0x234) return;
+			break;
+		case WWRegion::UNKNOWN:
+			return;
+	}
+
+	/* Set Buffer data to save. */
+	for(int i = 0; i < (int)size; i++) {
+		SaveUtils::Write<u8>(this->patternPointer(), i, buffer[i]);
+	}
+}
+
 /* Inject a Pattern from a file. */
 void PatternWW::injectPattern(const std::string fileName) {
 	/* If region == UNKNOWN -> Do NOTHING. */
@@ -370,6 +396,27 @@ void PatternWW::injectPattern(const std::string fileName) {
 			fclose(ptrn);
 		}
 	}
+}
+
+u32 PatternWW::getSize() const {
+	if (this->region != WWRegion::UNKNOWN) {
+		/* Get size. */
+		switch(this->region) {
+			case WWRegion::USA_REV0:
+			case WWRegion::USA_REV1:
+			case WWRegion::EUR_REV1:
+				return 0x228;
+			case WWRegion::JPN_REV0:
+			case WWRegion::JPN_REV1:
+				return 0x220;
+			case WWRegion::KOR_REV1:
+				return 0x234;
+			case WWRegion::UNKNOWN:
+				return 0;
+		}
+	}
+
+	return 0;
 }
 
 std::unique_ptr<PatternImage> PatternWW::image(const int pattern) const {

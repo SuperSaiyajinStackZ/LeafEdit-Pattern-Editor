@@ -177,18 +177,19 @@ const std::string PatternEditor::getRegionName() const {
 
 /* Automatically detect Pattern type here. */
 void PatternEditor::getPattern(const std::string ptrnFile) {
+	this->isValid = false;
+	this->data = nullptr;
 	// Reset to invalid.
 	this->saveregion = WWRegion::UNKNOWN;
 	this->savetype = SaveType::UNUSED;
 	this->patternSize = 0;
-	this->isValid = false;
 
 	FILE *file = fopen(ptrnFile.c_str(), "rb");
 	if (file) {
 		fseek(file, 0, SEEK_END);
 		this->patternSize = ftell(file);
 		fseek(file, 0, SEEK_SET);
-		this->data = std::shared_ptr<u8[]>(new u8[this->patternSize]);
+		this->data = std::unique_ptr<u8[]>(new u8[this->patternSize]);
 		fread(this->data.get(), 1, this->patternSize, file);
 		fclose(file);
 
@@ -226,16 +227,16 @@ void PatternEditor::getPattern(const std::string ptrnFile) {
 void PatternEditor::load(const std::string ptrnFile, bool fromFile) {
 	if (fromFile) this->getPattern(ptrnFile);
 
-	if (this->isValid && this->data != nullptr) {
+	if (this->isValid && this->data) {
 		switch(this->savetype) {
 			case SaveType::NL:
-				this->pattern = std::make_unique<PatternNL>(this->data, 0);
+				this->pattern = std::make_unique<PatternNL>(this->data.get(), 0);
 				break;
 			case SaveType::WA:
-				this->pattern = std::make_unique<PatternWA>(this->data, 0);
+				this->pattern = std::make_unique<PatternWA>(this->data.get(), 0);
 				break;
 			case SaveType::WW:
-				this->pattern = std::make_unique<PatternWW>(this->data, 0, this->saveregion);
+				this->pattern = std::make_unique<PatternWW>(this->data.get(), 0, this->saveregion);
 				break;
 			case SaveType::UNUSED:
 				break;
@@ -250,6 +251,8 @@ void PatternEditor::load(const std::string ptrnFile, bool fromFile) {
 /* Load Empty Pattern. */
 PatternEditor::PatternEditor() {
 	this->load(Settings::getDefaultPath(), true);
+	this->storage = std::make_unique<Storage>("sdmc:/3ds/LeafEdit/Pattern-Editor/storage/Storage1.storage");
+	
 	PatternInformations info = CoreUtils::getDefaultInformation(this->savetype, this->saveregion);
 
 	/* Strings. */
@@ -266,8 +269,10 @@ PatternEditor::PatternEditor() {
 /* Destroy C2D_Image, if exist. */
 PatternEditor::~PatternEditor() {
 	if (this->isValid) {
-		if (this->patternImage.subtex != nullptr) C2DUtils::C2D_ImageDelete(this->patternImage);
+		if (this->patternImage.tex) C2DUtils::C2D_ImageDelete(this->patternImage);
 	}
+
+	if (this->data) this->data = nullptr;
 }
 
 void PatternEditor::Draw(void) const {
@@ -311,7 +316,7 @@ void PatternEditor::Draw(void) const {
 		if (fadealpha > 0) Gui::Draw_Rect(0, 0, 400, 240, C2D_Color32(fadecolor, fadecolor, fadecolor, fadealpha));
 
 		UI::DrawBase(false, false);
-		if (this->patternImage.subtex) C2D_DrawImageAt(this->patternImage, 8, 8, 0.5f, nullptr, 7, 7); // 224x224. 224/32 -> 7.
+		if (this->patternImage.tex) C2D_DrawImageAt(this->patternImage, 8, 8, 0.5f, nullptr, 7, 7); // 224x224. 224/32 -> 7.
 
 		/* Drawing Palette. */
 		if (this->savetype == SaveType::WW) {
@@ -387,6 +392,17 @@ void PatternEditor::Logic(u32 hDown, u32 hHeld, touchPosition touch) {
 
 		this->mode = PatternMode::Draw;
 	}
+
+	/* Storage Handling. */
+	if (this->mode == PatternMode::StorageHandling) {
+		Overlays::StorageHandling(this->storage, this->savefile);
+		if (Msg::promptMsg("SAVE_STORAGE")) {
+			storage->save();
+		}
+
+		this->mode = PatternMode::Draw;
+	}
+	
 
 	/* Save your changes Mode. */
 	if (this->mode == PatternMode::DoSave) {

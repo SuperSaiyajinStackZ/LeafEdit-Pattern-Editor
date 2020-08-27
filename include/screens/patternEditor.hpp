@@ -35,6 +35,7 @@
 #include "PatternWW.hpp"
 #include "PatternImage.hpp"
 #include "Sav.hpp"
+#include "storage.hpp"
 #include "structs.hpp"
 
 #include <vector>
@@ -70,10 +71,11 @@ private:
 	bool patternFromSave = false;
 
 	/* Data. */
-	std::shared_ptr<u8[]> data;
+	std::unique_ptr<u8[]> data = nullptr;
 	u32 patternSize = 0;
 	std::unique_ptr<Pattern> pattern;
 	std::unique_ptr<PatternImage> image;
+	std::unique_ptr<Storage> storage;
 	C2D_Image patternImage;
 
 	/* Palette Stuff. */

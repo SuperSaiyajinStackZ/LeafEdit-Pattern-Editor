@@ -108,6 +108,16 @@ void PatternNL::dumpPattern(const std::string fileName) {
 	fclose(ptrn);
 }
 
+/* Inject a Pattern from buffer. */
+void PatternNL::injectData(u8 *buffer, u32 size) {
+	if (size != 620 && size != 2160) return;
+	
+	/* Set Buffer data to save. */
+	for(int i = 0; i < (int)size; i++) {
+		SaveUtils::Write<u8>(this->patternPointer(), i, buffer[i]);
+	}
+}
+
 /* Inject a Pattern from file. */
 void PatternNL::injectPattern(const std::string fileName) {
 	if ((access(fileName.c_str(), F_OK) != 0))	return; // File not found. Do NOTHING.

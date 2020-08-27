@@ -24,43 +24,44 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef _LEAFEDIT_CORE_PATTERN_IMAGE_NL_HPP
-#define _LEAFEDIT_CORE_PATTERN_IMAGE_NL_HPP
+#include "checksum.hpp"
+#include "saveUtils.hpp"
+#include "SavWA.hpp"
 
-#include "PatternImage.hpp"
+/* Return if player exist. */
+bool SavWA::PlayerExist(int player) const {
+	if (player > 3) return false;
 
-class PatternImageNL : public PatternImage {
-protected:
-	u8 *data;
-	u32 ptrnOffset;
-	u32 pltOffset;
-public:
-	virtual ~PatternImageNL() {}
-	PatternImageNL(u8 *dt, u32 patternOffset, u32 paletteOffset) : PatternImage(), data(dt), ptrnOffset(patternOffset), pltOffset(paletteOffset) {
-		this->valid = true; // TODO: Handle that differently?
+	return SaveUtils::Read<u16>(this->savePointer(), (0xA0 + (player * 0xA480)) + 0x55A6) != 0;
+}
+
+/* Get Player Pattern. */
+std::unique_ptr<Pattern> SavWA::playerPattern(int player, int pattern) const {
+	if (player > 3 || pattern > 9) return nullptr;
+
+	u32 playerOffset = 0xA0 + (player * 0xA480);
+
+	/* Check, if Player exist. */
+	if (this->PlayerExist(player)) {
+		return std::make_unique<PatternWA>(this->dataPointer.get(), playerOffset + 0x2C + pattern * 0x870);
 	}
 
-	bool isValid() override { return this->valid; }
-	u8 getPaletteColor(u8 plt) override;
-	int getWWPaletteIndex() override;
-	void setPaletteColor(int index, u8 color) override;
-	pixel getPixel(int pixel) override;
-	void setPixel(int index, int color) override;
-	void setPixel(int x, int y, int color) override;
-private:
-	bool valid = false;
+	return nullptr;
+}
+
+/* Get Able Sister Pattern. */
+std::unique_ptr<Pattern> SavWA::ableSisterPattern(int pattern) const {
+	if (pattern > 7) return nullptr;
 	
-	u8* patternData() const {
-		return this->data + ptrnOffset;
-	}
+	return std::make_unique<PatternWA>(this->dataPointer.get(), 0x62338 + pattern * 0x870);
+}
 
-	pixel *pixelPointer() const {
-		return (pixel *)(data + ptrnOffset);
-	}
+/* Get TownFlag Pattern. */
+std::unique_ptr<Pattern> SavWA::townflag() const {
+	return std::make_unique<PatternWA>(this->dataPointer.get(), 0x70F1C);
+}
 
-	u8* paletteData() const {
-		return this->data + pltOffset;
-	}
-};
-
-#endif
+// Last call before writing to file. Update Checksum.
+void SavWA::Finish(void) {
+	Checksum::FixCRC32s(this->savePointer());
+}

@@ -30,22 +30,22 @@
 #include <3ds.h>
 
 // Used to get the SaveType for the Pattern.
-enum class SaveType {
+enum class SaveType : u8 {
+	UNUSED,
 	WW,
 	NL,
-	WA,
-	UNUSED
+	WA
 };
 
 // Used to get the Region from AC:WW for a Pattern.
-enum class WWRegion {
+enum class WWRegion : u8 {
+	UNKNOWN,
 	JPN_REV0,
 	JPN_REV1,
 	USA_REV0,
 	USA_REV1,
 	EUR_REV1,
-	KOR_REV1,
-	UNKNOWN
+	KOR_REV1
 };
 
 #endif

@@ -24,44 +24,56 @@
 *         reasonable ways as different from the original version.
 */
 
-#include "checksum.hpp"
-#include "saveUtils.hpp"
-#include "SavWA.hpp"
+#ifndef _LEAFEDIT_PATTERN_EDITOR_STORAGE_HPP
+#define _LEAFEDIT_PATTERN_EDITOR_STORAGE_HPP
 
-/* Return if player exist. */
-bool SavWA::PlayerExist(int player) const {
-	if (player > 3) return false;
+#include "Pattern.hpp"
+#include "PatternNL.hpp"
+#include "PatternWA.hpp"
+#include "PatternWW.hpp"
+#include "Sav.hpp"
 
-	return SaveUtils::Read<u16>(this->savePointer(), (0xA0 + (player * 0xA480)) + 0x55A6) != 0;
-}
+class Pattern;
+class PatternWW;
+class PatternNL;
+class PatternWA;
+class Storage {
+public:
+	Storage(const std::string& fileName);
+	~Storage() { if (data)  data = nullptr; }
+	std::unique_ptr<Pattern> pattern(int slot) const;
+	void pattern(const Pattern &ptrn, int slot);
+	void load();
+	bool save() const;
+	int boxes() const;
+	int slots() const;
+	void resize(size_t boxes);
+	bool used(u32 slot) const;
+	u32 getSize(u32 slot) const;
+private:
+	static constexpr int STORAGE_VERSION = 1;
+	static std::string MAGIC;
 
-/* Get Player Pattern. */
-std::unique_ptr<Pattern> SavWA::playerPattern(int player, int pattern) const {
-	if (player > 3 || pattern > 9) return nullptr;
+	void createStorage();
 
-	u32 playerOffset = 0xA0 + (player * 0xA480);
+	struct StorageHeader {
+		const char MAGIC[4];
+		int version;
+		int slots;
+		int boxes;
+	};
 
-	/* Check, if Player exist. */
-	if (this->PlayerExist(player)) {
-		return std::make_unique<PatternWA>(this->dataPointer, playerOffset + 0x2C + pattern * 0x870);
-	}
+	struct PatternEntry {
+		bool used;
+		WWRegion region;
+		SaveType ST;
+		u32 patternSize;
+		u8 data[0x870];
+	};
 
-	return nullptr;
-}
+	std::unique_ptr<u8[]> data = nullptr;
+	size_t size;
+	std::string storageFileName;
+};
 
-/* Get Able Sister Pattern. */
-std::unique_ptr<Pattern> SavWA::ableSisterPattern(int pattern) const {
-	if (pattern > 7) return nullptr;
-	
-	return std::make_unique<PatternWA>(this->dataPointer, 0x62338 + pattern * 0x870);
-}
-
-/* Get TownFlag Pattern. */
-std::unique_ptr<Pattern> SavWA::townflag() const {
-	return std::make_unique<PatternWA>(this->dataPointer, 0x70F1C);
-}
-
-// Last call before writing to file. Update Checksum.
-void SavWA::Finish(void) {
-	Checksum::FixCRC32s(this->savePointer());
-}
+#endif

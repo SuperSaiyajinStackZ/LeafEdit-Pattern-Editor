@@ -191,3 +191,13 @@ void UI::DrawPaletteGrid(float xPos, float yPos, float Width, float Height, u32 
 	C2D_DrawRectSolid(xPos + Width - w, yPos + w, 0.5, w, Height - 2 * w, gridColor); // right.
 	C2D_DrawRectSolid(xPos, yPos + Height - w, 0.5, Width, w, gridColor); // bottom.
 }
+
+void UI::bankSelect(int x, int y) {
+	C2D_ImageTint tint;
+	C2D_SetImageTint(&tint, C2D_TopLeft, C2D_Color32(200, 0, 0, 255), 0.5);
+	C2D_SetImageTint(&tint, C2D_TopRight, C2D_Color32(200, 0, 0, 255), 0.5);
+	C2D_SetImageTint(&tint, C2D_BotLeft, C2D_Color32(200, 0, 0, 255), 0.5);
+	C2D_SetImageTint(&tint, C2D_BotRight, C2D_Color32(200, 0, 0, 255), 0.5);	
+
+	C2D_DrawImageAt(C2D_SpriteSheetGetImage(sprites, sprites_pattern_border_idx), x, y, 0.5f, &tint, 1, 1);
+}

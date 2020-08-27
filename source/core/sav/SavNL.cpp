@@ -43,7 +43,7 @@ std::unique_ptr<Pattern> SavNL::playerPattern(int player, int pattern) const {
 
 	/* Check, if Player exist. */
 	if (this->PlayerExist(player)) {
-		return std::make_unique<PatternNL>(this->dataPointer, playerOffset + 0x2C + pattern * 0x870);
+		return std::make_unique<PatternNL>(this->dataPointer.get(), playerOffset + 0x2C + pattern * 0x870);
 	}
 
 	return nullptr;
@@ -53,12 +53,12 @@ std::unique_ptr<Pattern> SavNL::playerPattern(int player, int pattern) const {
 std::unique_ptr<Pattern> SavNL::ableSisterPattern(int pattern) const {
 	if (pattern > 7) return nullptr;
 	
-	return std::make_unique<PatternNL>(this->dataPointer, 0x5C934 + pattern * 0x870);
+	return std::make_unique<PatternNL>(this->dataPointer.get(), 0x5C934 + pattern * 0x870);
 }
 
 /* Get TownFlag Pattern. */
 std::unique_ptr<Pattern> SavNL::townflag() const {
-	return std::make_unique<PatternNL>(this->dataPointer, 0x6B4EC);
+	return std::make_unique<PatternNL>(this->dataPointer.get(), 0x6B4EC);
 }
 
 // Last call before writing to file. Update Checksum.
