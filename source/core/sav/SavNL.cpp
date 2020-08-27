@@ -24,43 +24,44 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef _LEAFEDIT_CORE_SAV_WA_HPP
-#define _LEAFEDIT_CORE_SAV_WA_HPP
+#include "checksum.hpp"
+#include "saveUtils.hpp"
+#include "SavNL.hpp"
 
-#include "Pattern.hpp"
-#include "PatternWA.hpp"
-#include "Sav.hpp"
-#include "types.hpp"
+/* Return if player exist. */
+bool SavNL::PlayerExist(int player) const {
+	if (player > 3) return false;
 
-#include <string>
+	return SaveUtils::Read<u16>(this->savePointer(), (0xA0 + (player * 0x9F10)) + 0x55A6) != 0;
+}
 
-class Pattern;
-class PatternWA;
-class SavWA : public Sav {
-protected:
-	std::shared_ptr<u8[]> dataPointer;
-	u32 saveSize;
-public:
-	SavWA(std::shared_ptr<u8[]> dt, u32 ssize, std::string Loc) : Sav(dt, ssize, Loc), dataPointer(dt), saveSize(ssize) { }
-	virtual ~SavWA() {}
-	void Finish(void) override;
+/* Get Player Pattern. */
+std::unique_ptr<Pattern> SavNL::playerPattern(int player, int pattern) const {
+	if (player > 3 || pattern > 9) return nullptr;
 
-	bool PlayerExist(int player) override;
-	
-	/* Pattern. */
-	std::unique_ptr<Pattern> playerPattern(int player, int pattern) override;
-	int getPlayerAmount() override { return 10; }
-	std::unique_ptr<Pattern> ableSisterPattern(int pattern) override;
-	int getAbleSisterAmount() override { return 8; }
-	std::unique_ptr<Pattern> townflag() override;
-	
-	SaveType getType() override { return SaveType::WA; }
-	WWRegion getRegion() override { return WWRegion::UNKNOWN; }
-	
-private:
-	u8 *savePointer() const {
-		return dataPointer.get();
+	u32 playerOffset = 0xA0 + (player * 0x9F10);
+
+	/* Check, if Player exist. */
+	if (this->PlayerExist(player)) {
+		return std::make_unique<PatternNL>(this->dataPointer.get(), playerOffset + 0x2C + pattern * 0x870);
 	}
-};
 
-#endif
+	return nullptr;
+}
+
+/* Get Able Sister Pattern. */
+std::unique_ptr<Pattern> SavNL::ableSisterPattern(int pattern) const {
+	if (pattern > 7) return nullptr;
+	
+	return std::make_unique<PatternNL>(this->dataPointer.get(), 0x5C934 + pattern * 0x870);
+}
+
+/* Get TownFlag Pattern. */
+std::unique_ptr<Pattern> SavNL::townflag() const {
+	return std::make_unique<PatternNL>(this->dataPointer.get(), 0x6B4EC);
+}
+
+// Last call before writing to file. Update Checksum.
+void SavNL::Finish(void) {
+	Checksum::FixNLCRC32s(this->savePointer());
+}

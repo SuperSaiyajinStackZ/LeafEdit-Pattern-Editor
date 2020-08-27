@@ -101,7 +101,7 @@ static void CategorySelect(int selection) {
 	C3D_FrameEnd(0);
 }
 
-static void PlayerSelect(int selection, std::shared_ptr<Sav> &savefile, int playerAmount) {
+static void PlayerSelect(int selection, std::unique_ptr<Sav> &savefile, int playerAmount) {
 	Gui::clearTextBufs();
 	C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
 	C2D_TargetClear(Top, C2D_Color32(0, 0, 0, 0));
@@ -210,7 +210,7 @@ static void SelectAbleSisterPattern(std::vector<C2D_Image> &images, int selectio
 }
 
 
-bool Overlays::SelectSavePattern(std::shared_ptr<Sav> &savefile, std::shared_ptr<Pattern> &ptrn) {
+bool Overlays::SelectSavePattern(std::unique_ptr<Sav> &savefile, std::unique_ptr<Pattern> &ptrn) {
 	if (!savefile) return false;
 	std::vector<C2D_Image> images;
 	touchPosition touch;
@@ -265,7 +265,7 @@ bool Overlays::SelectSavePattern(std::shared_ptr<Sav> &savefile, std::shared_ptr
 
 					/* Push Images. */
 					for (int i = 0; i < 8; i++) {
-						images.push_back({CoreUtils::patternImage(savefile->ableSisterPattern(i)->image(0), savefile->getType())});
+						images.push_back({CoreUtils::savePatternImage(savefile->ableSisterPattern(i)->image(0), savefile->getType())});
 					}
 
 					selection = 0;
@@ -302,7 +302,7 @@ bool Overlays::SelectSavePattern(std::shared_ptr<Sav> &savefile, std::shared_ptr
 
 						/* Push Images. */
 						for (int i = 0; i < 8; i++) {
-							images.push_back({CoreUtils::patternImage(savefile->ableSisterPattern(i)->image(0), savefile->getType())});
+							images.push_back({CoreUtils::savePatternImage(savefile->ableSisterPattern(i)->image(0), savefile->getType())});
 						}
 
 						selection = 0;
@@ -346,7 +346,7 @@ bool Overlays::SelectSavePattern(std::shared_ptr<Sav> &savefile, std::shared_ptr
 
 								/* Push Images. */
 								for (int x = 0; x < savefile->getPlayerAmount(); x++) {
-									images.push_back({CoreUtils::patternImage(savefile->playerPattern(SelectedPlayer, x)->image(0), savefile->getType())});
+									images.push_back({CoreUtils::savePatternImage(savefile->playerPattern(SelectedPlayer, x)->image(0), savefile->getType())});
 								}
 
 								gspWaitForVBlank();
@@ -370,7 +370,7 @@ bool Overlays::SelectSavePattern(std::shared_ptr<Sav> &savefile, std::shared_ptr
 
 						/* Push Images. */
 						for (int i = 0; i < savefile->getPlayerAmount(); i++) {
-							images.push_back({CoreUtils::patternImage(savefile->playerPattern(SelectedPlayer, i)->image(0), savefile->getType())});
+							images.push_back({CoreUtils::savePatternImage(savefile->playerPattern(SelectedPlayer, i)->image(0), savefile->getType())});
 						}
 
 						gspWaitForVBlank();

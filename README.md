@@ -75,6 +75,8 @@ You need devkitARM along with Libctru, Citro2D & Citro3D for this to compile. Yo
 
 - [LeafEdit-Core-Contributors](https://github.com/Universal-Team/LeafEdit): For helping on LeafEdit-Core.
 
+- [PKSM](https://github.com/FlagBrew/PKSM): For the base of the storage / Bank system, which i used, but now reworked for the Pattern system.
+
 - [Slattz](https://github.com/Slattz): For the region flags & game icons from [NLTK](https://github.com/Slattz/NLTK).
 
 - [Universal-Team](https://github.com/Universal-Team): For [LeafEdit's](https://github.com/Universal-Team/LeafEdit) core and [Universal-Core](https://github.com/Universal-Team/Universal-Core).

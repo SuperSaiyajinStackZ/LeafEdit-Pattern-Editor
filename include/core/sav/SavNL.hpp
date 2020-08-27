@@ -1,6 +1,6 @@
 /*
-*   This file is part of LeafEdit-Pattern-Editor
-*   Copyright (C) 2020 SuperSaiyajinStackZ
+*   This file is part of LeafEdit-Core
+*   Copyright (C) 2020 Universal-Team
 *
 *   This program is free software: you can redistribute it and/or modify
 *   it under the terms of the GNU General Public License as published by
@@ -24,28 +24,42 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef _LEAFEDIT_PATTERN_EDITOR_TYPES_HPP
-#define _LEAFEDIT_PATTERN_EDITOR_TYPES_HPP
+#ifndef _LEAFEDIT_CORE_SAV_NL_HPP
+#define _LEAFEDIT_CORE_SAV_NL_HPP
 
-#include <3ds.h>
+#include "Pattern.hpp"
+#include "PatternNL.hpp"
+#include "Sav.hpp"
+#include "types.hpp"
 
-// Used to get the SaveType for the Pattern.
-enum class SaveType : u8 {
-	UNUSED,
-	WW,
-	NL,
-	WA
-};
+#include <string>
 
-// Used to get the Region from AC:WW for a Pattern.
-enum class WWRegion : u8 {
-	UNKNOWN,
-	JPN_REV0,
-	JPN_REV1,
-	USA_REV0,
-	USA_REV1,
-	EUR_REV1,
-	KOR_REV1
+class Pattern;
+class PatternNL;
+class SavNL : public Sav {
+protected:
+	std::shared_ptr<u8[]> dataPointer;
+	u32 saveSize;
+public:
+	SavNL(std::shared_ptr<u8[]> dt, u32 ssize, std::string Loc) : Sav(dt, ssize, Loc), dataPointer(dt), saveSize(ssize) { }
+	virtual ~SavNL() {}
+	void Finish(void) override;
+
+	bool PlayerExist(int player) const override;
+	
+	/* Pattern. */
+	std::unique_ptr<Pattern> playerPattern(int player, int pattern) const override;
+	int getPlayerAmount() const override { return 10; }
+	std::unique_ptr<Pattern> ableSisterPattern(int pattern) const override;
+	int getAbleSisterAmount() const override { return 8; }
+	std::unique_ptr<Pattern> townflag() const override;
+
+	SaveType getType() const override { return SaveType::NL; }
+	WWRegion getRegion() const override { return WWRegion::UNKNOWN; }
+private:
+	u8 *savePointer() const {
+		return dataPointer.get();
+	}
 };
 
 #endif

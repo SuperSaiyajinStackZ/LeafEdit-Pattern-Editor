@@ -56,12 +56,12 @@ public:
 	virtual void Finish(void) = 0;
 
 	/* Pattern. */
-	virtual bool PlayerExist(int player) = 0;
-	virtual std::unique_ptr<Pattern> playerPattern(int player, int pattern) = 0;
-	virtual int getPlayerAmount() = 0;
-	virtual std::unique_ptr<Pattern> ableSisterPattern(int pattern) = 0;
-	virtual int getAbleSisterAmount() = 0;
-	virtual std::unique_ptr<Pattern> townflag() = 0;
+	virtual bool PlayerExist(int player) const = 0;
+	virtual std::unique_ptr<Pattern> playerPattern(int player, int pattern) const = 0;
+	virtual int getPlayerAmount() const = 0;
+	virtual std::unique_ptr<Pattern> ableSisterPattern(int pattern) const = 0;
+	virtual int getAbleSisterAmount() const = 0;
+	virtual std::unique_ptr<Pattern> townflag() const = 0;
 
 	// Call this when getting the SaveType.
 	static std::unique_ptr<Sav> getSave(std::shared_ptr<u8[]> dt, u32 length, std::string Loc);
@@ -99,12 +99,12 @@ public:
 		return 0; // Should not happen actually.
 	}
 
-	virtual SaveType getType() = 0;
-	virtual WWRegion getRegion() = 0;
+	virtual SaveType getType() const = 0;
+	virtual WWRegion getRegion() const = 0;
 	bool changes = false;
 
 	void changesMade(bool v) { if (v != this->changes) this->changes = v; }
-	bool changesMade() { return this->changes; }
+	bool changesMade() const { return this->changes; }
 
 	u8 *savePointer() const {
 		return this->saveData.get();

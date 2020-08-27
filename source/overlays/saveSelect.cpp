@@ -61,7 +61,7 @@ static void DrawBottom() {
 	C3D_FrameEnd(0);
 }
 
-static void operation(std::shared_ptr<Sav> &savefile, std::string fileName) {
+static void operation(std::unique_ptr<Sav> &savefile, std::string fileName) {
 	savefile = nullptr;
 	FILE *file = fopen(fileName.c_str(), "rb");
 	
@@ -76,7 +76,7 @@ static void operation(std::shared_ptr<Sav> &savefile, std::string fileName) {
 	}
 }
 
-bool Overlays::SelectSaveFile(std::shared_ptr<Sav> &savefile) {
+bool Overlays::SelectSaveFile(std::unique_ptr<Sav> &savefile) {
 	s32 selectedFile = 0;
 	std::vector<DirEntry> dirContents;
 	bool dirChanged = true;

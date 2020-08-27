@@ -24,44 +24,44 @@
 *         reasonable ways as different from the original version.
 */
 
-#include "checksum.hpp"
-#include "saveUtils.hpp"
-#include "SavNL.hpp"
+#ifndef _LEAFEDIT_CORE_SAV_WW_HPP
+#define _LEAFEDIT_CORE_SAV_WW_HPP
 
-/* Return if player exist. */
-bool SavNL::PlayerExist(int player) {
-	if (player > 3) return false;
+#include "Pattern.hpp"
+#include "PatternWW.hpp"
+#include "Sav.hpp"
+#include "types.hpp"
 
-	return SaveUtils::Read<u16>(this->savePointer(), (0xA0 + (player * 0x9F10)) + 0x55A6) != 0;
-}
+#include <string>
 
-/* Get Player Pattern. */
-std::unique_ptr<Pattern> SavNL::playerPattern(int player, int pattern) {
-	if (player > 3 || pattern > 9) return nullptr;
+class Pattern;
+class PatternWW;
+class SavWW : public Sav {
+protected:
+	std::shared_ptr<u8[]> dataPointer;
+	WWRegion region;
+	u32 saveSize;
+public:
+	SavWW(std::shared_ptr<u8[]> dt, WWRegion Region, u32 ssize, std::string Loc) : Sav(dt, ssize, Loc), dataPointer(dt), region(Region), saveSize(ssize) { }
+	virtual ~SavWW() {}
+	void Finish(void) override;
 
-	u32 playerOffset = 0xA0 + (player * 0x9F10);
-
-	/* Check, if Player exist. */
-	if (this->PlayerExist(player)) {
-		return std::make_unique<PatternNL>(this->dataPointer, playerOffset + 0x2C + pattern * 0x870);
-	}
-
-	return nullptr;
-}
-
-/* Get Able Sister Pattern. */
-std::unique_ptr<Pattern> SavNL::ableSisterPattern(int pattern) {
-	if (pattern > 7) return nullptr;
+	bool PlayerExist(int player) const override;
 	
-	return std::make_unique<PatternNL>(this->dataPointer, 0x5C934 + pattern * 0x870);
-}
+	/* Pattern. */
+	std::unique_ptr<Pattern> playerPattern(int player, int pattern) const override;
+	int getPlayerAmount() const override { return 8; }
+	std::unique_ptr<Pattern> ableSisterPattern(int pattern) const override;
+	int getAbleSisterAmount() const override { return 8; }
+	std::unique_ptr<Pattern> townflag() const override;
 
-/* Get TownFlag Pattern. */
-std::unique_ptr<Pattern> SavNL::townflag() {
-	return std::make_unique<PatternNL>(this->dataPointer, 0x6B4EC);
-}
+	SaveType getType() const override { return SaveType::WW; }
+	WWRegion getRegion() const override { return region; }
 
-// Last call before writing to file. Update Checksum.
-void SavNL::Finish(void) {
-	Checksum::FixNLCRC32s(this->savePointer());
-}
+private:
+	u8 *savePointer() const {
+		return dataPointer.get();
+	}
+};
+
+#endif

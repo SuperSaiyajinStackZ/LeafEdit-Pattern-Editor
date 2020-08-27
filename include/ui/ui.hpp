@@ -47,6 +47,8 @@ namespace UI {
 	void DrawButton(Button btn, float TextSize = 0.5f);
 	void DrawPaletteGrid(float xPos, float yPos, float Width, float Height, u32 paletteColor, u32 gridColor);
 	void DrawBox(int y, u8 rows);
+
+	void bankSelect(int x, int y);
 }
 
 #endif

@@ -31,12 +31,12 @@
 
 class PatternImageWW : public PatternImage {
 protected:
-	std::shared_ptr<u8[]> data;
+	u8 *data;
 	u32 ptrnOffset;
 	u32 pltOffset;
 public:
 	virtual ~PatternImageWW() {}
-	PatternImageWW(std::shared_ptr<u8[]> dt, u32 patternOffset, u32 paletteOffset) : PatternImage(), data(dt), ptrnOffset(patternOffset), pltOffset(paletteOffset) { 
+	PatternImageWW(u8 *dt, u32 patternOffset, u32 paletteOffset) : PatternImage(), data(dt), ptrnOffset(patternOffset), pltOffset(paletteOffset) { 
 		this->valid = true; // TODO: Handle that differently?
 	}
 
@@ -51,15 +51,15 @@ private:
 	bool valid = false;
 
 	u8* patternData() const {
-		return this->data.get() + ptrnOffset;
+		return this->data + ptrnOffset;
 	}
 
 	pixel *pixelPointer() const {
-		return (pixel *)(data.get() + ptrnOffset);
+		return (pixel *)(data + ptrnOffset);
 	}
 	
 	u8* paletteData() const {
-		return this->data.get() + pltOffset;
+		return this->data + pltOffset;
 	}
 };
 

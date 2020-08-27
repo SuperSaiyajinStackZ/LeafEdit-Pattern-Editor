@@ -1,6 +1,6 @@
 /*
-*   This file is part of LeafEdit-Core
-*   Copyright (C) 2020 Universal-Team
+*   This file is part of LeafEdit-Pattern-Editor
+*   Copyright (C) 2020 SuperSaiyajinStackZ
 *
 *   This program is free software: you can redistribute it and/or modify
 *   it under the terms of the GNU General Public License as published by
@@ -24,44 +24,56 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef _LEAFEDIT_CORE_SAV_WW_HPP
-#define _LEAFEDIT_CORE_SAV_WW_HPP
+#ifndef _LEAFEDIT_PATTERN_EDITOR_STORAGE_HPP
+#define _LEAFEDIT_PATTERN_EDITOR_STORAGE_HPP
 
 #include "Pattern.hpp"
+#include "PatternNL.hpp"
+#include "PatternWA.hpp"
 #include "PatternWW.hpp"
 #include "Sav.hpp"
-#include "types.hpp"
-
-#include <string>
 
 class Pattern;
 class PatternWW;
-class SavWW : public Sav {
-protected:
-	std::shared_ptr<u8[]> dataPointer;
-	WWRegion region;
-	u32 saveSize;
+class PatternNL;
+class PatternWA;
+class Storage {
 public:
-	SavWW(std::shared_ptr<u8[]> dt, WWRegion Region, u32 ssize, std::string Loc) : Sav(dt, ssize, Loc), dataPointer(dt), region(Region), saveSize(ssize) { }
-	virtual ~SavWW() {}
-	void Finish(void) override;
-
-	bool PlayerExist(int player) override;
-	
-	/* Pattern. */
-	std::unique_ptr<Pattern> playerPattern(int player, int pattern) override;
-	int getPlayerAmount() override { return 8; }
-	std::unique_ptr<Pattern> ableSisterPattern(int pattern) override;
-	int getAbleSisterAmount() override { return 8; }
-	std::unique_ptr<Pattern> townflag() override;
-
-	SaveType getType() override { return SaveType::WW; }
-	WWRegion getRegion() override { return region; }
-
+	Storage(const std::string& fileName);
+	~Storage() { if (data)  data = nullptr; }
+	std::unique_ptr<Pattern> pattern(int slot) const;
+	void pattern(const Pattern &ptrn, int slot);
+	void load();
+	bool save() const;
+	int boxes() const;
+	int slots() const;
+	void resize(size_t boxes);
+	bool used(u32 slot) const;
+	u32 getSize(u32 slot) const;
 private:
-	u8 *savePointer() const {
-		return dataPointer.get();
-	}
+	static constexpr int STORAGE_VERSION = 1;
+	static std::string MAGIC;
+
+	void createStorage();
+
+	struct StorageHeader {
+		const char MAGIC[4];
+		int version;
+		int slots;
+		int boxes;
+	};
+
+	struct PatternEntry {
+		bool used;
+		WWRegion region;
+		SaveType ST;
+		u32 patternSize;
+		u8 data[0x870];
+	};
+
+	std::unique_ptr<u8[]> data = nullptr;
+	size_t size;
+	std::string storageFileName;
 };
 
 #endif

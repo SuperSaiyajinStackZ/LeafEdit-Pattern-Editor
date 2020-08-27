@@ -38,35 +38,47 @@ class PatternImageNL;
 class PatternNL : public Pattern {
 protected:
 	u32 Offset;
-	std::shared_ptr<u8[]> data;
+	u8 *data;
 public:
 	virtual ~PatternNL() {}
-	PatternNL(std::shared_ptr<u8[]> patternData, u32 offset) : Pattern(patternData, offset), Offset(offset), data(patternData) { }
+	PatternNL(u8 *patternData, u32 offset) : Pattern(patternData, offset), Offset(offset), data(patternData) { }
 
-	std::u16string name() override;
+	std::u16string name() const override;
 	void name(std::u16string v) override;
-	u16 creatorid() override;
+	u16 creatorid() const override;
 	void creatorid(u16 v) override;
-	std::u16string creatorname() override;
+	std::u16string creatorname() const override;
 	void creatorname(std::u16string v) override;
-	u8 creatorGender() override;
+	u8 creatorGender() const override;
 	void creatorGender(u8 v) override;
-	u16 origtownid() override;
+	u16 origtownid() const override;
 	void origtownid(u16 v) override;
-	std::u16string origtownname() override;
+	std::u16string origtownname() const override;
 	void origtownname(std::u16string v) override;
-	u8 designtype() override;
+	u8 designtype() const override;
 	void designtype(u8 v) override;
 
-	// Pattern Misc.
+	u32 getSize() const override {
+		if (this->patternPointer()[0x69] == 0x09) {
+			return 620;
+		} else {
+			return 2160;
+		}
+	}
+
+	WWRegion getRegion() const override { return WWRegion::UNKNOWN; };
+	SaveType getType() const override { return SaveType::NL; };
+	
+	/* Pattern Misc. */
 	void dumpPattern(const std::string fileName) override;
+	void injectData(u8 *buffer, u32 size) override;
 	void injectPattern(const std::string fileName) override;
 
-	// Pattern Image.
-	std::shared_ptr<PatternImage> image(const int pattern) override;
+	/* Pattern Image. */
+	std::unique_ptr<PatternImage> image(const int pattern) const override;
 private:
 	u8* patternPointer() const {
-		return data.get() + Offset;
+		return data + Offset;
 	}
 };
 

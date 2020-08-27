@@ -34,65 +34,65 @@
 #include <cstring>
 #include <unistd.h>
 
-// Pattern Name.
-std::u16string PatternNL::name() {
+/* Pattern Name. */
+std::u16string PatternNL::name() const {
 	return StringUtils::ReadUTF16String(patternPointer(), 0, 20);
 }
 void PatternNL::name(std::u16string v) {
 	StringUtils::WriteUTF16String(patternPointer(), v, 0, 20);
 }
 
-// Creator ID.
-u16 PatternNL::creatorid() {
+/* Creator ID. */
+u16 PatternNL::creatorid() const {
 	return SaveUtils::Read<u16>(patternPointer(), 0x2A);
 }
 void PatternNL::creatorid(u16 v) {
 	return SaveUtils::Write<u16>(patternPointer(), 0x2A, v);
 }
 
-// Creator Name.
-std::u16string PatternNL::creatorname() {
+/* Creator Name. */
+std::u16string PatternNL::creatorname() const {
 	return StringUtils::ReadUTF16String(patternPointer(), 0x2C, 8);
 }
 void PatternNL::creatorname(std::u16string v) {
 	StringUtils::WriteUTF16String(patternPointer(), v, 0x2C, 8);
 }
 
-// Creator Gender.
-u8 PatternNL::creatorGender() {
+/* Creator Gender. */
+u8 PatternNL::creatorGender() const {
 	return patternPointer()[0x3E];
 }
 void PatternNL::creatorGender(u8 v) {
 	SaveUtils::Write<u8>(this->patternPointer(), 0x3E, v);
 }
 
-// Town ID.
-u16 PatternNL::origtownid() {
+/* Town ID. */
+u16 PatternNL::origtownid() const {
 	return SaveUtils::Read<u16>(patternPointer(), 0x40);
 }
 void PatternNL::origtownid(u16 v) {
 	return SaveUtils::Write<u16>(patternPointer(), 0x40, v);
 }
 
-// Town Name.
-std::u16string PatternNL::origtownname() {
+/* Town Name. */
+std::u16string PatternNL::origtownname() const {
 	return StringUtils::ReadUTF16String(patternPointer(), 0x42, 8);
 }
 void PatternNL::origtownname(std::u16string v) {
 	StringUtils::WriteUTF16String(patternPointer(), v, 0x42, 8);
 }
 
-// Design Type.
-u8 PatternNL::designtype() {
+/* Design Type. */
+u8 PatternNL::designtype() const {
 	return (patternPointer()[0x69] & 9);
 }
 void PatternNL::designtype(u8 v) {
 	SaveUtils::Write<u8>(this->patternPointer(), 0x69, (patternPointer()[0x69] & 0xF0) | (v & 0x9));
 }
 
-// Dump a Pattern to file.
+/* Dump a Pattern to file. */
 void PatternNL::dumpPattern(const std::string fileName) {
-	// Get Pattern size?
+	/* Get Pattern size? */
 	u32 size = 0;
 	if (patternPointer()[0x69] == 0x09) {
 		size = 620;
@@ -100,18 +100,28 @@ void PatternNL::dumpPattern(const std::string fileName) {
 		size = 2160;
 	}
 
-	// Open File.
+	/* Open File. */
 	FILE* ptrn = fopen(fileName.c_str(), "wb");
 
-	// Write to file and close.
+	/* Write to file and close. */
 	fwrite(this->patternPointer(), 1, size, ptrn);
 	fclose(ptrn);
 }
 
-// Inject a Pattern from file.
+/* Inject a Pattern from buffer. */
+void PatternNL::injectData(u8 *buffer, u32 size) {
+	if (size != 620 && size != 2160) return;
+	
+	/* Set Buffer data to save. */
+	for(int i = 0; i < (int)size; i++) {
+		SaveUtils::Write<u8>(this->patternPointer(), i, buffer[i]);
+	}
+}
+
+/* Inject a Pattern from file. */
 void PatternNL::injectPattern(const std::string fileName) {
 	if ((access(fileName.c_str(), F_OK) != 0))	return; // File not found. Do NOTHING.
-	// Open file and get size.
+	/* Open file and get size. */
 	FILE* ptrn = fopen(fileName.c_str(), "rb");
 	if (ptrn) {
 		fseek(ptrn, 0, SEEK_END);
@@ -119,18 +129,18 @@ void PatternNL::injectPattern(const std::string fileName) {
 		fseek(ptrn, 0, SEEK_SET);
 
 		if (size == 620 || size == 2160) {
-			// Create Buffer with the size and read the file.
+			/* Create Buffer with the size and read the file. */
 			u8 *patternData = new u8[size];
 			fread(patternData, 1, size, ptrn);
 
-			// Set Buffer data to save.
+			/* Set Buffer data to save. */
 			for(int i = 0; i < (int)size; i++){
 				SaveUtils::Write<u8>(this->patternPointer(), i, patternData[i]);
 			}
 	
-			// Close File, cause we don't need it.
+			/* Close File, cause we don't need it. */
 			fclose(ptrn);
-			// Free Buffer.
+			/* Free Buffer. */
 			delete(patternData);
 
 		} else {
@@ -140,6 +150,6 @@ void PatternNL::injectPattern(const std::string fileName) {
 	}
 }
 
-std::shared_ptr<PatternImage> PatternNL::image(const int pattern) {
-	return std::make_shared<PatternImageNL>(this->data, (this->Offset + 0x6C + (pattern * 0x200)), this->Offset + 0x58);
+std::unique_ptr<PatternImage> PatternNL::image(const int pattern) const {
+	return std::make_unique<PatternImageNL>(this->data, (this->Offset + 0x6C + (pattern * 0x200)), this->Offset + 0x58);
 }

@@ -31,7 +31,7 @@
 #include <unistd.h>
 
 /* Generate an empty pattern using the empty pattern files of the romfs. */
-void CoreUtils::generateEmptyPattern(SaveType ST, WWRegion region, std::shared_ptr<u8[]> &data, u32 &size) {
+void CoreUtils::generateEmptyPattern(SaveType ST, WWRegion region, std::unique_ptr<u8[]> &data, u32 &size) {
 	data = nullptr; // Reset here.
 	std::string path;
 
@@ -68,7 +68,7 @@ void CoreUtils::generateEmptyPattern(SaveType ST, WWRegion region, std::shared_p
 	fseek(file, 0, SEEK_END);
 	size = ftell(file);
 	fseek(file, 0, SEEK_SET);
-	data = std::shared_ptr<u8[]>(new u8[size]);
+	data = std::unique_ptr<u8[]>(new u8[size]);
 	fread(data.get(), 1, size, file);
 	fclose(file);
 }
@@ -114,8 +114,8 @@ static const u32 WWPaletteColors[] = {
 	0xFF8C7BFF, 0xFF0000FF, 0xFF7B00FF, 0xFFFF00FF, 0x008400FF, 0x00FF00FF, 0x0000FFFF, 0x009CFFFF, 0xD600FFFF, 0xFF6BFFFF, 0x9C0000FF, 0xFF9400FF, 0xFFBD94FF, 0x000000FF, 0xFFFFFFFF
 };
 
-/* Get a C2D_Image of the pattern buffer. */
-C2D_Image CoreUtils::patternImage(std::shared_ptr<PatternImage> image, SaveType ST) {
+/* Get a C2D_Image from the savefile for example. */
+C2D_Image CoreUtils::savePatternImage(std::unique_ptr<PatternImage> image, SaveType ST) {
 	if (image) {
 		u32 *buffer = (u32*)linearAlloc(sizeof(u32) * 32 * 32); // Allocate Buffer.
 
@@ -127,12 +127,49 @@ C2D_Image CoreUtils::patternImage(std::shared_ptr<PatternImage> image, SaveType 
 					buffer[i * 2 + 1] = NLPaletteColors[image->getPaletteColor(image->getPixel(i).right)]; // Right pixel.
 				}
 				break;
+
 			case SaveType::WW:
 				for (int i = 0; i < 0x200; i++) {
 					buffer[i * 2] = WWPaletteColors[std::max<u8>(0, image->getPaletteColor(image->getPixel(i).left) - 1)]; // Left pixel.
 					buffer[i * 2 + 1] = WWPaletteColors[std::max<u8>(0, image->getPaletteColor(image->getPixel(i).right) - 1)]; // Right pixel.
 				}
 				break;
+
+			case SaveType::UNUSED:
+				linearFree(buffer); // Free buffer cause unneeded.
+				return {nullptr};
+		}
+
+
+		C2D_Image tmp = C2DUtils::ImageDataToC2DImage(buffer, 32, 32, GPU_RGBA8);
+		linearFree(buffer); // Free buffer cause unneeded.
+		return tmp;
+	}
+
+	return {nullptr};
+}
+
+/* Get a C2D_Image of the pattern buffer. */
+C2D_Image CoreUtils::patternImage(std::unique_ptr<PatternImage> &image, SaveType ST) {
+	if (image) {
+		u32 *buffer = (u32*)linearAlloc(sizeof(u32) * 32 * 32); // Allocate Buffer.
+
+		switch(ST) {
+			case SaveType::NL:
+			case SaveType::WA:
+				for (int i = 0; i < 0x200; i++) {
+					buffer[i * 2] = NLPaletteColors[image->getPaletteColor(image->getPixel(i).left)]; // Left pixel.
+					buffer[i * 2 + 1] = NLPaletteColors[image->getPaletteColor(image->getPixel(i).right)]; // Right pixel.
+				}
+				break;
+
+			case SaveType::WW:
+				for (int i = 0; i < 0x200; i++) {
+					buffer[i * 2] = WWPaletteColors[std::max<u8>(0, image->getPaletteColor(image->getPixel(i).left) - 1)]; // Left pixel.
+					buffer[i * 2 + 1] = WWPaletteColors[std::max<u8>(0, image->getPaletteColor(image->getPixel(i).right) - 1)]; // Right pixel.
+				}
+				break;
+
 			case SaveType::UNUSED:
 				linearFree(buffer); // Free buffer cause unneeded.
 				return {nullptr};
@@ -337,7 +374,7 @@ PatternInformations CoreUtils::getDefaultInformation(SaveType ST, WWRegion regio
 
 
 /* Dump Pattern Information for the Pattern Editor Tool. */
-void CoreUtils::dumpPatternInformation(SaveType ST, WWRegion region, std::shared_ptr<Pattern> &ptrn) {
+void CoreUtils::dumpPatternInformation(SaveType ST, WWRegion region, std::unique_ptr<Pattern> &ptrn) {
 	if (!ptrn) return; /* Pattern is not valid. */
 
 	bool UTF8Read = true; /* If UTF-8 or UTF-16 Read. */
@@ -445,7 +482,7 @@ void CoreUtils::dumpPatternInformation(SaveType ST, WWRegion region, std::shared
 
 	FILE *dmp = fopen(file.c_str(), "w");
 	if (dmp) {
-		std::shared_ptr<u8[]> data = std::shared_ptr<u8[]>(new u8[pSize]);
+		std::unique_ptr<u8[]> data = std::unique_ptr<u8[]>(new u8[pSize]);
 
 		/* Write. */
 		if (data) {

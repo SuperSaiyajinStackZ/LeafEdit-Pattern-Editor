@@ -70,7 +70,7 @@ static const std::vector<Structs::ButtonPos> paletteGrid = {
 	{290, 120, 20, 20}
 };
 
-static void Draw(std::shared_ptr<PatternImage> &pImg, C2D_Image &img, int index, bool instructions) {
+static void Draw(std::unique_ptr<PatternImage> &pImg, C2D_Image &img, int index, bool instructions) {
 	Gui::clearTextBufs();
 	C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
 	C2D_TargetClear(Top, C2D_Color32(0, 0, 0, 0));
@@ -168,7 +168,7 @@ static void DrawPaletteSelection(C2D_Image &img, int colorGroup, int selection, 
 	C3D_FrameEnd(0);
 }
 
-void Overlays::PaletteToolNL(std::shared_ptr<PatternImage> &pImg, C2D_Image &img) {
+void Overlays::PaletteToolNL(std::unique_ptr<PatternImage> &pImg, C2D_Image &img) {
 	bool exitOverlay = false;
 	bool selectColor = false;
 	bool showInstructions = false;
