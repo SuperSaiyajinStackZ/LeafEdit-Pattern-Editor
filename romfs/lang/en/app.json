@@ -95,6 +95,7 @@
 	"START_REFRESH": "Press START to refresh the list.",
 	"STORAGE": "Storage",
 	"STORAGE_BOX": "Storage Box",
+	"STORAGE_MSG": "You need to load a savefile to access the storage.",
 	"TOWNFLAG": "Townflag",
 	"UNLOAD_SAVE": "Unload Save",
 	"UT_CREDITS": "- For LeafEdit's core and Universal-Core.",

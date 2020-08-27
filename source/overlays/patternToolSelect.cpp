@@ -173,7 +173,7 @@ PatternMode Overlays::ToolSelect(C2D_Image &Img, bool isSave) {
 				} else if (touching(touch, buttons[14])) {
 					return PatternMode::UnloadSave;
 				} else if (touching(touch, buttons[15])) {
-					if (isSave) return PatternMode::StorageHandling;
+					return PatternMode::StorageHandling;
 				}
 			}
 		}
@@ -264,7 +264,7 @@ PatternMode Overlays::ToolSelect(C2D_Image &Img, bool isSave) {
 					case 2:
 						return PatternMode::UnloadSave;
 					case 3:
-						if (isSave) return PatternMode::StorageHandling;
+						return PatternMode::StorageHandling;
 				}
 			}
 		}

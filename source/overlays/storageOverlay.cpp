@@ -28,7 +28,56 @@
 #include "overlay.hpp"
 #include "storage.hpp"
 #include "stringUtils.hpp"
+#include "structs.hpp"
 #include "utils.hpp"
+
+
+/* Main Buttons. */
+static const std::vector<Button> buttons = {
+	{95, 34, 130, 48, "PLAYER"},
+	{95, 97, 130, 48, "ABLE_SISTER"},
+	{95, 159, 130, 48, "TOWNFLAG"}
+};
+
+/* Player Buttons. */
+static const std::vector<Button> playerPos = {
+	{15, 48, 130, 48, "PLAYER_1"},
+	{175, 48, 130, 48, "PLAYER_2"},
+	{15, 144, 130, 48, "PLAYER_3"},
+	{175, 144, 130, 48, "PLAYER_4"}
+};
+
+static const std::vector<Structs::ButtonPos> Pattern8 = {
+	{40, 60, 48, 48},
+	{100, 60, 48, 48},
+	{160, 60, 48, 48},
+	{220, 60, 48, 48},
+
+	{15, 140, 48, 48},
+	{100, 140, 48, 48},
+	{160, 140, 48, 48},
+	{220, 140, 48, 48}
+};
+
+static const std::vector<Structs::ButtonPos> Pattern10 = {
+	{17, 60, 48, 48},
+	{77, 60, 48, 48},
+	{137, 60, 48, 48},
+	{197, 60, 48, 48},
+	{257, 60, 48, 48},
+
+	{17, 140, 48, 48},
+	{77, 140, 48, 48},
+	{137, 140, 48, 48},
+	{197, 140, 48, 48},
+	{257, 140, 48, 48}
+};
+
+/* If button Position pressed -> Do something. */
+static bool touching(touchPosition touch, Button button) {
+	if (touch.px >= button.X && touch.px <= (button.X + button.XSize) && touch.py >= button.Y && touch.py <= (button.Y + button.YSize)) return true;
+	else return false;
+}
 
 /* Return the save name here. */
 static std::string getSaveName(SaveType savetype) {
@@ -171,9 +220,9 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 	if (!savefile) return;
 
 	bool displayInfo = false, refreshBank = true, refreshGame = true;
-	int box = 0, maxSavePTN = 0;
-	int selection = 0;
-	bool topSelect = true;
+	int box = 0, maxSavePTN = 0, subMode = 0, playerAmount = 0, SelectedPlayer = 0;
+	int selection = 0, lastMode = 0;
+	bool topSelect = false;
 	
 	bool grab = false;
 	C2D_Image grabImg = {nullptr};
@@ -199,8 +248,10 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 	else if (savefile->getType() == SaveType::UNUSED) return;
 
 	while(!doOut) {
+		touchPosition touch;
 		u32 hDown = hidKeysDown();
 		hidScanInput();
+		hidTouchRead(&touch);
 
 		/* Drawing part. */
 		if (displayInfo) {
@@ -215,7 +266,6 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 
 			}
 		} else {
-
 			Gui::clearTextBufs();
 			C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
 			C2D_TargetClear(Top, C2D_Color32(0, 0, 0, 0));
@@ -247,51 +297,100 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 
 			UI::DrawBase(false, true);
 
-			if (maxSavePTN == 8) {
-				for (int i = 0; i < 8; i++) {
-					for (u32 y = 0; y < 2; y++) {
-						for (u32 x = 0; x < 4; x++, i++) {
+			if (subMode == 0) {
+				/* Sub Menu. */
+				UI::DrawSprite(sprites_top_bar_idx, 0, 0);
+				Gui::DrawStringCentered(0, -2, 0.9f, C2D_Color32(255, 255, 255, 255), Lang::get("SELECT_CATEGORY"), 395, 0, fnt);
+				UI::DrawSprite(sprites_bottom_bar_idx, 0, 209);
+				Gui::DrawStringCentered(0, 218, 0.9f, C2D_Color32(255, 255, 255, 255), Lang::get("X_SELECT"), 395, 0, fnt);
+	
+				for (int i = 0; i < 3; i++) {
+					UI::DrawButton(buttons[i], 0.55);
+				}
 
-							if (saveImages[i].tex && saveHasImage[i]) {
-								C2D_DrawImageAt(saveImages[i], 40 + (x * 60), 60 + (y * 80), 0.5f, nullptr, 1.5f, 1.5f);
-							}
+				UI::DrawSprite(sprites_pointer_idx, buttons[selection].X + 100, buttons[selection].Y + 30);
 
-							if (grab) {
-								if (!grabInf.second) {
-									if (grabInf.first == i) {
-										UI::bankSelect(40 + (x * 60), 60 + (y * 80));
-									}
-								}
-							}
-							
-							if (!topSelect) {
-								if (i == selection) UI::DrawSprite(sprites_pattern_border_idx, 39 + (x * 60), 59 + (y * 80));
-							}
+			} else if (subMode == 1) {
+				/* Player Selection. */
+				UI::DrawSprite(sprites_top_bar_idx, 0, 0);
+				Gui::DrawStringCentered(0, -2, 0.9f, C2D_Color32(255, 255, 255, 255), Lang::get("SELECT_PLAYER"), 395, 0, fnt);
+				if (playerAmount == 0) Gui::DrawStringCentered(0, 150, 0.9f, C2D_Color32(0, 0, 0, 255), Lang::get("NO_PLAYERS_FOUND"), 395, 0, fnt);
+				UI::DrawSprite(sprites_bottom_bar_idx, 0, 209);
+				Gui::DrawStringCentered(0, 218, 0.9f, C2D_Color32(255, 255, 255, 255), Lang::get("X_SELECT"), 395, 0, fnt);
+				if (playerAmount > 0) {
+					for (int i = 0; i < 4; i++) {
+						if (savefile->PlayerExist(i)) {
+							UI::DrawButton(playerPos[i], 0.55);
 						}
 					}
 				}
-			} else {
 
-				for (int i = 0; i < 10; i++) {
-					for (u32 y = 0; y < 2; y++) {
-						for (u32 x = 0; x < 5; x++, i++) {
+				UI::DrawSprite(sprites_pointer_idx, playerPos[selection].X + 100, playerPos[selection].Y + 30);
 
-							if (saveImages[i].tex && saveHasImage[i]) {
-								C2D_DrawImageAt(saveImages[i], 17 + (x * 60), 60 + (y * 80), 0.5f, nullptr, 1.5f, 1.5f);
-							}
+			} else if (subMode == 2 || subMode == 3 || subMode == 4) {
+				/* Player Pattern. */
+				if (maxSavePTN == 8) {
+					for (int i = 0; i < 8; i++) {
+						for (u32 y = 0; y < 2; y++) {
+							for (u32 x = 0; x < 4; x++, i++) {
 
-							if (grab) {
-								if (!grabInf.second) {
-									if (grabInf.first == i) {
-										UI::bankSelect(17 + (x * 60), 60 + (y * 80));
+								if (saveImages[i].tex && saveHasImage[i]) {
+									C2D_DrawImageAt(saveImages[i], 40 + (x * 60), 60 + (y * 80), 0.5f, nullptr, 1.5f, 1.5f);
+								}
+
+								if (grab) {
+									if (!grabInf.second) {
+										if (grabInf.first == i) {
+											UI::bankSelect(40 + (x * 60), 60 + (y * 80));
+										}
 									}
 								}
-							}
-
-							if (!topSelect) {
-								if (i == selection) UI::DrawSprite(sprites_pattern_border_idx, 16 + (x * 60), 59 + (y * 80));
+							
+								if (!topSelect) {
+									if (i == selection) UI::DrawSprite(sprites_pattern_border_idx, 39 + (x * 60), 59 + (y * 80));
+								}
 							}
 						}
+					}
+				} else if (maxSavePTN == 10) {
+
+					for (int i = 0; i < 10; i++) {
+						for (u32 y = 0; y < 2; y++) {
+							for (u32 x = 0; x < 5; x++, i++) {
+
+								if (saveImages[i].tex && saveHasImage[i]) {
+									C2D_DrawImageAt(saveImages[i], 17 + (x * 60), 60 + (y * 80), 0.5f, nullptr, 1.5f, 1.5f);
+								}
+
+								if (grab) {
+									if (!grabInf.second) {
+										if (grabInf.first == i) {
+											UI::bankSelect(17 + (x * 60), 60 + (y * 80));
+										}
+									}
+								}
+
+								if (!topSelect) {
+									if (i == selection) UI::DrawSprite(sprites_pattern_border_idx, 16 + (x * 60), 59 + (y * 80));
+								}
+							}
+						}
+					}
+				} else {
+					if (saveImages[0].tex && saveHasImage[0]) {
+						C2D_DrawImageAt(saveImages[0], 17, 60, 0.5f, nullptr, 1.5f, 1.5f);
+					}
+
+					if (grab) {
+						if (!grabInf.second) {
+							if (grabInf.first == 0) {
+								UI::bankSelect(17, 60);
+							}
+						}
+					}
+
+					if (!topSelect) {
+						if (0 == selection) UI::DrawSprite(sprites_pattern_border_idx, 16, 59);
 					}
 				}
 			}
@@ -348,7 +447,14 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 				for (int i = 0; i < maxSavePTN; i++) {
 
 					if (savefile->playerPattern(0, i)) {
-						savePattern[i] = savefile->playerPattern(0, i);
+						if (subMode == 2) {
+							savePattern[i] = savefile->playerPattern(0, i);
+						} else if (subMode == 3) {
+							savePattern[i] = savefile->ableSisterPattern(i);
+						} else if (subMode == 4) {
+							savePattern[0] = savefile->townflag();
+						}
+
 						if (savePattern[i]) {
 
 							if (savePattern[i]) {
@@ -365,110 +471,271 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 				refreshGame = false;
 			}
 
-		
+			if (subMode == 0) {
+				/* Sub Mode. */
 
-			if (hDown & KEY_B) {
-				
-				doOut = true; // Exit overlay.
-			}
+				if (hDown & KEY_DOWN) {
+					if (selection < 2) selection++;
+				}
 
-			if (hDown & KEY_X) {
-				if (topSelect) {
-					if (bankPattern[selection]) {
-						grabImg = CoreUtils::patternImage(bankPatternImage[selection], bankPattern[selection]->getType());
-						displayInfo = true;
-					}
-				} else {
-					if (savePattern[selection]) {
-						grabImg = CoreUtils::patternImage(savePatternImage[selection], savePattern[selection]->getType());
-						displayInfo = true;
+				if (hDown & KEY_UP) {
+					if (selection > 0) selection--;
+				}
+
+				if (hDown & KEY_TOUCH) {
+					if (touching(touch, buttons[0])) {
+						playerAmount = 0;
+
+						for (int i = 0; i < 4; i++) {
+							if (savefile->PlayerExist(i)) playerAmount++;
+						}
+
+						selection = 0;
+						gspWaitForVBlank();
+						subMode = 1;
+
+					} else if (touching(touch, buttons[1])) {
+						C3D_FrameEnd(0);
+
+						selection = 0;
+						gspWaitForVBlank();
+						maxSavePTN = 8;
+						lastMode = 0;
+						refreshGame = true;
+						subMode = 3;
+
+					} else if (touching(touch, buttons[2])) {
+						C3D_FrameEnd(0);
+
+						selection = 0;
+						gspWaitForVBlank();
+						maxSavePTN = 1;
+						lastMode = 0;
+						refreshGame = true;
+						subMode = 4;
 					}
 				}
-			}
 
-			if (hDown & KEY_A) {
-				if (!grab) {
-					/* Check if valid too. */
+				if (hDown & KEY_X) {
+					switch(selection) {
+						case 0:
+							playerAmount = 0;
+
+							for (int i = 0; i < 4; i++) {
+								if (savefile->PlayerExist(i)) playerAmount++;
+							}
+
+							selection = 0;
+							gspWaitForVBlank();
+							subMode = 1;
+							break;
+
+						case 1:
+							C3D_FrameEnd(0);
+							lastMode = 0;
+							selection = 0;
+							gspWaitForVBlank();
+							maxSavePTN = 8;
+							refreshGame = true;
+							subMode = 3;
+							break;
+
+						case 2:
+							C3D_FrameEnd(0);
+
+							selection = 0;
+							gspWaitForVBlank();
+							maxSavePTN = 1;
+							lastMode = 0;
+							refreshGame = true;
+							subMode = 4;
+							break;
+					}
+				}
+
+			} else if (subMode == 1) {
+				/* Player Selection. */
+				/* Only do this, if playerAmount larger than 0. */
+				if (playerAmount > 0) {
+					if (hDown & KEY_RIGHT) {
+						if (SelectedPlayer < 3) {
+							if (savefile->PlayerExist(SelectedPlayer + 1)) {
+								SelectedPlayer++;
+							}
+						}
+					}
+
+					if (hDown & KEY_TOUCH) {
+						for (int i = 0; i < 4; i++) {
+							if (touching(touch, playerPos[i])) {
+								if (savefile->PlayerExist(i)) {
+									SelectedPlayer = i;
+									/* Push back player pattern. */
+									C3D_FrameEnd(0);
+
+									if (savefile->getType() == SaveType::WW) {
+										maxSavePTN = 8;
+										refreshGame = true;
+									} else if (savefile->getType() == SaveType::NL || savefile->getType() == SaveType::WA) {
+										maxSavePTN = 10;
+										refreshGame = true;
+									}
+
+									gspWaitForVBlank();
+									subMode = 2;
+									break;
+								}
+							}
+						}
+					}
+
+					if (hDown & KEY_LEFT) {
+						if (SelectedPlayer > 0) {
+							SelectedPlayer--;
+						}
+					}
+
+					if (hDown & KEY_X) {
+						if (savefile->PlayerExist(SelectedPlayer)) {
+							/* Push back player pattern. */
+							C3D_FrameEnd(0);
+
+							if (savefile->getType() == SaveType::WW) {
+								maxSavePTN = 8;
+								refreshGame = true;
+							} else if (savefile->getType() == SaveType::NL || savefile->getType() == SaveType::WA) {
+								maxSavePTN = 10;
+								refreshGame = true;
+							}
+
+							gspWaitForVBlank();
+							lastMode = 1;
+							subMode = 2;
+						}
+					}
+				}
+
+				if (hDown & KEY_B) {
+					gspWaitForVBlank();
+					selection = 0;
+					subMode = 0;
+				}
+			} else if (subMode == 2 || subMode == 3 || subMode == 4) {
+
+				if (hDown & KEY_X) {
 					if (topSelect) {
 						if (bankPattern[selection]) {
-							grabInf = {selection, topSelect};
-							grab = true;
+							grabImg = CoreUtils::patternImage(bankPatternImage[selection], bankPattern[selection]->getType());
+							displayInfo = true;
 						}
 					} else {
 						if (savePattern[selection]) {
-							grabInf = {selection, topSelect};
-							grab = true;
+							grabImg = CoreUtils::patternImage(savePatternImage[selection], savePattern[selection]->getType());
+							displayInfo = true;
 						}
 					}
+				}
 
-				} else {
-					if (topSelect) {
-						storageInject(storage, grabInf.second ? bankPattern[grabInf.first] : savePattern[grabInf.first], selection);
-						refreshBank = true;
+				if (hDown & KEY_A) {
+					if (!grab) {
+						/* Check if valid too. */
+						if (topSelect) {
+							if (bankPattern[selection]) {
+								grabInf = {selection, topSelect};
+								grab = true;
+							}
+						} else {
+							if (savePattern[selection]) {
+								grabInf = {selection, topSelect};
+								grab = true;
+							}
+						}
+
 					} else {
-						injectToGame(grabInf.second ? bankPattern[grabInf.first] : savePattern[grabInf.first], savePattern[selection]);
-						refreshGame = true;
-					}
-
-					grabInf = {-1, true};
-					grab = false;
-				}
-			}
-
-			/* Navigation. */
-			if (hDown & KEY_RIGHT) {
-				if (topSelect) {
-					if (selection < 9) selection++;
-				} else {
-					if (selection < maxSavePTN - 1) selection++;
-				}
-			}
-
-			if (hDown & KEY_LEFT) {
-				if (selection > 0) selection--;
-			}
-
-			if (hDown & KEY_UP) {
-				if (topSelect) {
-					if (selection > 4) selection -= 5;
-				} else {
-					if (maxSavePTN == 8) {
-						if (selection > 3) selection -= 4;
-						else if (selection < 5) {
-							topSelect = true;
-							if (selection == 0) selection = 5;
-							else selection = selection + 5;
+						if (topSelect) {
+							storageInject(storage, grabInf.second ? bankPattern[grabInf.first] : savePattern[grabInf.first], selection);
+							refreshBank = true;
+						} else {
+							injectToGame(grabInf.second ? bankPattern[grabInf.first] : savePattern[grabInf.first], savePattern[selection]);
+							refreshGame = true;
 						}
-					} else if (maxSavePTN == 10) {
+
+						grabInf = {-1, true};
+						grab = false;
+					}
+				}
+
+				/* Navigation. */
+				if (hDown & KEY_RIGHT) {
+					if (topSelect) {
+						if (selection < 9) selection++;
+					} else {
+						if (subMode != 4) {
+							if (selection < maxSavePTN - 1) selection++;
+						}
+					}
+				}
+
+				if (hDown & KEY_LEFT) {
+					if (selection > 0) selection--;
+				}
+
+				if (hDown & KEY_UP) {
+					if (topSelect) {
 						if (selection > 4) selection -= 5;
-						else if (selection < 5) {
+					} else {
+						if (maxSavePTN == 8) {
+							if (selection > 3) selection -= 4;
+							else if (selection < 5) {
+								topSelect = true;
+								if (selection == 0) selection = 5;
+								else selection = selection + 5;
+							}
+						} else if (maxSavePTN == 10) {
+							if (selection > 4) selection -= 5;
+							else if (selection < 5) {
+								topSelect = true;
+								selection = selection + 5;
+							}
+						} else if (maxSavePTN == 1) {
 							topSelect = true;
-							selection = selection + 5;
+							selection = 5;
 						}
 					}
+				}
+
+				if (hDown & KEY_DOWN) {
+					if (topSelect) {
+						if (selection < 5) selection += 5;
+						else if (selection > 4) {
+							topSelect = false;
+							if (maxSavePTN == 8) {
+								if (selection == 5) selection = 0;
+								else selection = selection - 4;
+							} else if (maxSavePTN == 10) {
+								selection = selection - 5;
+							} else if (maxSavePTN == 1) {
+								selection = 0;
+							}
+						}
+					} else {
+						if (maxSavePTN == 8) {
+							if (selection < 4) selection += 4;
+						} else if (maxSavePTN == 10) {
+							if (selection < 5) selection += 5;
+						}
+					}
+				}
+
+				if (hDown & KEY_B) {
+					selection = 0;
+					topSelect = false;
+
+					subMode = lastMode;
 				}
 			}
 
-			if (hDown & KEY_DOWN) {
-				if (topSelect) {
-					if (selection < 5) selection += 5;
-					else if (selection > 4) {
-						topSelect = false;
-						if (maxSavePTN == 8) {
-							if (selection == 5) selection = 0;
-							else selection = selection - 4;
-						} else if (maxSavePTN == 10) {
-							selection = selection - 5;
-						}
-					}
-				} else {
-					if (maxSavePTN == 8) {
-						if (selection < 4) selection += 4;
-					} else if (maxSavePTN == 10) {
-						if (selection < 5) selection += 5;
-					}
-				}
-			}
+			if (hDown & KEY_START) doOut = true;
 		}
 	}
 }
