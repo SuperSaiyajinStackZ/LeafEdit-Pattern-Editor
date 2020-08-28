@@ -180,6 +180,7 @@ void Overlays::PaletteToolNL(std::unique_ptr<PatternImage> &pImg, C2D_Image &img
 		else DrawPaletteSelection(img, group, groupSelection, showInstructions);
 		touchPosition touch;
 		u32 hDown = hidKeysDown();
+		u32 hRepeat = hidKeysDownRepeat();
 		hidScanInput();
 		hidTouchRead(&touch);
 
@@ -191,7 +192,7 @@ void Overlays::PaletteToolNL(std::unique_ptr<PatternImage> &pImg, C2D_Image &img
 			} else {
 				if (selectColor) {
 
-					if (hDown & KEY_R) {
+					if (hRepeat & KEY_R) {
 						if (group < 16) {
 							group++;
 							groupSelection = 0;
@@ -226,7 +227,7 @@ void Overlays::PaletteToolNL(std::unique_ptr<PatternImage> &pImg, C2D_Image &img
 						}
 					}
 
-					if (hDown & KEY_L) {
+					if (hRepeat & KEY_L) {
 						if (group > 0) {
 							group--;
 							groupSelection = 0;
@@ -237,7 +238,7 @@ void Overlays::PaletteToolNL(std::unique_ptr<PatternImage> &pImg, C2D_Image &img
 						showInstructions = true;
 					}
 
-					if (hDown & KEY_RIGHT) {
+					if (hRepeat & KEY_RIGHT) {
 						if (group < 16) {
 							if (groupSelection < 2 || groupSelection < 5 || groupSelection < 8) {
 								groupSelection++;
@@ -247,7 +248,7 @@ void Overlays::PaletteToolNL(std::unique_ptr<PatternImage> &pImg, C2D_Image &img
 						}
 					}
 
-					if (hDown & KEY_LEFT) {
+					if (hRepeat & KEY_LEFT) {
 						if (group < 16) {
 							if (groupSelection > 0 || groupSelection > 3 || groupSelection > 6) {
 								groupSelection--;
@@ -257,13 +258,13 @@ void Overlays::PaletteToolNL(std::unique_ptr<PatternImage> &pImg, C2D_Image &img
 						}
 					}
 
-					if (hDown & KEY_UP) {
+					if (hRepeat & KEY_UP) {
 						if (group < 16) {
 							if (groupSelection > 2) groupSelection -= 3;
 						}
 					}
 
-					if (hDown & KEY_DOWN) {
+					if (hRepeat & KEY_DOWN) {
 						if (group < 16) {
 							if (groupSelection < 6) groupSelection += 3;
 						}
@@ -284,8 +285,12 @@ void Overlays::PaletteToolNL(std::unique_ptr<PatternImage> &pImg, C2D_Image &img
 						selectColor = false;
 					}
 				} else {
-					if (hDown & KEY_RIGHT) {
+					if (hRepeat & KEY_RIGHT) {
 						if (index < 14) index++;
+					}
+
+					if (hRepeat & KEY_LEFT) {
+						if (index > 0) index--;
 					}
 
 					if (hDown & KEY_SELECT) {
@@ -302,9 +307,6 @@ void Overlays::PaletteToolNL(std::unique_ptr<PatternImage> &pImg, C2D_Image &img
 						}
 					}
 
-					if (hDown & KEY_LEFT) {
-						if (index > 0) index--;
-					}
 
 					if (hDown & KEY_A) {
 						selectColor = true;

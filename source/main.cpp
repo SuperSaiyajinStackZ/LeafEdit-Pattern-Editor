@@ -64,6 +64,7 @@ int main() {
 	
 	Overlays::SplashOverlay();
 	Gui::setScreen(std::make_unique<PatternEditor>(), false, true);
+	hidSetRepeatParameters(10, 10);
 
 	/* MainLoop part here. */
 	while(aptMainLoop() && !exiting) {

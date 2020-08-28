@@ -92,7 +92,7 @@ void Overlays::PaletteToolWW(std::unique_ptr<PatternImage> &pImg, C2D_Image &img
 			if (showInstructions) {
 				if (hidKeysDown() & KEY_SELECT) showInstructions = false;
 			} else {
-				if ((hidKeysDown() & KEY_RIGHT) || (hidKeysDown() & KEY_R)) {
+				if ((hidKeysDownRepeat() & KEY_RIGHT) || (hidKeysDownRepeat() & KEY_R)) {
 					if (pImg->getWWPaletteIndex() < 14) {
 						pImg->setPaletteColor(pImg->getWWPaletteIndex() + 1, 0);
 						C3D_FrameEnd(0);
@@ -100,7 +100,7 @@ void Overlays::PaletteToolWW(std::unique_ptr<PatternImage> &pImg, C2D_Image &img
 					}
 				}
 
-				if ((hidKeysDown() & KEY_LEFT) || (hidKeysDown() & KEY_L)) {
+				if ((hidKeysDownRepeat() & KEY_LEFT) || (hidKeysDownRepeat() & KEY_L)) {
 					if (pImg->getWWPaletteIndex() > 0) {
 						pImg->setPaletteColor(pImg->getWWPaletteIndex() - 1, 0);
 						C3D_FrameEnd(0);

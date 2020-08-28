@@ -337,6 +337,7 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 	while(!doOut) {
 		touchPosition touch;
 		u32 hDown = hidKeysDown();
+		u32 hRepeat = hidKeysDownRepeat();
 		hidScanInput();
 		hidTouchRead(&touch);
 
@@ -770,7 +771,7 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 				}
 
 				/* Navigation. */
-				if (hDown & KEY_RIGHT) {
+				if (hRepeat & KEY_RIGHT) {
 					if (topSelect) {
 						if (selection < 9) selection++;
 					} else {
@@ -782,7 +783,7 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 					}
 				}
 
-				if (hDown & KEY_R) {
+				if (hRepeat & KEY_R) {
 					if (topSelect) {
 						if (box < storage->boxes() - 1) {
 							box++;
@@ -796,7 +797,7 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 					}
 				}
 
-				if (hDown & KEY_L) {
+				if (hRepeat & KEY_L) {
 					if (topSelect) {
 						if (box > 0) {
 							box--;
@@ -816,7 +817,7 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 					refreshBank = true;
 				}
 
-				if (hDown & KEY_LEFT) {
+				if (hRepeat & KEY_LEFT) {
 					if (topSelect) {
 						if (selection > 0) selection--;
 					} else {
@@ -828,7 +829,7 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 					}
 				}
 
-				if (hDown & KEY_UP) {
+				if (hRepeat & KEY_UP) {
 					if (topSelect) {
 						if (selection > 4) selection -= 5;
 					} else {
@@ -865,7 +866,7 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 					}
 				}
 
-				if (hDown & KEY_DOWN) {
+				if (hRepeat & KEY_DOWN) {
 					if (topSelect) {
 						if (selection < 5) selection += 5;
 						else if (selection > 4) {

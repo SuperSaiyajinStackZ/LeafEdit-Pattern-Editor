@@ -315,6 +315,7 @@ bool Overlays::SelectSavePattern(std::unique_ptr<Sav> &savefile, std::unique_ptr
 		}
 
 		u32 hDown = hidKeysDown();
+		u32 hRepeat = hidKeysDownRepeat();
 		hidScanInput();
 		hidTouchRead(&touch);
 
@@ -468,15 +469,37 @@ bool Overlays::SelectSavePattern(std::unique_ptr<Sav> &savefile, std::unique_ptr
 
 		/* Player Pattern Selection. */
 		} else if (category == 2) {
-			if (hDown & KEY_RIGHT) {
-				if (selection < savefile->getPlayerAmount()-1) {
-					selection++;
+			if (hRepeat & KEY_RIGHT) {
+				if (savefile->getType() == SaveType::WW) {
+					if (selection < 7) {
+						selection++;
+					}
+				} else {
+					if (selection < 9) {
+						selection++;
+					}
 				}
 			}
 
-			if (hDown & KEY_LEFT) {
+			if (hRepeat & KEY_LEFT) {
 				if (selection > 0) {
 					selection--;
+				}
+			}
+
+			if (hRepeat & KEY_DOWN) {
+				if (savefile->getType() == SaveType::WW) {
+					if (selection < 4) selection += 4;
+				} else {
+					if (selection < 5) selection += 5;
+				}
+			}
+
+			if (hRepeat & KEY_UP) {
+				if (savefile->getType() == SaveType::WW) {
+					if (selection > 3) selection -= 4;
+				} else {
+					if (selection > 4) selection -= 5;
 				}
 			}
 
@@ -522,16 +545,24 @@ bool Overlays::SelectSavePattern(std::unique_ptr<Sav> &savefile, std::unique_ptr
 
 		/* Able Sister Pattern Selection. */
 		} else if (category == 3) {
-			if (hDown & KEY_RIGHT) {
+			if (hRepeat & KEY_RIGHT) {
 				if (selection < 7) {
 					selection++;
 				}
 			}
 
-			if (hDown & KEY_LEFT) {
+			if (hRepeat & KEY_LEFT) {
 				if (selection > 0) {
 					selection--;
 				}
+			}
+
+			if (hRepeat & KEY_DOWN) {
+				if (selection < 4) selection += 4;
+			}
+
+			if (hRepeat & KEY_UP) {
+				if (selection > 3) selection -= 4;
 			}
 
 			if (hDown & KEY_TOUCH) {
@@ -562,35 +593,35 @@ bool Overlays::SelectSavePattern(std::unique_ptr<Sav> &savefile, std::unique_ptr
 				category = 0;
 			}
 		} else if (category == 4) {
-			
+
 			/* HHD. */
-			if (hDown & KEY_R) {
+			if (hRepeat & KEY_R) {
 				if (page < 7) {
 					page++;
 					generatePattern = true;
 				}
 			}
 
-			if (hDown & KEY_L) {
+			if (hRepeat & KEY_L) {
 				if (page > 0) {
 					page--;
 					generatePattern = true;
 				}
 			}
 
-			if (hDown & KEY_RIGHT) {
+			if (hRepeat & KEY_RIGHT) {
 				if (selection < 12) selection += 3;
 			}
 
-			if (hDown & KEY_LEFT) {
+			if (hRepeat & KEY_LEFT) {
 				if (selection > 2) selection -= 3;
 			}
 
-			if (hDown & KEY_DOWN) {
+			if (hRepeat & KEY_DOWN) {
 				if (selection < 14) selection++;
 			}
 
-			if (hDown & KEY_UP) {
+			if (hRepeat & KEY_UP) {
 				if (selection > 0) selection--;
 			}
 

@@ -106,10 +106,10 @@ void PatternEditor::saveStuff() {
 			Msg::DisplayWaitMsg(Lang::get("SAVED_CHANGES"));
 			this->unloadSave();
 			return;
+		} else {
+			Msg::DisplayWaitMsg(Lang::get("NO_SAVE_LOADED"));
 		}
 	}
-
-	Msg::DisplayWaitMsg(Lang::get("NO_SAVE_LOADED"));
 }
 
 /* Unload a savefile. */
@@ -133,10 +133,10 @@ void PatternEditor::PatternFromSaveLoad() {
 				this->patternImage = CoreUtils::patternImage(this->image, this->savetype);
 				return;
 			}
+		} else {
+			Msg::DisplayWaitMsg(Lang::get("NO_SAVE_LOADED2"));
 		}
 	}
-
-	Msg::DisplayWaitMsg(Lang::get("NO_SAVE_LOADED2"));
 }
 
 /* Return the save name here. */
