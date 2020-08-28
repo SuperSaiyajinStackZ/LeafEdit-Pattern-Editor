@@ -74,6 +74,29 @@ static const std::vector<Structs::ButtonPos> Pattern10 = {
 	{257, 140, 48, 48}
 };
 
+/* 15 Pattern each page. */
+static const std::vector<Structs::ButtonPos> Pattern15 = {
+	{17, 40, 48, 48},
+	{17, 100, 48, 48},
+	{17, 160, 48, 48},
+
+	{77, 40, 48, 48},
+	{77, 100, 48, 48},
+	{77, 160, 48, 48},
+
+	{137, 40, 48, 48},
+	{137, 100, 48, 48},
+	{137, 160, 48, 48},
+
+	{197, 40, 48, 48},
+	{197, 100, 48, 48},
+	{197, 160, 48, 48},
+
+	{257, 40, 48, 48},	
+	{257, 100, 48, 48},
+	{257, 160, 48, 48}
+};
+
 /* If button Position pressed -> Do something. */
 static bool touching(touchPosition touch, Button button) {
 	if (touch.px >= button.X && touch.px <= (button.X + button.XSize) && touch.py >= button.Y && touch.py <= (button.Y + button.YSize)) return true;
@@ -89,6 +112,8 @@ static std::string getSaveName(SaveType savetype) {
 			return "New Leaf";
 		case SaveType::WA:
 			return "Welcome Amiibo";
+		case SaveType::HHD:
+			return "Happy Home Designer";
 		case SaveType::UNUSED:
 			return "?";
 	}
@@ -186,6 +211,11 @@ static void storageInject(std::unique_ptr<Storage> &storage, std::unique_ptr<Pat
 		storage->pattern(*res, slot);
 		if (buffer) delete[] buffer;
 		return;
+	} else if (ptrn->getType() == SaveType::HHD) {
+		res = std::make_unique<PatternHHD>(buffer, 0);
+		storage->pattern(*res, slot);
+		if (buffer) delete[] buffer;
+		return;
 	}
 
 	if (buffer) delete[] buffer;
@@ -200,9 +230,44 @@ static void injectToGame(std::unique_ptr<Pattern> &ptrn, std::unique_ptr<Pattern
 	WWRegion r1 = ptrn->getRegion();
 	WWRegion r2 = ptrn2->getRegion();
 
-	if (st1 == st2) {
-		if (r1 == r2) {
+	if (st2 == SaveType::HHD) {
+		if (st1 == SaveType::NL || st1 == SaveType::WA || st1 == SaveType::HHD) {
+			u8 *buffer = new u8[ptrn->getSize()];
+			for (int i = 0; i < (int)ptrn->getSize(); i++) {
+				buffer[i] = ptrn->returnData()[i];
+			}
 
+			ptrn2->injectData(buffer, ptrn->getSize());
+
+			delete[] buffer;
+		}
+
+	} else if (st2 == SaveType::WA) {
+		if (st1 == SaveType::NL || st1 == SaveType::WA || st1 == SaveType::HHD) {
+			u8 *buffer = new u8[ptrn->getSize()];
+			for (int i = 0; i < (int)ptrn->getSize(); i++) {
+				buffer[i] = ptrn->returnData()[i];
+			}
+
+			ptrn2->injectData(buffer, ptrn->getSize());
+
+			delete[] buffer;
+		}
+
+	} else if (st2 == SaveType::NL) {
+		if (st1 == SaveType::NL || st1 == SaveType::WA || st1 == SaveType::HHD) {
+			u8 *buffer = new u8[ptrn->getSize()];
+			for (int i = 0; i < (int)ptrn->getSize(); i++) {
+				buffer[i] = ptrn->returnData()[i];
+			}
+
+			ptrn2->injectData(buffer, ptrn->getSize());
+
+			delete[] buffer;
+		}
+
+	} else if (st2 == SaveType::WW) {
+		if (r1 == r2) {
 			u8 *buffer = new u8[ptrn->getSize()];
 			for (int i = 0; i < (int)ptrn->getSize(); i++) {
 				buffer[i] = ptrn->returnData()[i];
@@ -231,7 +296,7 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 	if (!savefile) return;
 
 	bool displayInfo = false, refreshBank = true, refreshGame = true;
-	int box = 0, maxSavePTN = 0, subMode = 0, playerAmount = 0, SelectedPlayer = 0;
+	int box = 0, maxSavePTN = 0, subMode = 0, playerAmount = 0, SelectedPlayer = 0, page = 0;
 	int selection = 0, lastMode = 0;
 	bool topSelect = false;
 	
@@ -246,17 +311,27 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 	bool bankHasImage[10] = {false};
 
 	/* Save Variables. */
-	std::unique_ptr<Pattern> savePattern[10];
-	std::unique_ptr<PatternImage> savePatternImage[10];
-	C2D_Image saveImages[10];
-	bool saveHasImage[10] = {false};
+	std::unique_ptr<Pattern> savePattern[15];
+	std::unique_ptr<PatternImage> savePatternImage[15];
+	C2D_Image saveImages[15];
+	bool saveHasImage[15] = {false};
 
 	bool doOut = false;
 
 	/* Initialize max save pattern. */
-	if (savefile->getType() == SaveType::NL || savefile->getType() == SaveType::WA) maxSavePTN = 10;
-	else if (savefile->getType() == SaveType::WW) maxSavePTN = 8;
-	else if (savefile->getType() == SaveType::UNUSED) return;
+	if (savefile->getType() == SaveType::NL || savefile->getType() == SaveType::WA) {
+		maxSavePTN = 10;
+
+	} else if (savefile->getType() == SaveType::WW) {
+		maxSavePTN = 8;
+
+	} else if (savefile->getType() == SaveType::HHD) {
+		maxSavePTN = 15;
+		subMode = 5;
+
+	} else if (savefile->getType() == SaveType::UNUSED) {
+		return;
+	}
 
 	while(!doOut) {
 		touchPosition touch;
@@ -338,7 +413,7 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 
 				UI::DrawSprite(sprites_pointer_idx, playerPos[selection].X + 100, playerPos[selection].Y + 30);
 
-			} else if (subMode == 2 || subMode == 3 || subMode == 4) {
+			} else if (subMode == 2 || subMode == 3 || subMode == 4 || subMode == 5) {
 				/* Player Pattern. */
 				if (maxSavePTN == 8) {
 					for (int i = 0; i < 8; i++) {
@@ -387,7 +462,7 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 							}
 						}
 					}
-				} else {
+				} else if (maxSavePTN == 1) {
 					if (saveImages[0].tex && saveHasImage[0]) {
 						C2D_DrawImageAt(saveImages[0], 17, 60, 0.5f, nullptr, 1.5f, 1.5f);
 					}
@@ -402,6 +477,22 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 
 					if (!topSelect) {
 						if (0 == selection) UI::DrawSprite(sprites_pattern_border_idx, 16, 59);
+					}
+				} else if (maxSavePTN == 15) {
+					for (int i = 0; i < 15; i++) {
+						if (saveImages[i].tex && saveHasImage[i]) {
+							C2D_DrawImageAt(saveImages[i], Pattern15[i].x, Pattern15[i].y, 0.5f, nullptr, 1.5f, 1.5f);
+						}
+					}
+
+					if (grab) {
+						if (!grabInf.second) {
+							UI::bankSelect(Pattern15[grabInf.first].x-1, Pattern15[grabInf.first].y-1);
+						}
+					}
+
+					if (!topSelect) {
+						UI::DrawSprite(sprites_pattern_border_idx, Pattern15[selection].x-1, Pattern15[selection].y-1);
 					}
 				}
 			}
@@ -455,29 +546,30 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 
 				/* Reload here. */
 				C3D_FrameEnd(0);
-				for (int i = 0; i < maxSavePTN; i++) {
+				for (int i = 0 + (page * maxSavePTN), i2 = 0; i < maxSavePTN + (page * maxSavePTN); i++, i2++) {
 
-					if (savefile->playerPattern(0, i)) {
-						if (subMode == 2) {
-							savePattern[i] = savefile->playerPattern(0, i);
-						} else if (subMode == 3) {
-							savePattern[i] = savefile->ableSisterPattern(i);
-						} else if (subMode == 4) {
-							savePattern[0] = savefile->townflag();
-						}
+					
+					if (subMode == 2) {
+						savePattern[i2] = savefile->playerPattern(0, i);
+					} else if (subMode == 3) {
+						savePattern[i2] = savefile->ableSisterPattern(i);
+					} else if (subMode == 4) {
+						savePattern[0] = savefile->townflag();
+					} else if (subMode == 5) {
+						savePattern[i2] = savefile->HHDPattern(i);
+					}
 
-						if (savePattern[i]) {
+					if (savePattern[i2]) {
 
-							if (savePattern[i]) {
-								savePatternImage[i] = savePattern[i]->image(0);
-								if (savePatternImage[i]) {
-									saveImages[i] = CoreUtils::patternImage(savePatternImage[i], savePattern[i]->getType());
-									saveHasImage[i] = true;
-								}
+						if (savePattern[i2]) {
+							savePatternImage[i2] = savePattern[i2]->image(0);
+							if (savePatternImage[i2]) {
+								saveImages[i2] = CoreUtils::patternImage(savePatternImage[i2], savePattern[i2]->getType());
+								saveHasImage[i2] = true;
 							}
 						}
-					}	
-				}
+					}
+				}	
 
 				refreshGame = false;
 			}
@@ -631,7 +723,7 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 					selection = 0;
 					subMode = 0;
 				}
-			} else if (subMode == 2 || subMode == 3 || subMode == 4) {
+			} else if (subMode == 2 || subMode == 3 || subMode == 4 || subMode == 5) {
 
 				if (hDown & KEY_X) {
 					if (topSelect) {
@@ -681,8 +773,10 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 					if (topSelect) {
 						if (selection < 9) selection++;
 					} else {
-						if (subMode != 4) {
+						if (subMode != 4 && subMode != 5) {
 							if (selection < maxSavePTN - 1) selection++;
+						} else if (subMode == 5) {
+							if (selection < 12) selection += 3;
 						}
 					}
 				}
@@ -708,7 +802,15 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 				}
 
 				if (hDown & KEY_LEFT) {
-					if (selection > 0) selection--;
+					if (topSelect) {
+						if (selection > 0) selection--;
+					} else {
+						if (subMode != 4 && subMode != 5) {
+							if (selection > 0) selection--;
+						} else if (subMode == 5) {
+							if (selection > 2) selection -= 3;
+						}
+					}
 				}
 
 				if (hDown & KEY_UP) {
@@ -722,15 +824,28 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 								if (selection == 0) selection = 5;
 								else selection = selection + 5;
 							}
+
 						} else if (maxSavePTN == 10) {
 							if (selection > 4) selection -= 5;
 							else if (selection < 5) {
 								topSelect = true;
 								selection = selection + 5;
 							}
+
 						} else if (maxSavePTN == 1) {
 							topSelect = true;
 							selection = 5;
+
+						} else if (maxSavePTN == 15) {
+							if (selection == 0 || selection == 3 || selection == 6 || selection == 9 || selection == 12) {
+								topSelect = true;
+								if (selection == 0) selection = 5;
+								else selection = 5 + (selection / 3);
+							} else {
+								if (selection > 0) {
+									selection--;
+								}
+							}
 						}
 					}
 				}
@@ -740,29 +855,56 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 						if (selection < 5) selection += 5;
 						else if (selection > 4) {
 							topSelect = false;
+							
 							if (maxSavePTN == 8) {
 								if (selection == 5) selection = 0;
 								else selection = selection - 4;
+
 							} else if (maxSavePTN == 10) {
 								selection = selection - 5;
+
 							} else if (maxSavePTN == 1) {
 								selection = 0;
+
+							} else if (maxSavePTN == 15) {
+								if (selection == 5) selection = 0;
+								else selection = 0 + ((selection - 5) * 3);
 							}
 						}
+
 					} else {
 						if (maxSavePTN == 8) {
 							if (selection < 4) selection += 4;
+
 						} else if (maxSavePTN == 10) {
 							if (selection < 5) selection += 5;
+
+						} else if (maxSavePTN == 15) {
+							if (selection < 14) selection++;
 						}
 					}
 				}
 
-				if (hDown & KEY_B) {
-					selection = 0;
-					topSelect = false;
 
-					subMode = lastMode;
+				if (hDown & KEY_B) {
+					if (subMode != 5) {
+						selection = 0;
+						topSelect = false;
+
+						subMode = lastMode;
+					}
+				}
+
+				if (hDown & KEY_Y) {
+					if (subMode == 5) {
+						if (page < 7) {
+							page++;
+							refreshGame = true;
+						} else if (page == 7) {
+							page = 0;
+							refreshGame = true;
+						}
+					}
 				}
 			}
 

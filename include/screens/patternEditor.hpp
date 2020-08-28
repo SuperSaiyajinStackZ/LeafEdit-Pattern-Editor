@@ -30,6 +30,7 @@
 #include "common.hpp"
 #include "overlay.hpp"
 #include "Pattern.hpp"
+#include "PatternHHD.hpp"
 #include "PatternNL.hpp"
 #include "PatternWA.hpp"
 #include "PatternWW.hpp"

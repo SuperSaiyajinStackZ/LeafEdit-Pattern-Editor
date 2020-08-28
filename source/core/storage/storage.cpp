@@ -117,21 +117,29 @@ std::unique_ptr<Pattern> Storage::pattern(int slot) const {
 				case WWRegion::USA_REV0:
 				case WWRegion::USA_REV1:
 					return std::make_unique<PatternWW>(entries[slot].data, 0, WWRegion::USA_REV1);
+
 				case WWRegion::EUR_REV1:
 					return std::make_unique<PatternWW>(entries[slot].data, 0, WWRegion::EUR_REV1);
+
 				case WWRegion::JPN_REV0:
 				case WWRegion::JPN_REV1:
 					return std::make_unique<PatternWW>(entries[slot].data, 0, WWRegion::JPN_REV1);
+
 				case WWRegion::KOR_REV1:
 					return std::make_unique<PatternWW>(entries[slot].data, 0, WWRegion::KOR_REV1);
+
 				case WWRegion::UNKNOWN:
 					return nullptr;
 			}
 			
 		case SaveType::NL:
 			return std::make_unique<PatternNL>(entries[slot].data, 0);
+
 		case SaveType::WA:
 			return std::make_unique<PatternWA>(entries[slot].data, 0);
+		case SaveType::HHD:
+			return std::make_unique<PatternHHD>(entries[slot].data, 0);
+
 		case SaveType::UNUSED:
 			return nullptr;
 	}

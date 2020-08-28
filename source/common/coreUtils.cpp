@@ -58,6 +58,7 @@ void CoreUtils::generateEmptyPattern(SaveType ST, WWRegion region, std::unique_p
 
 		case SaveType::NL:
 		case SaveType::WA:
+		case SaveType::HHD:
 			path = "romfs:/pattern/empty/nl.acnl";
 			break;
 		case SaveType::UNUSED:
@@ -122,6 +123,7 @@ C2D_Image CoreUtils::savePatternImage(std::unique_ptr<PatternImage> image, SaveT
 		switch(ST) {
 			case SaveType::NL:
 			case SaveType::WA:
+			case SaveType::HHD:
 				for (int i = 0; i < 0x200; i++) {
 					buffer[i * 2] = NLPaletteColors[image->getPaletteColor(image->getPixel(i).left)]; // Left pixel.
 					buffer[i * 2 + 1] = NLPaletteColors[image->getPaletteColor(image->getPixel(i).right)]; // Right pixel.
@@ -157,6 +159,7 @@ C2D_Image CoreUtils::patternImage(std::unique_ptr<PatternImage> &image, SaveType
 		switch(ST) {
 			case SaveType::NL:
 			case SaveType::WA:
+			case SaveType::HHD:
 				for (int i = 0; i < 0x200; i++) {
 					buffer[i * 2] = NLPaletteColors[image->getPaletteColor(image->getPixel(i).left)]; // Left pixel.
 					buffer[i * 2 + 1] = NLPaletteColors[image->getPaletteColor(image->getPixel(i).right)]; // Right pixel.
@@ -232,6 +235,7 @@ std::string CoreUtils::getDefaultFile(SaveType ST, WWRegion region) {
 			}
 
 		case SaveType::WA:
+		case SaveType::HHD:
 			if (access("sdmc:/3ds/LeafEdit/Pattern-Editor/defaults/waDefault.pt", F_OK) == 0) {
 				return "sdmc:/3ds/LeafEdit/Pattern-Editor/defaults/waDefault.pt";
 			} else {
@@ -318,6 +322,7 @@ PatternInformations CoreUtils::getDefaultInformation(SaveType ST, WWRegion regio
 			break;
 
 		case SaveType::WA:
+		case SaveType::HHD:
 			patternLength = 20;
 			creatorNameStart = 0x28;
 			creatorLength = 8;
@@ -463,6 +468,7 @@ void CoreUtils::dumpPatternInformation(SaveType ST, WWRegion region, std::unique
 			break;
 
 		case SaveType::WA:
+		case SaveType::HHD:
 			patternLength = 20;
 			creatorNameStart = 0x28;
 			creatorLength = 8;

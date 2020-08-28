@@ -26,6 +26,7 @@
 
 // Save class.
 #include "Sav.hpp"
+#include "SavHHD.hpp"
 #include "SavWW.hpp"
 #include "SavNL.hpp"
 #include "SavWA.hpp"
@@ -79,6 +80,9 @@ std::unique_ptr<Sav> Sav::getSave(std::shared_ptr<u8[]> dt, u32 length, std::str
 			} else {
 				return nullptr;
 			}
+
+		case 0x2BE940:
+			return std::make_unique<SavHHD>(dt, length, Loc);
 
 	default:
 		return nullptr;

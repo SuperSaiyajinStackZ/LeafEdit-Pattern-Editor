@@ -148,6 +148,8 @@ const std::string PatternEditor::getSaveName() const {
 			return "New Leaf";
 		case SaveType::WA:
 			return "Welcome Amiibo";
+		case SaveType::HHD:
+			return "Happy Home Designer";
 		case SaveType::UNUSED:
 			return "?";
 	}
@@ -216,7 +218,7 @@ void PatternEditor::getPattern(const std::string ptrnFile) {
 			case 0x26C:
 			case 0x870:
 				this->saveregion = WWRegion::UNKNOWN;
-				this->savetype = SaveType::NL; // Is also AC:WA format, but they're the same.
+				this->savetype = SaveType::NL; // Is also AC:WA and AC:HHD format, but they're the same.
 				this->isValid = true;
 				break;
 		}
@@ -232,12 +234,19 @@ void PatternEditor::load(const std::string ptrnFile, bool fromFile) {
 			case SaveType::NL:
 				this->pattern = std::make_unique<PatternNL>(this->data.get(), 0);
 				break;
+
 			case SaveType::WA:
 				this->pattern = std::make_unique<PatternWA>(this->data.get(), 0);
 				break;
+
+			case SaveType::HHD:
+				this->pattern = std::make_unique<PatternHHD>(this->data.get(), 0);
+				break;
+
 			case SaveType::WW:
 				this->pattern = std::make_unique<PatternWW>(this->data.get(), 0, this->saveregion);
 				break;
+
 			case SaveType::UNUSED:
 				break;
 		}
@@ -328,7 +337,7 @@ void PatternEditor::Draw(void) const {
 				}
 			}
 
-		} else if (this->savetype == SaveType::NL || this->savetype == SaveType::WA) {
+		} else if (this->savetype == SaveType::NL || this->savetype == SaveType::WA || this->savetype == SaveType::HHD) {
 			for (int i = 0; i < 15; i++) {
 				if (i == this->color) {
 					UI::DrawPaletteGrid(palettePos[i].x, palettePos[i].y, palettePos[i].w, palettePos[i].h, NLPaletteColors[this->image->getPaletteColor(i)], C2D_Color32(160, 0, 0, 255));
@@ -541,6 +550,7 @@ void PatternEditor::Logic(u32 hDown, u32 hHeld, touchPosition touch) {
 							break;
 						case SaveType::NL:
 						case SaveType::WA:
+						case SaveType::HHD:
 							destination += ".acnl";
 							break;
 						case SaveType::UNUSED:
@@ -573,7 +583,7 @@ void PatternEditor::Logic(u32 hDown, u32 hHeld, touchPosition touch) {
 						for (int y = 0; y < 32; y++) {
 							if (touch.px <= (8 + 7 + x * 7) && touch.px >= (8 + x * 7) && touch.py <= (8 + 7 + y * 7) && touch.py >= (8 + y * 7)) {
 								if (this->savetype == SaveType::WW) this->image->setPixel(x, y, this->color + 1);
-								else if (this->savetype == SaveType::NL || this->savetype == SaveType::WA) this->image->setPixel(x, y, this->color);
+								else if (this->savetype == SaveType::NL || this->savetype == SaveType::WA || this->savetype == SaveType::HHD) this->image->setPixel(x, y, this->color);
 								didTouch = true;
 								break;
 							}

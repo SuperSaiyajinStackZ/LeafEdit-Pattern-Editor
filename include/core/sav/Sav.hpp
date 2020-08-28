@@ -62,6 +62,7 @@ public:
 	virtual std::unique_ptr<Pattern> ableSisterPattern(int pattern) const = 0;
 	virtual int getAbleSisterAmount() const = 0;
 	virtual std::unique_ptr<Pattern> townflag() const = 0;
+	virtual std::unique_ptr<Pattern> HHDPattern(u32 slot) const = 0;
 
 	// Call this when getting the SaveType.
 	static std::unique_ptr<Sav> getSave(std::shared_ptr<u8[]> dt, u32 length, std::string Loc);
@@ -71,33 +72,6 @@ public:
 	u32 getLength() const { return saveLength; }
 	std::shared_ptr<u8[]> rawData() const { return saveData; }
 	std::string getFileLocation() const { return this->filelocation; }
-
-	// Pass game | version.
-	const u8 version() {
-		switch(this->getType()) {
-			case SaveType::WW:		return 1; // AC:WW.
-			case SaveType::NL:		return 2; // AC:NL.
-			case SaveType::WA:		return 3; // AC:WA.
-			case SaveType::UNUSED:	return 0; // Not Valid / Unused.
-		}
-
-		return 0; // Should not happen actually.
-	}
-
-	// Pass Region. -> Only needed for AC:WW.
-	const u8 region() {
-		switch(this->getRegion()) {
-			case WWRegion::USA_REV0:	return 1; // USA Revision 0.
-			case WWRegion::USA_REV1:	return 2; // USA Revision 1.
-			case WWRegion::EUR_REV1:	return 3; // EUR Revision 1.
-			case WWRegion::JPN_REV0:	return 4; // JPN Revision 0.
-			case WWRegion::JPN_REV1:	return 5; // JPN Revision 1.
-			case WWRegion::KOR_REV1:	return 6; // KOR Revision 1.
-			case WWRegion::UNKNOWN:		return 0; // Unknown.
-		}
-
-		return 0; // Should not happen actually.
-	}
 
 	virtual SaveType getType() const = 0;
 	virtual WWRegion getRegion() const = 0;

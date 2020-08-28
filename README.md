@@ -33,9 +33,9 @@ NOTE: This tool can _only_ edit pattern. For a more featured Save Editor please 
 
 - [x] Export Pattern Informations. // For the defaults.
 
-- [x] Edit Pattern from AC:WW, AC:NL & AC:WA's savefile directly.
+- [x] Edit Pattern from AC:WW, AC:NL, AC:WA & AC:HHD's savefile directly.
 
-- [x] A Storage System for your favorite AC:NL & AC:WW Pattern.
+- [x] A Storage System for your favorite AC:WW, AC:NL, AC:WA & AC:HHD's Pattern.
 
 ## Planned | TODOs
 - [ ] 16-bit BMP images to Pattern conversion.

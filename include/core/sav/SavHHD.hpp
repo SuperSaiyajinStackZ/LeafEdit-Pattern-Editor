@@ -1,6 +1,6 @@
 /*
-*   This file is part of LeafEdit-Core
-*   Copyright (C) 2020 Universal-Team
+*   This file is part of LeafEdit-Pattern-Editor
+*   Copyright (C) 2020 SuperSaiyajinStackZ
 *
 *   This program is free software: you can redistribute it and/or modify
 *   it under the terms of the GNU General Public License as published by
@@ -24,39 +24,39 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef _LEAFEDIT_CORE_SAV_WA_HPP
-#define _LEAFEDIT_CORE_SAV_WA_HPP
+#ifndef _LEAFEDIT_PATTRN_EDITOR_SAV_HHD_HPP
+#define _LEAFEDIT_PATTRN_EDITOR_SAV_HHD_HPP
 
 #include "Pattern.hpp"
-#include "PatternWA.hpp"
+#include "PatternHHD.hpp"
 #include "Sav.hpp"
 #include "types.hpp"
 
 #include <string>
 
 class Pattern;
-class PatternWA;
-class SavWA : public Sav {
+class PatternHHD;
+class SavHHD : public Sav {
 protected:
 	std::shared_ptr<u8[]> dataPointer;
 	u32 saveSize;
 public:
-	SavWA(std::shared_ptr<u8[]> dt, u32 ssize, std::string Loc) : Sav(dt, ssize, Loc), dataPointer(dt), saveSize(ssize) { }
-	virtual ~SavWA() {}
+	SavHHD(std::shared_ptr<u8[]> dt, u32 ssize, std::string Loc) : Sav(dt, ssize, Loc), dataPointer(dt), saveSize(ssize) { }
+	virtual ~SavHHD() {}
 	void Finish(void) override;
 
-	bool PlayerExist(int player) const override;
+	bool PlayerExist(int player) const override { return false; };
 	
 	/* Pattern. */
-	std::unique_ptr<Pattern> playerPattern(int player, int pattern) const override;
-	int getPlayerAmount() const override { return 10; }
-	std::unique_ptr<Pattern> ableSisterPattern(int pattern) const override;
-	int getAbleSisterAmount() const override { return 8; }
-	std::unique_ptr<Pattern> townflag() const override;
+	std::unique_ptr<Pattern> playerPattern(int player, int pattern) const override { return nullptr; };
+	int getPlayerAmount() const override { return 0; }
+	std::unique_ptr<Pattern> ableSisterPattern(int pattern) const override { return nullptr; };
+	int getAbleSisterAmount() const override { return 0; }
+	std::unique_ptr<Pattern> townflag() const override { return nullptr; };
 	
-	std::unique_ptr<Pattern> HHDPattern(u32 slot) const override { return nullptr; };
-	
-	SaveType getType() const override { return SaveType::WA; }
+	std::unique_ptr<Pattern> HHDPattern(u32 slot) const override;
+
+	SaveType getType() const override { return SaveType::HHD; }
 	WWRegion getRegion() const override { return WWRegion::UNKNOWN; }
 	
 private:

@@ -55,6 +55,8 @@ public:
 	int getAbleSisterAmount() const override { return 8; }
 	std::unique_ptr<Pattern> townflag() const override;
 
+	std::unique_ptr<Pattern> HHDPattern(u32 slot) const override { return nullptr; };
+	
 	SaveType getType() const override { return SaveType::WW; }
 	WWRegion getRegion() const override { return region; }
 

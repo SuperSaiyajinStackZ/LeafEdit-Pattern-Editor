@@ -69,6 +69,29 @@ static const std::vector<Structs::ButtonPos> Pattern10 = {
 	{257, 140, 48, 48}
 };
 
+/* 15 Pattern each page. */
+static const std::vector<Structs::ButtonPos> Pattern15 = {
+	{17, 40, 48, 48},
+	{17, 100, 48, 48},
+	{17, 160, 48, 48},
+
+	{77, 40, 48, 48},
+	{77, 100, 48, 48},
+	{77, 160, 48, 48},
+
+	{137, 40, 48, 48},
+	{137, 100, 48, 48},
+	{137, 160, 48, 48},
+
+	{197, 40, 48, 48},
+	{197, 100, 48, 48},
+	{197, 160, 48, 48},
+
+	{257, 40, 48, 48},	
+	{257, 100, 48, 48},
+	{257, 160, 48, 48}
+};
+
 /* If button Position pressed -> Do something. */
 static bool touching(touchPosition touch, Button button) {
 	if (touch.px >= button.X && touch.px <= (button.X + button.XSize) && touch.py >= button.Y && touch.py <= (button.Y + button.YSize)) return true;
@@ -78,6 +101,29 @@ static bool touching(touchPosition touch, Button button) {
 static bool touchPattern(touchPosition touch, Structs::ButtonPos ptrn) {
 	if (touch.px >= ptrn.x && touch.px <= (ptrn.x + ptrn.w) && touch.py >= ptrn.y && touch.py <= (ptrn.y + ptrn.h)) return true;
 	else return false;
+}
+
+static void DrawHHDSelection(std::vector<C2D_Image> &images, int selection, int page) {
+	Gui::clearTextBufs();
+	C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+	C2D_TargetClear(Top, C2D_Color32(0, 0, 0, 0));
+	C2D_TargetClear(Bottom, C2D_Color32(0, 0, 0, 0));
+
+	UI::DrawBase(true, true);
+	Gui::DrawStringCentered(0, -2, 0.9f, C2D_Color32(255, 255, 255, 255), Lang::get("SELECT_A_PATTERN"), 395, 0, fnt);
+	UI::DrawSprite(sprites_bottom_bar_idx, 0, 209);
+	Gui::DrawStringCentered(0, 218, 0.9f, C2D_Color32(255, 255, 255, 255), Lang::get("X_SELECT"), 395, 0, fnt);
+	UI::DrawBase(false, true);
+
+	for (int i = 0; i < 15; i++) {
+		if (images[i].subtex) {
+			C2D_DrawImageAt(images[i], Pattern15[i].x, Pattern15[i].y, 0.5f, nullptr, 1.5f, 1.5f);
+		}
+	}
+
+	UI::DrawSprite(sprites_pointer_idx, Pattern15[selection].x+10, Pattern15[selection].y+10);
+	
+	C3D_FrameEnd(0);
 }
 
 static void CategorySelect(int selection) {
@@ -214,11 +260,42 @@ bool Overlays::SelectSavePattern(std::unique_ptr<Sav> &savefile, std::unique_ptr
 	if (!savefile) return false;
 	std::vector<C2D_Image> images;
 	touchPosition touch;
-	int category = 0, selection = 0, SelectedPlayer = 0, playerAmount = 0;
+	int category = 0, selection = 0, SelectedPlayer = 0, playerAmount = 0, page = 0;
+	bool generatePattern = false;
+
+	if (savefile->getType() == SaveType::HHD) {
+		/* Generate Pattern for HHD. */
+		C3D_FrameEnd(0);
+		images.clear();
+
+		/* Push Images. */
+		for (int i = 0; i < 15; i++) {
+			images.push_back({CoreUtils::savePatternImage(savefile->HHDPattern(i)->image(0), SaveType::WA)});
+		}
+
+		category = 4;
+	}
+
 
 	gspWaitForVBlank();
 
 	while(1) {
+		if (generatePattern) {
+			if (savefile->getType() == SaveType::HHD) {
+				/* Generate Pattern for HHD. */
+				C3D_FrameEnd(0);
+				images.clear();
+
+				/* Push Images. */
+				for (int i = 0 + (page * 15); i < 15 + (page * 15); i++) {
+					images.push_back({CoreUtils::savePatternImage(savefile->HHDPattern(i)->image(0), SaveType::WA)});
+				}
+			}
+
+			generatePattern = false;
+		}
+
+
 		switch(category) {
 			case 0:
 				CategorySelect(selection);
@@ -231,6 +308,10 @@ bool Overlays::SelectSavePattern(std::unique_ptr<Sav> &savefile, std::unique_ptr
 				break;
 			case 3:
 				SelectAbleSisterPattern(images, selection);
+				break;
+			case 4:
+				DrawHHDSelection(images, selection, page);
+				break;
 		}
 
 		u32 hDown = hidKeysDown();
@@ -480,7 +561,61 @@ bool Overlays::SelectSavePattern(std::unique_ptr<Sav> &savefile, std::unique_ptr
 				gspWaitForVBlank();
 				category = 0;
 			}
-		}
+		} else if (category == 4) {
+			
+			/* HHD. */
+			if (hDown & KEY_R) {
+				if (page < 7) {
+					page++;
+					generatePattern = true;
+				}
+			}
 
+			if (hDown & KEY_L) {
+				if (page > 0) {
+					page--;
+					generatePattern = true;
+				}
+			}
+
+			if (hDown & KEY_RIGHT) {
+				if (selection < 12) selection += 3;
+			}
+
+			if (hDown & KEY_LEFT) {
+				if (selection > 2) selection -= 3;
+			}
+
+			if (hDown & KEY_DOWN) {
+				if (selection < 14) selection++;
+			}
+
+			if (hDown & KEY_UP) {
+				if (selection > 0) selection--;
+			}
+
+			if (hDown & KEY_X) {
+				if (savefile->HHDPattern((15 * page) + selection)) {
+					ptrn = savefile->HHDPattern((15 * page) + selection); /* Return HHD pattern. */
+					return true;
+				}
+			}
+
+			if (hDown & KEY_TOUCH) {
+				for (int i = 0; i < 15; i++) {
+					if (touchPattern(touch, Pattern15[i])) {
+						gspWaitForVBlank();
+						if (savefile->HHDPattern((15 * page) + i)) {
+							ptrn = savefile->HHDPattern((15 * page) + i); /* Return HHD pattern. */
+							return true;
+						}
+					}
+				}
+			}
+
+			if (hDown & KEY_B) {
+				return false;
+			}
+		}
 	}
 }
