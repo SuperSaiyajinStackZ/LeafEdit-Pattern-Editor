@@ -16,7 +16,7 @@
 	"DEVKITPRO": "- Für Libctru, Citro2D & Citro3D.",
 	"DESIGNTYPE": "Design Typ: ",
 	"EDITOR_INSTRUCTIONS": "Drück START zum öffnen des Musterwerkzeugs-Menü.\nBerühre das Muster zum zeichnen.\nBerühre die Palettenfarben auf der Seite um eine Farbe zu wählen.",
-	"ENTER_BOX_AMOUNT": "Gebe die Boxanzahl ein.",
+	"ENTER_BOX_AMOUNT": "Gebe die Boxanzahl ein.\n50 ist das maximale limit.",
 	"ENTER_COMMENT": "Gebe deinen Kommentar ein.",
 	"ENTER_COMMENT_PROMPT": "Möchtest du einen Kommentar hinzufügen?",
 	"ENTER_PATTERN_NAME": "Gebe das Muster name ein (ohne Erweiterung).",

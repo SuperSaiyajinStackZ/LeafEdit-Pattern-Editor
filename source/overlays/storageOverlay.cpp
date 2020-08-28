@@ -283,8 +283,9 @@ static void injectToGame(std::unique_ptr<Pattern> &ptrn, std::unique_ptr<Pattern
 static void handleResize(std::unique_ptr<Storage> &storage) {
 	int boxAmount = storage->boxes();
 
-	int temp = KBD::setInt(10, Lang::get("ENTER_BOX_AMOUNT"));
-	if (temp > 0 && temp < 11) {
+	int temp = KBD::setInt(50, Lang::get("ENTER_BOX_AMOUNT"));
+	if (temp > 0 && temp < 51) {
+		if (temp < boxAmount) return; // Do not allow to resize it smaller, since it would break it.
 		boxAmount = temp;
 	}
 

@@ -16,7 +16,7 @@
 	"DEVKITPRO": "- For Libctru, Citro2D & Citro3D.",
 	"DESIGNTYPE": "Designtype: ",
 	"EDITOR_INSTRUCTIONS": "Press START to open the pattern tool menu.\nTouch the pattern to draw.\nTouch the palette colors on the side to select a color.",
-	"ENTER_BOX_AMOUNT": "Enter the boxamount.",
+	"ENTER_BOX_AMOUNT": "Enter the boxamount.\n50 is the max limit.",
 	"ENTER_COMMENT": "Please enter your comment.",
 	"ENTER_COMMENT_PROMPT": "Would you like to add a comment?",
 	"ENTER_PATTERN_NAME": "Enter the Pattern name (without extension).",
