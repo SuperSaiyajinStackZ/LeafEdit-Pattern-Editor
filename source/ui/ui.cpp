@@ -67,7 +67,7 @@ Tex3DS_SubTexture _select_box(const C2D_Image& image, int x, int y, int endX, in
 
 void UI::DrawSelector(bool top, int y) {
 	C2D_Image sprite = C2D_SpriteSheetGetImage(sprites, sprites_selector_side_idx);
-	Tex3DS_SubTexture tex = _select_box(sprite, 8, 0, 9, 21); // Get Height.
+	Tex3DS_SubTexture tex = _select_box(sprite, 7, 0, 8, 21); // Get Height.
 
 	if (top) {
 		/* Draw Sides. */
