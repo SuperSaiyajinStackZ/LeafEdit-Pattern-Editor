@@ -783,16 +783,30 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 				}
 
 				if (hDown & KEY_R) {
-					if (box < storage->boxes() - 1) {
-						box++;
-						refreshBank = true;
+					if (topSelect) {
+						if (box < storage->boxes() - 1) {
+							box++;
+							refreshBank = true;
+						}
+					} else {
+						if (page < 7) {
+							page++;
+							refreshGame = true;
+						}
 					}
 				}
 
 				if (hDown & KEY_L) {
-					if (box > 0) {
-						box--;
-						refreshBank = true;
+					if (topSelect) {
+						if (box > 0) {
+							box--;
+							refreshBank = true;
+						}
+					} else {
+						if (page > 0) {
+							page--;
+							refreshGame = true;
+						}
 					}
 				}
 
@@ -893,18 +907,6 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 						topSelect = false;
 
 						subMode = lastMode;
-					}
-				}
-
-				if (hDown & KEY_Y) {
-					if (subMode == 5) {
-						if (page < 7) {
-							page++;
-							refreshGame = true;
-						} else if (page == 7) {
-							page = 0;
-							refreshGame = true;
-						}
 					}
 				}
 			}
