@@ -82,6 +82,7 @@ namespace Overlays {
 	void SelectLang();
 	void ShareOverlay(std::unique_ptr<PatternImage> &pImg, C2D_Image &img, std::unique_ptr<Pattern> &ptrn, const std::string &msg);
 
+	bool SelectFile(const std::string &path, std::vector<std::string> extensions, std::string &file, std::string message, bool allowSub = false);
 	bool SelectPattern(int sltMode, std::string &file);
 	bool SelectDestination(std::string txt, std::string &file);
 
@@ -96,6 +97,7 @@ namespace Overlays {
 	bool SelectSaveFile(std::unique_ptr<Sav> &savefile);
 
 	void StorageHandling(std::unique_ptr<Storage> &storage, std::unique_ptr<Sav> &savefile);
+	void StorageMenu(std::unique_ptr<Storage> &storage, std::unique_ptr<Sav> &savefile);
 }
 
 #endif

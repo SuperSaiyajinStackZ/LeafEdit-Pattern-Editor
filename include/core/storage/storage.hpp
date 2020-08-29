@@ -52,11 +52,14 @@ public:
 	void resize(size_t boxes);
 	bool used(u32 slot) const;
 	u32 getSize(u32 slot) const;
+	std::string name() { return this->storageFileName; }
+	void name(std::string v) { this->storageFileName = v; }
+	void createStorage();
 private:
 	static constexpr int STORAGE_VERSION = 1;
 	static std::string MAGIC;
 
-	void createStorage();
+	
 
 	struct StorageHeader {
 		const char MAGIC[4];

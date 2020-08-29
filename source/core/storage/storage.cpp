@@ -40,7 +40,7 @@ void Storage::load() {
 	if (data) data = nullptr;
 
 	bool needSave = false;
-	FILE* in = fopen(storageFileName.c_str(), "rb");
+	FILE* in = fopen((std::string("sdmc:/3ds/LeafEdit/Pattern-Editor/storage/") + storageFileName + std::string(".storage")).c_str(), "rb");
 
 	if (in) {
 		StorageHeader h{"BAD", 0, 0, 0};
@@ -72,7 +72,7 @@ void Storage::load() {
 }
 
 bool Storage::save() const {
-	FILE* out = fopen(storageFileName.c_str(), "wb");
+	FILE* out = fopen((std::string("sdmc:/3ds/LeafEdit/Pattern-Editor/storage/") + storageFileName + std::string(".storage")).c_str(), "wb");
 	if (out) {
 		fwrite(data.get(), 1, sizeof(StorageHeader) + sizeof(PatternEntry) * slots(), out);
 		fclose(out);

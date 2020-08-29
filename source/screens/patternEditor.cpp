@@ -260,7 +260,7 @@ void PatternEditor::load(const std::string ptrnFile, bool fromFile) {
 /* Load Empty Pattern. */
 PatternEditor::PatternEditor() {
 	this->load(Settings::getDefaultPath(), true);
-	this->storage = std::make_unique<Storage>("sdmc:/3ds/LeafEdit/Pattern-Editor/storage/Storage1.storage");
+	this->storage = std::make_unique<Storage>("Storage1");
 	
 	PatternInformations info = CoreUtils::getDefaultInformation(this->savetype, this->saveregion);
 
@@ -404,14 +404,10 @@ void PatternEditor::Logic(u32 hDown, u32 hHeld, touchPosition touch) {
 
 	/* Storage Handling. */
 	if (this->mode == PatternMode::StorageHandling) {
-		if (this->savefile) {
-			Overlays::StorageHandling(this->storage, this->savefile);
-			if (Msg::promptMsg("SAVE_STORAGE")) {
-				storage->save();
-			}
-		} else {
-			Msg::DisplayWaitMsg(Lang::get("STORAGE_MSG"));
-		}
+		Overlays::StorageMenu(this->storage, this->savefile);
+		/*if (Msg::promptMsg("SAVE_STORAGE")) {
+			storage->save();
+		}*/
 
 		this->mode = PatternMode::Draw;
 	}
