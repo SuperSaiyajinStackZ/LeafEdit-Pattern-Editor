@@ -405,10 +405,6 @@ void PatternEditor::Logic(u32 hDown, u32 hHeld, touchPosition touch) {
 	/* Storage Handling. */
 	if (this->mode == PatternMode::StorageHandling) {
 		Overlays::StorageMenu(this->storage, this->savefile);
-		/*if (Msg::promptMsg("SAVE_STORAGE")) {
-			storage->save();
-		}*/
-
 		this->mode = PatternMode::Draw;
 	}
 	

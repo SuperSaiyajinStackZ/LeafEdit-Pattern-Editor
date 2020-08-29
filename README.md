@@ -37,6 +37,8 @@ NOTE: This tool can _only_ edit pattern. For a more featured Save Editor please 
 
 - [x] A Storage System for your favorite AC:WW, AC:NL, AC:WA & AC:HHD's Pattern.
 
+- [x] A Storage Menu for changing, resizing, creating, saving and managing the storage.
+
 ## Planned | TODOs
 - [ ] 16-bit BMP images to Pattern conversion.
 
@@ -65,7 +67,7 @@ NOTE: This tool can _only_ edit pattern. For a more featured Save Editor please 
 ![](https://github.com/SuperSaiyajinStackZ/LeafEdit-Pattern-Editor/blob/master/screenshots/shareOvl.png)
 
 ### Storage
-![](https://github.com/SuperSaiyajinStackZ/LeafEdit-Pattern-Editor/blob/master/screenshots/storageMain.png) ![](https://github.com/SuperSaiyajinStackZ/LeafEdit-Pattern-Editor/blob/master/screenshots/storageInfo.png)
+![](https://github.com/SuperSaiyajinStackZ/LeafEdit-Pattern-Editor/blob/master/screenshots/storageMenu.png) ![](https://github.com/SuperSaiyajinStackZ/LeafEdit-Pattern-Editor/blob/master/screenshots/storageMain.png) ![](https://github.com/SuperSaiyajinStackZ/LeafEdit-Pattern-Editor/blob/master/screenshots/storageInfo.png)
 
 
 ## Compilation:

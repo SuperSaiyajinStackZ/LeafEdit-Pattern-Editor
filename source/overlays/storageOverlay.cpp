@@ -280,18 +280,6 @@ static void injectToGame(std::unique_ptr<Pattern> &ptrn, std::unique_ptr<Pattern
 	}
 }
 
-static void handleResize(std::unique_ptr<Storage> &storage) {
-	int boxAmount = storage->boxes();
-
-	int temp = KBD::setInt(50, Lang::get("ENTER_BOX_AMOUNT"));
-	if (temp > 0 && temp < 51) {
-		if (temp < boxAmount) return; // Do not allow to resize it smaller, since it would break it.
-		boxAmount = temp;
-	}
-
-	storage->resize(boxAmount);
-}
-
 void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_ptr<Sav> &savefile) {
 	if (!storage) return;
 	if (!savefile) return;
@@ -621,6 +609,10 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 					}
 				}
 
+				if (hDown & KEY_B) {
+					doOut = true;
+				}
+
 				if (hDown & KEY_X) {
 					switch(selection) {
 						case 0:
@@ -727,7 +719,7 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 				}
 			} else if (subMode == 2 || subMode == 3 || subMode == 4 || subMode == 5) {
 
-				if (hDown & KEY_X) {
+				if (hDown & KEY_SELECT) {
 					if (topSelect) {
 						if (bankPattern[selection]) {
 							grabImg = CoreUtils::patternImage(bankPatternImage[selection], bankPattern[selection]->getType());
@@ -809,12 +801,6 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 							refreshGame = true;
 						}
 					}
-				}
-
-				if (hDown & KEY_SELECT) {
-					handleResize(storage);
-					box = 0;
-					refreshBank = true;
 				}
 
 				if (hRepeat & KEY_LEFT) {
@@ -908,6 +894,8 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 						topSelect = false;
 
 						subMode = lastMode;
+					} else {
+						doOut = true;
 					}
 				}
 			}

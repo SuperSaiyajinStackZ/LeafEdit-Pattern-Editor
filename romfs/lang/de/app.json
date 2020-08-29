@@ -80,7 +80,7 @@
 	"SAVE_MODE": "Speicherstand Modus",
 	"SAVE_SAVE": "Speicher Speicherstand",
 	"SAVE_STORAGE": "Sichere Lagerung",
-	"SAVE_STORAGE": "Möchtest du deine Änderungen der Lagerung speichern?",
+	"SAVE_STORAGE_MSG": "Möchtest du deine Änderungen der Lagerung speichern?",
 	"SAVED_TO_PROMPT": "Ordnungsgemäß gespeichert in:",
 	"SD_CARD": "SD Karte",
 	"SELECT_A_PATTERN": "Wähle ein Muster.",

@@ -66,6 +66,8 @@ static void Draw(std::unique_ptr<Storage> &storage, int select) {
 	}
 
 	UI::DrawSprite(sprites_pointer_idx, buttons[select].X + 100, buttons[select].Y + 30);
+	UI::DrawSprite(sprites_top_bar_idx, 0, 0);
+	Gui::DrawStringCentered(0, -2, 0.9f, C2D_Color32(255, 255, 255, 255), Lang::get("X_SELECT"), 310, 0, fnt);
 
 	C3D_FrameEnd(0);
 }
@@ -149,12 +151,15 @@ void Overlays::StorageMenu(std::unique_ptr<Storage> &storage, std::unique_ptr<Sa
 				case 3:
 					if (storage && savefile) {
 						Overlays::StorageHandling(storage, savefile);
+					} else {
+						Msg::DisplayWaitMsg(Lang::get("STORAGE_MSG"));
 					}
+
 					gspWaitForVBlank();
 
 					break;
 				case 4:
-					storage->save();
+					if (Msg::promptMsg("SAVE_STORAGE_MSG")) storage->save();
 					gspWaitForVBlank();
 					break;
 			}
@@ -175,10 +180,13 @@ void Overlays::StorageMenu(std::unique_ptr<Storage> &storage, std::unique_ptr<Sa
 			} else if (touching(touch, buttons[3])) {
 				if (storage && savefile) {
 					Overlays::StorageHandling(storage, savefile);
-					gspWaitForVBlank();
+				} else {
+					Msg::DisplayWaitMsg(Lang::get("STORAGE_MSG"));
 				}
+
+				gspWaitForVBlank();
 			} else if (touching(touch, buttons[4])) {
-				storage->save();
+				if (Msg::promptMsg("SAVE_STORAGE_MSG")) storage->save();
 				gspWaitForVBlank();
 			}	
 		}
