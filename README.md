@@ -1,7 +1,7 @@
 # LeafEdit-Pattern-Editor
 This is LeafEdit's Pattern Editor as a separate app as well!
 
-NOTE: This tool can _only_ edit pattern. For a more featured Save Editor please use [LeafEdit](https://github.com/Universal-Team/LeafEdit) instead.
+NOTE: This tool can _only_ edit and store pattern. For a more featured Save Editor please use [LeafEdit](https://github.com/Universal-Team/LeafEdit) instead.
 
 
 ## Current Features
@@ -38,6 +38,8 @@ NOTE: This tool can _only_ edit pattern. For a more featured Save Editor please 
 - [x] A Storage System for your favorite AC:WW, AC:NL, AC:WA & AC:HHD's Pattern.
 
 - [x] A Storage Menu for changing, resizing, creating, saving and managing the storage.
+
+- [x] Music Playback support. (It supports .WAV and it MUST be MONO and smaller than 13 MB and it must be called `Music.wav` and inside `sdmc:/3ds/LeafEdit/Pattern-Editor/`).
 
 ## Planned | TODOs
 - [ ] 16-bit BMP images to Pattern conversion.

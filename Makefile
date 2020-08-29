@@ -48,7 +48,7 @@ endif
 # Version number
 #---------------------------------------------------------------------------------
 VERSION_MAJOR := 0
-VERSION_MINOR := 3
+VERSION_MINOR := 4
 VERSION_MICRO := 0
 VERSION := "$(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_MICRO)"
 
