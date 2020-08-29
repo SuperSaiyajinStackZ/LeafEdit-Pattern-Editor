@@ -24,59 +24,25 @@
 *         reasonable ways as different from the original version.
 */
 
-#ifndef _LEAFEDIT_PATTERN_EDITOR_STORAGE_HPP
-#define _LEAFEDIT_PATTERN_EDITOR_STORAGE_HPP
+#ifndef _LEAFEDIT_PATTERN_EDITOR_SOUND_HPP
+#define _LEAFEDIT_PATTERN_EDITOR_SOUND_HPP
 
-#include "Pattern.hpp"
-#include "PatternHHD.hpp"
-#include "PatternNL.hpp"
-#include "PatternWA.hpp"
-#include "PatternWW.hpp"
-#include "Sav.hpp"
+#include <3ds.h>
+#include <string>
 
-class Pattern;
-class PatternHHD;
-class PatternWW;
-class PatternNL;
-class PatternWA;
-class Storage {
+class sound {
 public:
-	Storage(const std::string& fileName);
-	~Storage() { if (data)  data = nullptr; }
-	std::unique_ptr<Pattern> pattern(int slot) const;
-	void pattern(const Pattern &ptrn, int slot);
-	void load();
-	bool save() const;
-	int boxes() const;
-	int slots() const;
-	void resize(size_t boxes);
-	bool used(u32 slot) const;
-	u32 getSize(u32 slot) const;
-	std::string name() { return this->storageFileName; }
-	void name(std::string v) { this->storageFileName = v; }
-	void createStorage();
+	sound(const std::string& path, int channel = 1, bool toloop = true);
+	~sound();
+	void play();
+	void stop();
+    bool getValid() { return this->valid; }
 private:
-	static constexpr int STORAGE_VERSION = 1;
-	static std::string MAGIC;
-
-	struct StorageHeader {
-		const char MAGIC[4];
-		int version;
-		int slots;
-		int boxes;
-	};
-
-	struct PatternEntry {
-		bool used;
-		WWRegion region;
-		SaveType ST;
-		u32 patternSize;
-		u8 data[0x870];
-	};
-
-	std::unique_ptr<u8[]> data = nullptr;
-	size_t size;
-	std::string storageFileName;
+    bool valid = false;
+	u32 dataSize;
+	ndspWaveBuf waveBuf;
+	u8* data = NULL;
+	int chnl;
 };
 
 #endif

@@ -423,6 +423,8 @@ void PatternEditor::Logic(u32 hDown, u32 hHeld, touchPosition touch) {
 
 	/* Exit the app. */
 	if (this->mode == PatternMode::Exit) {
+		fadeout = true;
+		fadecolor = 0;
 		exiting = true;
 	}
 

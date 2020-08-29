@@ -29,18 +29,44 @@
 #include "overlay.hpp"
 #include "patternEditor.hpp"
 #include "settings.hpp"
+#include "sound.hpp"
 #include "structs.hpp"
 
 #include <dirent.h>
+#include <unistd.h>
 
 bool exiting = false;
 
+bool dspFound = false, songIsFound = false;
+std::unique_ptr<sound> bgm = nullptr;
 C2D_SpriteSheet sprites;
 C2D_Font fnt;
 
 bool touching(touchPosition touch, Structs::ButtonPos button) {
 	if (touch.px >= button.x && touch.px <= (button.x + button.w) && touch.py >= button.y && touch.py <= (button.y + button.h)) return true;
 	else return false;
+}
+
+static void loadSoundEffects(void) {
+	if (dspFound) {
+		if (access("sdmc:/3ds/LeafEdit/Pattern-Editor/Music.wav", F_OK ) == 0) {
+			bgm = std::make_unique<sound>("sdmc:/3ds/LeafEdit/Pattern-Editor/Music.wav", 1, true);
+			if (bgm->getValid()) songIsFound = true;
+			else songIsFound = false;
+		}
+	}
+}
+
+static void playMusic(void) {
+	if (songIsFound && bgm) {
+		if (bgm->getValid()) bgm->play();
+	}
+}
+
+static void stopMusic(void) {
+	if (songIsFound && bgm) {
+		if (bgm->getValid()) bgm->stop();
+	}
 }
 
 int main() {
@@ -66,8 +92,15 @@ int main() {
 	Gui::setScreen(std::make_unique<PatternEditor>(), false, true);
 	hidSetRepeatParameters(10, 10);
 
+ 	if (access("sdmc:/3ds/dspfirm.cdc", F_OK ) == 0) {
+		ndspInit();
+		dspFound = true;
+		loadSoundEffects();
+		playMusic();
+	}
+
 	/* MainLoop part here. */
-	while(aptMainLoop() && !exiting) {
+	while(aptMainLoop()) {
 		u32 hDown = hidKeysDown();
 		u32 hHeld = hidKeysHeld();
 		touchPosition touch;
@@ -84,12 +117,19 @@ int main() {
 		C3D_FrameEnd(0);
 
 		if (exiting) {
-			if (fadeout) break;
+			if (songIsFound && bgm) {
+				if (bgm->getValid()) stopMusic();
+			}
+
+			bgm = nullptr;
+			if (fadeout && !bgm) break;
 		}
 
 		Gui::fadeEffects(16, 16, true);
 	}
 	
+
+	if (dspFound) ndspExit();
 	/* Unload and deinit. */
 	Gui::unloadSheet(sprites);
 	Gui::unloadFont(fnt);
