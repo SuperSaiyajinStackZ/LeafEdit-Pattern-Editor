@@ -43,7 +43,7 @@ void PatternImageWW::setPaletteColor(int index, u8 color) {
 
 pixel PatternImageWW::getPixel(int index) {
 	if (this->valid) {
-		if (this->patternData() != nullptr) {
+		if (this->patternData()) {
 			return this->pixelPointer()[index];
 		} 
 	}
@@ -55,7 +55,7 @@ void PatternImageWW::setPixel(int index, int color) {
 	if (color > 15 || index > 0x3FF) return; // Out of scope.
 	
 	if (this->valid) {
-		if (this->patternData() != nullptr) {
+		if (this->patternData()) {
 			if (index % 2 == 0) this->pixelPointer()[index / 2].left = color;
 			else this->pixelPointer()[index / 2].right = color;
 		}

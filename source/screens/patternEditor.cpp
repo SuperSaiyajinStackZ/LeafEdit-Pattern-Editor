@@ -347,6 +347,8 @@ void PatternEditor::Draw(void) const {
 			}
 		}
 
+		UI::DrawPaletteGrid(8 + this->xPos * 7, 8 + this->yPos * 7, 7, 7, C2D_Color32(0, 0, 0, 0), C2D_Color32(0, 0, 0, 255));
+
 		if (fadealpha > 0) Gui::Draw_Rect(0, 0, 320, 240, C2D_Color32(fadecolor, fadecolor, fadecolor, fadealpha));
 
 		/* Invalid!! */
@@ -359,6 +361,24 @@ void PatternEditor::Draw(void) const {
 }
 
 void PatternEditor::Logic(u32 hDown, u32 hHeld, touchPosition touch) {
+	u32 hRepeat = hidKeysDownRepeat();
+
+	if (hRepeat & KEY_DOWN) {
+		if (this->yPos < 31) this->yPos++;
+	}
+
+	if (hRepeat & KEY_UP) {
+		if (this->yPos > 0) this->yPos--;
+	}
+
+	if (hRepeat & KEY_RIGHT) {
+		if (this->xPos < 31) this->xPos++;
+	}
+
+	if (hRepeat & KEY_LEFT) {
+		if (this->xPos > 0) this->xPos--;
+	}
+
 	/* Pattern Tool Menu. */
 	if (hDown & KEY_START) {
 		this->mode = Overlays::ToolSelect(this->patternImage, this->saveLoaded);
@@ -595,9 +615,18 @@ void PatternEditor::Logic(u32 hDown, u32 hHeld, touchPosition touch) {
 
 					if (didTouch) {
 						C3D_FrameEnd(0);
-						if (this->patternImage.subtex != nullptr) C2DUtils::C2D_ImageDelete(this->patternImage);
+						if (this->patternImage.tex) C2DUtils::C2D_ImageDelete(this->patternImage);
 						this->patternImage = CoreUtils::patternImage(this->image, this->savetype);
 					}
+				}
+
+				if (hHeld & KEY_A) {
+					if (this->savetype == SaveType::WW) this->image->setPixel(this->xPos, this->yPos, this->color + 1);
+					else if (this->savetype == SaveType::NL || this->savetype == SaveType::WA) this->image->setPixel(this->xPos, this->yPos, this->color);
+
+					C3D_FrameEnd(0);
+					if (this->patternImage.tex) C2DUtils::C2D_ImageDelete(this->patternImage);
+					this->patternImage = CoreUtils::patternImage(this->image, this->savetype);
 				}
 
 				/* Line Mode. TODO.*/
