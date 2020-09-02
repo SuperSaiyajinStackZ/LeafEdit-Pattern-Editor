@@ -596,6 +596,10 @@ void PatternEditor::Logic(u32 hDown, u32 hHeld, touchPosition touch) {
 					for (int x = 0; x < 32; x++) {
 						for (int y = 0; y < 32; y++) {
 							if (touch.px <= (8 + 7 + x * 7) && touch.px >= (8 + x * 7) && touch.py <= (8 + 7 + y * 7) && touch.py >= (8 + y * 7)) {
+
+								this->xPos = x;
+								this->yPos = y;
+
 								if (this->savetype == SaveType::WW) this->image->setPixel(x, y, this->color + 1);
 								else if (this->savetype == SaveType::NL || this->savetype == SaveType::WA || this->savetype == SaveType::HHD) this->image->setPixel(x, y, this->color);
 								didTouch = true;
