@@ -79,7 +79,7 @@ static void Draw(std::unique_ptr<PatternImage> &pImg, C2D_Image &img, int index,
 	UI::DrawBase(true, true);
 	UI::DrawSprite(sprites_bottom_bar_idx, 0, 209);
 	Gui::DrawStringCentered(0, -2, 0.9, C2D_Color32(255, 255, 255, 255), Lang::get("PALETTE_EDITOR"), 395, 100, fnt);
-	if (img.subtex != nullptr) C2D_DrawImageAt(img, 125, 40, 0.5f, nullptr, 5, 5); // 160x160. 160/32 -> 5.
+	if (img.tex) C2D_DrawImageAt(img, 125, 40, 0.5f, nullptr, 5, 5); // 160x160. 160/32 -> 5.
 	Gui::DrawStringCentered(0, 218, 0.9f, C2D_Color32(255, 255, 255, 255), Lang::get("EXIT_OVERLAY"), 395, 0, fnt);
 
 	if (instructions) {
@@ -128,7 +128,7 @@ static void DrawPaletteSelection(C2D_Image &img, int colorGroup, int selection, 
 	UI::DrawBase(true, true);
 	UI::DrawSprite(sprites_bottom_bar_idx, 0, 209);
 	Gui::DrawStringCentered(0, -2, 0.9, C2D_Color32(255, 255, 255, 255), Lang::get("PALETTE_EDITOR"), 395, 100, fnt);
-	if (img.subtex != nullptr) C2D_DrawImageAt(img, 125, 40, 0.5f, nullptr, 5, 5); // 160x160. 160/32 -> 5.
+	if (img.tex) C2D_DrawImageAt(img, 125, 40, 0.5f, nullptr, 5, 5); // 160x160. 160/32 -> 5.
 
 	if (instructions) {
 		UI::DrawBox((240-Gui::GetStringHeight(0.7f, Lang::get("PALETTE_NL_INSTR2"), fnt))/2 - 24, Gui::GetStringHeight(0.7f, Lang::get("PALETTE_NL_INSTR2"), fnt));

@@ -182,7 +182,7 @@ void UI::DrawFileBrowseBG(bool isTop) {
 
 void UI::DrawButton(Button btn, float TextSize) {
 	DrawBtn(btn.X, btn.Y, btn.XSize, btn.YSize);
-	Gui::DrawStringCentered(btn.X - 160 + (btn.XSize / 2), btn.Y + (btn.YSize / 2) - 10, TextSize, C2D_Color32(0, 0, 0, 255), Lang::get(btn.Text), btn.XSize - 15, btn.YSize - 10);
+	Gui::DrawStringCentered(btn.X - 160 + (btn.XSize / 2), btn.Y + (btn.YSize - Gui::GetStringHeight(TextSize, Lang::get(btn.Text), fnt))/2, TextSize, C2D_Color32(0, 0, 0, 255), Lang::get(btn.Text), btn.XSize - 15, btn.YSize - 5);
 }
 
 /* Special Grid for the Palettes. Universal-Core ones won't work well. */
