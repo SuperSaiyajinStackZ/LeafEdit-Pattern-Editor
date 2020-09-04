@@ -38,6 +38,8 @@ struct Button {
 	std::string Text;
 };
 
+#define WHITE C2D_Color32(255, 255, 255, 255)
+
 namespace UI {
 	void DrawSprite(int index, int x, int y, float ScaleX = 1, float ScaleY = 1);
 	void DrawBase(bool onTop, bool bar);
@@ -46,7 +48,7 @@ namespace UI {
 	void DrawBtn(int x, int y, int xLength, int yLength);
 	void DrawButton(Button btn, float TextSize = 0.5f);
 	void DrawPaletteGrid(float xPos, float yPos, float Width, float Height, u32 paletteColor, u32 gridColor);
-	void DrawBox(int y, u8 rows);
+	void DrawBox(int y, int ySize);
 
 	void bankSelect(int x, int y);
 }

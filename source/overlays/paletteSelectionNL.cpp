@@ -83,11 +83,8 @@ static void Draw(std::unique_ptr<PatternImage> &pImg, C2D_Image &img, int index,
 	Gui::DrawStringCentered(0, 218, 0.9f, C2D_Color32(255, 255, 255, 255), Lang::get("EXIT_OVERLAY"), 395, 0, fnt);
 
 	if (instructions) {
-		Gui::Draw_Rect(0, 0, 400, 240, C2D_Color32(0, 0, 0, 190));
-		int textBoxHeight = Gui::GetStringHeight(0.7f, Lang::get("PALETTE_NL_INSTR1"), fnt) + 5;
-
-		UI::DrawBox(textBoxHeight, 1);
-		Gui::DrawStringCentered(0, textBoxHeight + 5, 0.7, C2D_Color32(255, 255, 255, 255), Lang::get("PALETTE_NL_INSTR1"), 305, Gui::GetStringHeight(0.7f, Lang::get("PALETTE_NL_INSTR1"), fnt), fnt);
+		UI::DrawBox((240-Gui::GetStringHeight(0.7f, Lang::get("PALETTE_NL_INSTR1"), fnt))/2 - 24, Gui::GetStringHeight(0.7f, Lang::get("PALETTE_NL_INSTR1"), fnt));
+		Gui::DrawStringCentered(0, (240-Gui::GetStringHeight(0.7f, Lang::get("PALETTE_NL_INSTR1"), fnt))/2, 0.7f, WHITE, Lang::get("PALETTE_NL_INSTR1"), 385, 100, fnt);
 	}
 
 
@@ -134,11 +131,8 @@ static void DrawPaletteSelection(C2D_Image &img, int colorGroup, int selection, 
 	if (img.subtex != nullptr) C2D_DrawImageAt(img, 125, 40, 0.5f, nullptr, 5, 5); // 160x160. 160/32 -> 5.
 
 	if (instructions) {
-		Gui::Draw_Rect(0, 0, 400, 240, C2D_Color32(0, 0, 0, 190));
-		int textBoxHeight = Gui::GetStringHeight(0.7f, Lang::get("PALETTE_NL_INSTR2"), fnt) + 5;
-
-		UI::DrawBox(textBoxHeight, 1);
-		Gui::DrawStringCentered(0, textBoxHeight + 5, 0.7, C2D_Color32(255, 255, 255, 255), Lang::get("PALETTE_NL_INSTR2"), 305, Gui::GetStringHeight(0.7f, Lang::get("PALETTE_NL_INSTR2"), fnt), fnt);
+		UI::DrawBox((240-Gui::GetStringHeight(0.7f, Lang::get("PALETTE_NL_INSTR2"), fnt))/2 - 24, Gui::GetStringHeight(0.7f, Lang::get("PALETTE_NL_INSTR2"), fnt));
+		Gui::DrawStringCentered(0, (240-Gui::GetStringHeight(0.7f, Lang::get("PALETTE_NL_INSTR2"), fnt))/2, 0.7f, WHITE, Lang::get("PALETTE_NL_INSTR2"), 385, 100, fnt);
 	}
 	
 	UI::DrawBase(false, true);

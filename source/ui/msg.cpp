@@ -48,9 +48,9 @@ bool Msg::promptMsg(std::string promptMsg) {
 		C2D_TargetClear(Top, C2D_Color32(0, 0, 0, 0));
 		C2D_TargetClear(Bottom, C2D_Color32(0, 0, 0, 0));
 		UI::DrawBase(true, true);
-		UI::DrawBox(80, 1);
 
-		Gui::DrawStringCentered(0, (240-Gui::GetStringHeight(0.8f, Lang::get(promptMsg), fnt)) / 2, 0.8f, C2D_Color32(255, 255, 255, 255), Lang::get(promptMsg), 390, 70, fnt);
+		UI::DrawBox((240-Gui::GetStringHeight(0.8f, promptMsg, fnt))/2 - 24, Gui::GetStringHeight(0.8f, promptMsg, fnt));
+		Gui::DrawStringCentered(0, (240-Gui::GetStringHeight(0.8f, promptMsg, fnt))/2, 0.8f, WHITE, promptMsg, 385, 100, fnt);
 
 		UI::DrawBase(false, true);
 		/* Draw Bottom Screen part. */
@@ -89,9 +89,9 @@ void Msg::DisplayWarnMsg(std::string Text) {
 	C2D_TargetClear(Bottom, C2D_Color32(0, 0, 0, 0));
 	UI::DrawBase(true, true);
 
-	UI::DrawBox(80, 1);
+	UI::DrawBox((240-Gui::GetStringHeight(0.8f, Text, fnt))/2 - 24, Gui::GetStringHeight(0.8f, Text, fnt));
+	Gui::DrawStringCentered(0, (240-Gui::GetStringHeight(0.8f, Text, fnt))/2, 0.8f, WHITE, Text, 385, 100, fnt);
 
-	Gui::DrawStringCentered(0, (240-Gui::GetStringHeight(0.8f, Text))/2, 0.8f, C2D_Color32(255, 255, 255, 255), Text, 395, 70, fnt);
 	UI::DrawBase(false, true);
 	C3D_FrameEnd(0);
 
@@ -109,8 +109,10 @@ void Msg::DisplayWaitMsg(std::string waitMsg, ...) {
 
 	UI::DrawBase(true, true);
 	UI::DrawSprite(sprites_bottom_bar_idx, 0, 209);
-	UI::DrawBox(80, 1);
-	Gui::DrawStringCentered(0, (240-Gui::GetStringHeight(0.8f, waitMsg))/2, 0.8f, C2D_Color32(255, 255, 255, 255), waitMsg, 390, 70, fnt);
+
+	UI::DrawBox((240-Gui::GetStringHeight(0.8f, waitMsg, fnt))/2 - 24, Gui::GetStringHeight(0.8f, waitMsg, fnt));
+	Gui::DrawStringCentered(0, (240-Gui::GetStringHeight(0.8f, waitMsg, fnt))/2, 0.8f, WHITE, waitMsg, 385, 100, fnt);
+
 	Gui::DrawStringCentered(0, 217, 0.9f, C2D_Color32(255, 255, 255, 255), Lang::get("A_CONTINUE"), 395, 0, fnt);
 
 	UI::DrawBase(false, true);
@@ -128,10 +130,10 @@ void Msg::HelperBox(std::string Msg) {
 	C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
 	Gui::ScreenDraw(Top);
 	Gui::Draw_Rect(0, 0, 400, 240, C2D_Color32(0, 0, 0, 190));
-	int textBoxHeight = Gui::GetStringHeight(0.7f, Msg, fnt) + 5;
 
-	UI::DrawBox(textBoxHeight, 1);
-	Gui::DrawStringCentered(0, textBoxHeight + 10, 0.7, C2D_Color32(255, 255, 255, 255), Msg, 305, Gui::GetStringHeight(0.7f, Msg, fnt), fnt);
+	UI::DrawBox((240-Gui::GetStringHeight(0.7f, Msg, fnt))/2 - 24, Gui::GetStringHeight(0.7f, Msg, fnt));
+	Gui::DrawStringCentered(0, (240-Gui::GetStringHeight(0.7f, Msg, fnt))/2, 0.7f, WHITE, Msg, 385, 100, fnt);
+
 	Gui::ScreenDraw(Bottom);
 	Gui::Draw_Rect(0, 0, 320, 240, C2D_Color32(0, 0, 0, 190));
 	C3D_FrameEnd(0);

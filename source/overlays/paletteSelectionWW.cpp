@@ -60,11 +60,8 @@ static void Draw(std::unique_ptr<PatternImage> &pImg, C2D_Image &img, bool instr
 	Gui::DrawStringCentered(0, 218, 0.9f, C2D_Color32(255, 255, 255, 255), Lang::get("EXIT_OVERLAY"), 395, 0, fnt);
 
 	if (instructions) {
-		Gui::Draw_Rect(0, 0, 400, 240, C2D_Color32(0, 0, 0, 190));
-		int textBoxHeight = Gui::GetStringHeight(0.7f, Lang::get("PALETTE_WW_INSTR"), fnt) + 5;
-
-		UI::DrawBox(textBoxHeight, 1);
-		Gui::DrawStringCentered(0, textBoxHeight + 10, 0.7, C2D_Color32(255, 255, 255, 255), Lang::get("PALETTE_WW_INSTR"), 305, Gui::GetStringHeight(0.7f, Lang::get("PALETTE_WW_INSTR"), fnt), fnt);
+		UI::DrawBox((240-Gui::GetStringHeight(0.7f, Lang::get("PALETTE_WW_INSTR"), fnt))/2 - 24, Gui::GetStringHeight(0.7f, Lang::get("PALETTE_WW_INSTR"), fnt));
+		Gui::DrawStringCentered(0, (240-Gui::GetStringHeight(0.7f, Lang::get("PALETTE_WW_INSTR"), fnt))/2, 0.7f, WHITE, Lang::get("PALETTE_WW_INSTR"), 385, 100, fnt);
 	}
 
 	UI::DrawBase(false, true);

@@ -32,17 +32,6 @@ void UI::DrawSprite(int index, int x, int y, float ScaleX, float ScaleY) {
 	Gui::DrawSprite(sprites, index, x, y, ScaleX, ScaleY);
 }
 
-void UI::DrawBox(int y, u8 rows) {
-	// Draw Top & Bottom.
-	UI::DrawSprite(sprites_box_top_idx, 0, y);
-	UI::DrawSprite(sprites_box_bot_idx, 0, y + 24 + (40 * rows));
-
-	C2D_Image sprite = C2D_SpriteSheetGetImage(sprites, sprites_box_middle_idx);
-	for (u8 row = 0; row < rows; row++) {
-		C2D_DrawImageAt(sprite, 0, y + 24 + ( row * sprite.subtex->height), 0.5f);
-	}
-}
-
 /* Code from PKSM. https://github.com/FlagBrew/PKSM/blob/master/3ds/source/gui/gui.cpp#L73. */
 Tex3DS_SubTexture _select_box(const C2D_Image& image, int x, int y, int endX, int endY) {
 	Tex3DS_SubTexture tex = *image.subtex;
@@ -82,6 +71,22 @@ void UI::DrawSelector(bool top, int y) {
 		/* Stretch the middle. */
 		C2D_DrawImageAt({sprite.tex, &tex}, 9, y, 0.5f, nullptr, 302.0, 1);
 	}
+}
+
+void UI::DrawBox(int y, int ySize) {
+	C2D_Image sprite = C2D_SpriteSheetGetImage(sprites, sprites_box_top_idx);
+	Tex3DS_SubTexture tex = _select_box(sprite, 7, 20, 8, 21); // Get pixel for middle part.
+
+	DrawSprite(sprites_box_top_idx, 0, y); // Draw Top.
+	C2D_DrawImageAt({sprite.tex, &tex}, 7, y + 24, 0.5f, nullptr, 388.0, ySize); // Draw box middle.
+
+	tex = _select_box(sprite, 0, 15, 7, 16); // Get Left pixel corner.
+	C2D_DrawImageAt({sprite.tex, &tex}, 0, y + 24, 0.5f, nullptr, 1, ySize); // Draw Left corner.
+
+	tex = _select_box(sprite, 394, 15, 400, 16); // Get Right pixel corner.
+	C2D_DrawImageAt({sprite.tex, &tex}, 394, y + 24, 0.5f, nullptr, 1, ySize); // Draw Right corner.
+
+	C2D_DrawImageAt(sprite, 0, y + 24 + ySize, 0.5f, nullptr, -1, -1); // Draw Bottom part.
 }
 
 void UI::DrawBtn(int x, int y, int xLength, int yLength) {
