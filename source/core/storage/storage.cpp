@@ -32,12 +32,10 @@
 
 std::string Storage::MAGIC = "LEPE";
 
-Storage::Storage(const std::string& fileName) : storageFileName(fileName) {
-	load();
-}
+Storage::Storage(const std::string& fileName) : storageFileName(fileName) { this->load(); }
 
 void Storage::load() {
-	if (data) data = nullptr;
+	if (this->data) this->data = nullptr;
 
 	bool needSave = false;
 	FILE* in = fopen((std::string("sdmc:/3ds/LeafEdit/Pattern-Editor/storage/") + storageFileName + std::string(".storage")).c_str(), "rb");
@@ -45,67 +43,77 @@ void Storage::load() {
 	if (in) {
 		StorageHeader h{"BAD", 0, 0, 0};
 		fseek(in, 0, SEEK_END);
-		size = ftell(in);
+		this->size = ftell(in);
 		fseek(in, 0, SEEK_SET);
 		fread(&h, 1, sizeof(StorageHeader) - sizeof(int) - sizeof(int), in);
+
 		if (memcmp(&h, MAGIC.data(), 4)) {
 			fclose(in);
-			createStorage();
+			this->createStorage();
 			needSave = true;
+
 		} else {
-			data = std::unique_ptr<u8[]>(new u8[size]);
+			this->data = std::unique_ptr<u8[]>(new u8[this->size]);
 			fread(&h.slots, 1, sizeof(int), in);
 			fread(&h.boxes, 1, sizeof(int), in);
-			std::copy((char*)&h, (char*)(&h + 1), data.get());
-			fread(data.get() + sizeof(StorageHeader), 1, size - sizeof(StorageHeader), in);
+			std::copy((char*)&h, (char*)(&h + 1), this->data.get());
+			fread(this->data.get() + sizeof(StorageHeader), 1, this->size - sizeof(StorageHeader), in);
 			fclose(in);
 		}
-		
+
 	} else {
-		createStorage();
+		this->createStorage();
 		needSave = true;
 	}
 
 	if (needSave) {
-		save();
+		this->save();
 	}
 }
 
 bool Storage::save() const {
+	if (!this->data) return false;
+
 	FILE* out = fopen((std::string("sdmc:/3ds/LeafEdit/Pattern-Editor/storage/") + storageFileName + std::string(".storage")).c_str(), "wb");
+
 	if (out) {
-		fwrite(data.get(), 1, sizeof(StorageHeader) + sizeof(PatternEntry) * slots(), out);
+		fwrite(this->data.get(), 1, sizeof(StorageHeader) + sizeof(PatternEntry) * slots(), out);
 		fclose(out);
 		return true;
+
 	} else {
 		return false;
 	}
 }
 
 void Storage::resize(size_t boxes) {
+	if (!this->data) return;
+
 	size_t newSize = sizeof(StorageHeader) + sizeof(PatternEntry) * boxes * 10;
 
-	if (newSize != size) {
+	if (newSize != this->size) {
 		std::unique_ptr<u8[]> newData = std::unique_ptr<u8[]>(new u8[newSize]);
-		std::copy(data.get(), data.get() + std::min(newSize, size), newData.get());
+		std::copy(this->data.get(), this->data.get() + std::min(newSize, this->size), newData.get());
 
-		data = nullptr;
-		if (newSize > size) {
-			std::fill_n(newData.get() + size, newSize - size, 0x0);
+		this->data = nullptr;
+
+		if (newSize > this->size) {
+			std::fill_n(newData.get() + this->size, newSize - this->size, 0x0);
 		}
-		
-		data = std::move(newData);
 
-		((StorageHeader*)data.get())->boxes = boxes;
-		((StorageHeader*)data.get())->slots = boxes * 10;
+		this->data = std::move(newData);
 
-		save();
+		((StorageHeader*)this->data.get())->boxes = boxes;
+		((StorageHeader*)this->data.get())->slots = boxes * 10;
+
+		this->save();
 	}
-	
+
 	size = newSize;
 }
 
 std::unique_ptr<Pattern> Storage::pattern(int slot) const {
+	if (!this->data) return nullptr;
 	if (slot > this->slots()) return nullptr;
 
 	PatternEntry* entries = (PatternEntry*)(data.get() + sizeof(StorageHeader));
@@ -131,7 +139,7 @@ std::unique_ptr<Pattern> Storage::pattern(int slot) const {
 				case WWRegion::UNKNOWN:
 					return nullptr;
 			}
-			
+
 		case SaveType::NL:
 			return std::make_unique<PatternNL>(entries[slot].data, 0);
 
@@ -150,13 +158,13 @@ std::unique_ptr<Pattern> Storage::pattern(int slot) const {
 void Storage::pattern(const Pattern &ptrn, int slot) {
 	if (slot > this->slots()) return;
 
-	PatternEntry* entries = (PatternEntry*)(data.get() + sizeof(StorageHeader));
+	PatternEntry* entries = (PatternEntry*)(this->data.get() + sizeof(StorageHeader));
 	PatternEntry newEntry;
 
 	newEntry.ST = ptrn.getType();
 	newEntry.region = ptrn.getRegion();
 	newEntry.patternSize = ptrn.getSize();
-	
+
 	if (ptrn.getSize() > 0) newEntry.used = true;
 	else newEntry.used = false;
 	std::copy(ptrn.returnData(), ptrn.returnData() + ptrn.getSize(), newEntry.data);
@@ -169,33 +177,42 @@ void Storage::pattern(const Pattern &ptrn, int slot) {
 }
 
 void Storage::createStorage() {
-	if (data) data = nullptr;
+	if (this->data) this->data = nullptr;
 
 	/* Create new data. */
-	data = std::unique_ptr<u8[]>(new u8[size = sizeof(StorageHeader) + sizeof(PatternEntry) * 10]);
-	std::copy(MAGIC.data(), MAGIC.data() + MAGIC.size(), data.get());
-	*(int*)(data.get() + 4)  = STORAGE_VERSION;
-	*(int*)(data.get() + 8) = 10;
-	*(int*)(data.get() + 12) = 1;
-	std::fill_n(data.get() + sizeof(StorageHeader), sizeof(PatternEntry) * 10, 0x00);
+	this->data = std::unique_ptr<u8[]>(new u8[size = sizeof(StorageHeader) + sizeof(PatternEntry) * 10]);
+	std::copy(MAGIC.data(), MAGIC.data() + MAGIC.size(), this->data.get());
+	*(int*)(this->data.get() + 4)  = STORAGE_VERSION;
+	*(int*)(this->data.get() + 8) = 10;
+	*(int*)(this->data.get() + 12) = 1;
+	std::fill_n(this->data.get() + sizeof(StorageHeader), sizeof(PatternEntry) * 10, 0x00);
 }
 
 int Storage::boxes() const {
-	return ((StorageHeader*)data.get())->boxes;
+	if (!this->data) return 0;
+
+	return ((StorageHeader*)this->data.get())->boxes;
 }
 
 int Storage::slots() const {
-	return ((StorageHeader*)data.get())->slots;
+	if (!this->data) return 0;
+
+	return ((StorageHeader*)this->data.get())->slots;
 }
 
 bool Storage::used(u32 slot) const {
+	if (!this->data) return false;
+
 	if (slot > (u32)this->slots()) return false;
-	PatternEntry* entries = (PatternEntry*)(data.get() + sizeof(StorageHeader));
+
+	PatternEntry* entries = (PatternEntry*)(this->data.get() + sizeof(StorageHeader));
 	return entries[slot].used;
 }
 
 u32 Storage::getSize(u32 slot) const {
+	if (!this->data) return 0;
 	if (slot > (u32)this->slots()) return 0;
-	PatternEntry* entries = (PatternEntry*)(data.get() + sizeof(StorageHeader));
+
+	PatternEntry* entries = (PatternEntry*)(this->data.get() + sizeof(StorageHeader));
 	return entries[slot].patternSize;
 }

@@ -56,6 +56,7 @@ static void Draw(int selection) {
 void Overlays::SelectLang() {
 	int selection = Settings::getLang();
 	bool doOut = false;
+
 	while(!doOut) {
 		touchPosition touch;
 		Draw(selection);

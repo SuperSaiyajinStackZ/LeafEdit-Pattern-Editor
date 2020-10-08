@@ -74,6 +74,7 @@ bool Overlays::SelectDestination(std::string txt, std::string &file) {
 	chdir("sdmc:/3ds/LeafEdit/Pattern-Editor/");
 	std::vector<DirEntry> dirContentsTemp;
 	getDirectoryContents(dirContentsTemp, {});
+
 	for(uint i = 0; i < dirContentsTemp.size(); i++) {
 		dirContents.push_back(dirContentsTemp[i]);
 	}
@@ -93,6 +94,7 @@ bool Overlays::SelectDestination(std::string txt, std::string &file) {
 			dirContents.clear();
 			std::vector<DirEntry> dirContentsTemp;
 			getDirectoryContents(dirContentsTemp, {});
+
 			for(uint i = 0; i < dirContentsTemp.size(); i++) {
 				dirContents.push_back(dirContentsTemp[i]);
 			}
@@ -122,25 +124,27 @@ bool Overlays::SelectDestination(std::string txt, std::string &file) {
 				selectedDir--;
 			}
 		}
-		
+
 		if (hRepeat & KEY_DOWN) {
 			if ((uint)selectedDir < dirContents.size()-1) {
 				selectedDir++;
 			}
 		}
-		
+
 		if (hDown & KEY_B) {
 			char path[PATH_MAX];
 			getcwd(path, PATH_MAX);
+
 			if (strcmp(path, "sdmc:/") == 0 || strcmp(path, "/") == 0) {
 				return false;
+
 			} else {
 				chdir("..");
 				selectedDir = 0;
 				dirChanged = true;
 			}
 		}
-		
+
 		if (hDown & KEY_START) {
 			selectedDir = 0;
 			dirChanged = true;

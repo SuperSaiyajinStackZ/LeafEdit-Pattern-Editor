@@ -72,6 +72,7 @@ bool Overlays::SelectFile(const std::string &path, std::vector<std::string> exte
 	chdir(path.c_str());
 	std::vector<DirEntry> dirContentsTemp;
 	getDirectoryContents(dirContentsTemp, extensions);
+
 	for(uint i = 0; i < dirContentsTemp.size(); i++) {
 		dirContents.push_back(dirContentsTemp[i]);
 	}
@@ -91,6 +92,7 @@ bool Overlays::SelectFile(const std::string &path, std::vector<std::string> exte
 			dirContents.clear();
 			std::vector<DirEntry> dirContentsTemp;
 			getDirectoryContents(dirContentsTemp, extensions);
+
 			for(uint i = 0; i < dirContentsTemp.size(); i++) {
 				dirContents.push_back(dirContentsTemp[i]);
 			}
@@ -109,13 +111,14 @@ bool Overlays::SelectFile(const std::string &path, std::vector<std::string> exte
 				selectedFile++;
 			}
 		}
-		
+
 		if (hDown & KEY_A) {
 			if (dirContents.size() > 0) {
 				if (dirContents[selectedFile].isDirectory) {
 					chdir(dirContents[selectedFile].name.c_str());
 					selectedFile = 0;
 					dirChanged = true;
+
 				} else {
 					file = dirContents[selectedFile].name;
 					return true;
@@ -129,16 +132,18 @@ bool Overlays::SelectFile(const std::string &path, std::vector<std::string> exte
 			if (allowSub) {
 				if (strcmp(path, "sdmc:/") == 0 || strcmp(path, "/") == 0) {
 					return false;
+
 				} else {
 					chdir("..");
 					selectedFile = 0;
 					dirChanged = true;
 				}
+
 			} else {
 				return false;
 			}
 		}
-		
+
 		if (hDown & KEY_START) {
 			selectedFile = 0;
 			dirChanged = true;

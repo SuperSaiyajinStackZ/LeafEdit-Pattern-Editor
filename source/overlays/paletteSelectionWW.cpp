@@ -28,7 +28,7 @@
 #include "overlay.hpp"
 
 /* It needs to be ARGB to draw them as Rectangles. */
-static const u32 WWPaletteColors[] = {
+static constexpr u32 WWPaletteColors[] = {
 	0xFF0000FF, 0xFF3173FF, 0xFF00ADFF, 0xFF00FFFF, 0xFF00FFAD, 0xFF00FF52, 0xFF00FF00, 0xFF52AD00, 0xFFAD5200, 0xFFFF0000, 0xFFFF0052, 0xFFFF00AD, 0xFFFF00FF, 0xFF000000, 0xFFFFFFFF,
 	0xFF7B7BFF, 0xFF7BB5FF, 0xFF7BE7FF, 0xFF7BFFFF, 0xFF7BFFDE, 0xFF7BFFAD, 0xFF7BFF7B, 0xFF84AD52, 0xFFAD8452, 0xFFFF7B7B, 0xFFFF7BB5, 0xFFFF7BE7, 0xFFFF7BFF, 0xFF000000, 0xFFFFFFFF,
 	0xFF0000A5, 0xFF0031A5, 0xFF0073A5, 0xFF00A5A5, 0xFF00A573, 0xFF00A531, 0xFF00A500, 0xFF215200, 0xFF522100, 0xFFA50000, 0xFFA50031, 0xFFA50073, 0xFFA500A5, 0xFF000000, 0xFFFFFFFF,
@@ -79,8 +79,8 @@ static void Draw(std::unique_ptr<PatternImage> &pImg, C2D_Image &img, bool instr
 
 void Overlays::PaletteToolWW(std::unique_ptr<PatternImage> &pImg, C2D_Image &img) {
 	bool exitOverlay = false, showInstructions = false;
+
 	while(!exitOverlay) {
-		
 		Draw(pImg, img, showInstructions);
 		hidScanInput();
 
@@ -88,6 +88,7 @@ void Overlays::PaletteToolWW(std::unique_ptr<PatternImage> &pImg, C2D_Image &img
 		if (pImg && img.subtex) {
 			if (showInstructions) {
 				if (hidKeysDown() & KEY_SELECT) showInstructions = false;
+
 			} else {
 				if ((hidKeysDownRepeat() & KEY_RIGHT) || (hidKeysDownRepeat() & KEY_R)) {
 					if (pImg->getWWPaletteIndex() < 14) {
@@ -107,7 +108,7 @@ void Overlays::PaletteToolWW(std::unique_ptr<PatternImage> &pImg, C2D_Image &img
 
 				if (hidKeysDown() & KEY_SELECT) showInstructions = true;
 			}
-		}	
+		}
 
 		if (hidKeysDown() & KEY_B) {
 			gspWaitForVBlank();

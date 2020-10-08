@@ -92,7 +92,7 @@ static const std::vector<Structs::ButtonPos> Pattern15 = {
 	{197, 100, 48, 48},
 	{197, 160, 48, 48},
 
-	{257, 40, 48, 48},	
+	{257, 40, 48, 48},
 	{257, 100, 48, 48},
 	{257, 160, 48, 48}
 };
@@ -108,12 +108,16 @@ static std::string getSaveName(SaveType savetype) {
 	switch(savetype) {
 		case SaveType::WW:
 			return "Wild World";
+
 		case SaveType::NL:
 			return "New Leaf";
+
 		case SaveType::WA:
 			return "Welcome Amiibo";
+
 		case SaveType::HHD:
 			return "Happy Home Designer";
+
 		case SaveType::UNUSED:
 			return "?";
 	}
@@ -127,13 +131,17 @@ static std::string getRegionName(WWRegion saveregion) {
 		case WWRegion::JPN_REV0:
 		case WWRegion::JPN_REV1:
 			return "Japanese";
+
 		case WWRegion::USA_REV0:
 			return "USA";
+
 		case WWRegion::USA_REV1:
 		case WWRegion::EUR_REV1:
 			return "Europe";
+
 		case WWRegion::KOR_REV1:
 			return "Korean";
+
 		case WWRegion::UNKNOWN:
 			return "?";
 	}
@@ -154,7 +162,7 @@ static void DisplayInfo(std::unique_ptr<Pattern> &ptrn, C2D_Image &img) {
 	C2D_TargetClear(Bottom, C2D_Color32(0, 0, 0, 0));
 	UI::DrawBase(true, true);
 	UI::DrawSprite(sprites_bottom_bar_idx, 0, 209);
-	if (img.subtex != nullptr) C2D_DrawImageAt(img, 18, 42, 0.5f, nullptr, 5, 5); // 160x160. 160/32 -> 5.
+	if (img.tex) C2D_DrawImageAt(img, 18, 42, 0.5f, nullptr, 5, 5); // 160x160. 160/32 -> 5.
 
 	if (ptrn) {
 		Gui::DrawStringCentered(0, -2, 0.9f, C2D_Color32(255, 255, 255, 255), Lang::get("PATTERN_INFORMATION"), 395, 0, fnt);
@@ -166,6 +174,7 @@ static void DisplayInfo(std::unique_ptr<Pattern> &ptrn, C2D_Image &img) {
 
 		if (ptrn->creatorGender()) {
 			Gui::DrawString(210, isAcww ? 130 : 140, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("PATTERN_CREATOR_GENDER") + Lang::get("FEMALE"), 160, 0, fnt);
+
 		} else {
 			Gui::DrawString(210, isAcww ? 130 : 140, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("PATTERN_CREATOR_GENDER") + Lang::get("MALE"), 160, 0, fnt);
 		}
@@ -196,26 +205,33 @@ static void storageInject(std::unique_ptr<Storage> &storage, std::unique_ptr<Pat
 		buffer[i] = ptrn->returnData()[i];
 	}
 
-	if (ptrn->getType() == SaveType::WW) {
-		res = std::make_unique<PatternWW>(buffer, 0, ptrn->getRegion());
-		storage->pattern(*res, slot);
-		if (buffer) delete[] buffer;
-		return;
-	} else if (ptrn->getType() == SaveType::NL) {
-		res = std::make_unique<PatternNL>(buffer, 0);
-		storage->pattern(*res, slot);
-		if (buffer) delete[] buffer;
-		return;
-	} else if (ptrn->getType() == SaveType::WA) {
-		res = std::make_unique<PatternWA>(buffer, 0);
-		storage->pattern(*res, slot);
-		if (buffer) delete[] buffer;
-		return;
-	} else if (ptrn->getType() == SaveType::HHD) {
-		res = std::make_unique<PatternHHD>(buffer, 0);
-		storage->pattern(*res, slot);
-		if (buffer) delete[] buffer;
-		return;
+	switch(ptrn->getType()) {
+		case SaveType::WW:
+			res = std::make_unique<PatternWW>(buffer, 0, ptrn->getRegion());
+			storage->pattern(*res, slot);
+			if (buffer) delete[] buffer;
+			return;
+
+		case SaveType::NL:
+			res = std::make_unique<PatternNL>(buffer, 0);
+			storage->pattern(*res, slot);
+			if (buffer) delete[] buffer;
+			return;
+
+		case SaveType::WA:
+			res = std::make_unique<PatternWA>(buffer, 0);
+			storage->pattern(*res, slot);
+			if (buffer) delete[] buffer;
+			return;
+
+		case SaveType::HHD:
+			res = std::make_unique<PatternHHD>(buffer, 0);
+			storage->pattern(*res, slot);
+			if (buffer) delete[] buffer;
+			return;
+
+		case SaveType::UNUSED:
+			break;
 	}
 
 	if (buffer) delete[] buffer;
@@ -230,6 +246,11 @@ static void injectToGame(std::unique_ptr<Pattern> &ptrn, std::unique_ptr<Pattern
 	WWRegion r1 = ptrn->getRegion();
 	WWRegion r2 = ptrn2->getRegion();
 
+	/*
+		This is mainly for transfers.
+
+		HHD Pattern are valid with NL + WA ones.
+	*/
 	if (st2 == SaveType::HHD) {
 		if (st1 == SaveType::NL || st1 == SaveType::WA || st1 == SaveType::HHD) {
 			u8 *buffer = new u8[ptrn->getSize()];
@@ -242,9 +263,11 @@ static void injectToGame(std::unique_ptr<Pattern> &ptrn, std::unique_ptr<Pattern
 			delete[] buffer;
 		}
 
+	/* WA Pattern are valid with NL + HHD ones. */
 	} else if (st2 == SaveType::WA) {
 		if (st1 == SaveType::NL || st1 == SaveType::WA || st1 == SaveType::HHD) {
 			u8 *buffer = new u8[ptrn->getSize()];
+
 			for (int i = 0; i < (int)ptrn->getSize(); i++) {
 				buffer[i] = ptrn->returnData()[i];
 			}
@@ -254,9 +277,11 @@ static void injectToGame(std::unique_ptr<Pattern> &ptrn, std::unique_ptr<Pattern
 			delete[] buffer;
 		}
 
+	/* NL Pattern are valid with WA + HHD ones. */
 	} else if (st2 == SaveType::NL) {
 		if (st1 == SaveType::NL || st1 == SaveType::WA || st1 == SaveType::HHD) {
 			u8 *buffer = new u8[ptrn->getSize()];
+
 			for (int i = 0; i < (int)ptrn->getSize(); i++) {
 				buffer[i] = ptrn->returnData()[i];
 			}
@@ -266,9 +291,17 @@ static void injectToGame(std::unique_ptr<Pattern> &ptrn, std::unique_ptr<Pattern
 			delete[] buffer;
 		}
 
+	/*
+		Wild World are only valid with the depending region.
+
+		EUR + USA == Valid.
+		JPN + JPN == Valid.
+		KOR + KOR == Valid.
+	*/
 	} else if (st2 == SaveType::WW) {
 		if (r1 == r2) {
 			u8 *buffer = new u8[ptrn->getSize()];
+
 			for (int i = 0; i < (int)ptrn->getSize(); i++) {
 				buffer[i] = ptrn->returnData()[i];
 			}
@@ -284,11 +317,9 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 	if (!storage) return;
 	if (!savefile) return;
 
-	bool displayInfo = false, refreshBank = true, refreshGame = true;
-	int box = 0, maxSavePTN = 0, subMode = 0, playerAmount = 0, SelectedPlayer = 0, page = 0;
-	int selection = 0, lastMode = 0;
-	bool topSelect = false;
-	
+	bool displayInfo = false, refreshBank = true, refreshGame = true, topSelect = false;
+	int box = 0, maxSavePTN = 0, subMode = 0, playerAmount = 0, SelectedPlayer = 0, page = 0, selection = 0, lastMode = 0;
+
 	bool grab = false;
 	C2D_Image grabImg = {nullptr};
 	std::pair<int, bool> grabInf = {-1, true};
@@ -339,8 +370,8 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 				displayInfo = false;
 				C2DUtils::C2D_ImageDelete(grabImg);
 				grabImg = {nullptr};
-
 			}
+
 		} else {
 			Gui::clearTextBufs();
 			C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
@@ -379,7 +410,7 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 				Gui::DrawStringCentered(0, -2, 0.9f, C2D_Color32(255, 255, 255, 255), Lang::get("SELECT_CATEGORY"), 395, 0, fnt);
 				UI::DrawSprite(sprites_bottom_bar_idx, 0, 209);
 				Gui::DrawStringCentered(0, 218, 0.9f, C2D_Color32(255, 255, 255, 255), Lang::get("X_SELECT"), 395, 0, fnt);
-	
+
 				for (int i = 0; i < 3; i++) {
 					UI::DrawButton(buttons[i], 0.55);
 				}
@@ -421,7 +452,7 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 										}
 									}
 								}
-							
+
 								if (!topSelect) {
 									if (i == selection) UI::DrawSprite(sprites_pattern_border_idx, 39 + (x * 60), 59 + (y * 80));
 								}
@@ -452,6 +483,7 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 							}
 						}
 					}
+
 				} else if (maxSavePTN == 1) {
 					if (saveImages[0].tex && saveHasImage[0]) {
 						C2D_DrawImageAt(saveImages[0], 17, 60, 0.5f, nullptr, 1.5f, 1.5f);
@@ -468,6 +500,7 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 					if (!topSelect) {
 						if (0 == selection) UI::DrawSprite(sprites_pattern_border_idx, 16, 59);
 					}
+
 				} else if (maxSavePTN == 15) {
 					for (int i = 0; i < 15; i++) {
 						if (saveImages[i].tex && saveHasImage[i]) {
@@ -516,7 +549,7 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 								}
 							}
 						}
-					}	
+					}
 				}
 
 				refreshBank = false;
@@ -537,14 +570,15 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 				/* Reload here. */
 				C3D_FrameEnd(0);
 				for (int i = 0 + (page * maxSavePTN), i2 = 0; i < maxSavePTN + (page * maxSavePTN); i++, i2++) {
-
-					
 					if (subMode == 2) {
 						savePattern[i2] = savefile->playerPattern(0, i);
+
 					} else if (subMode == 3) {
 						savePattern[i2] = savefile->ableSisterPattern(i);
+
 					} else if (subMode == 4) {
 						savePattern[0] = savefile->townflag();
+
 					} else if (subMode == 5) {
 						savePattern[i2] = savefile->HHDPattern(i);
 					}
@@ -559,7 +593,7 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 							}
 						}
 					}
-				}	
+				}
 
 				refreshGame = false;
 			}
@@ -629,6 +663,7 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 
 						case 1:
 							C3D_FrameEnd(0);
+
 							lastMode = 0;
 							selection = 0;
 							gspWaitForVBlank();
@@ -651,8 +686,10 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 				}
 
 			} else if (subMode == 1) {
-				/* Player Selection. */
-				/* Only do this, if playerAmount larger than 0. */
+				/*
+					Player Selection.
+					Only do this, if playerAmount larger than 0.
+				*/
 				if (playerAmount > 0) {
 					if (hDown & KEY_RIGHT) {
 						if (SelectedPlayer < 3) {
@@ -670,12 +707,21 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 									/* Push back player pattern. */
 									C3D_FrameEnd(0);
 
-									if (savefile->getType() == SaveType::WW) {
-										maxSavePTN = 8;
-										refreshGame = true;
-									} else if (savefile->getType() == SaveType::NL || savefile->getType() == SaveType::WA) {
-										maxSavePTN = 10;
-										refreshGame = true;
+									switch(savefile->getType()) {
+										case SaveType::WW:
+											maxSavePTN = 8;
+											refreshGame = true;
+											break;
+
+										case SaveType::NL:
+										case SaveType::WA:
+											maxSavePTN = 10;
+											refreshGame = true;
+											break;
+
+										case SaveType::HHD:
+										case SaveType::UNUSED:
+											break;
 									}
 
 									gspWaitForVBlank();
@@ -697,12 +743,21 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 							/* Push back player pattern. */
 							C3D_FrameEnd(0);
 
-							if (savefile->getType() == SaveType::WW) {
-								maxSavePTN = 8;
-								refreshGame = true;
-							} else if (savefile->getType() == SaveType::NL || savefile->getType() == SaveType::WA) {
-								maxSavePTN = 10;
-								refreshGame = true;
+							switch(savefile->getType()) {
+								case SaveType::WW:
+									maxSavePTN = 8;
+									refreshGame = true;
+									break;
+
+								case SaveType::NL:
+								case SaveType::WA:
+									maxSavePTN = 10;
+									refreshGame = true;
+									break;
+
+								case SaveType::HHD:
+								case SaveType::UNUSED:
+									break;
 							}
 
 							gspWaitForVBlank();
@@ -717,13 +772,14 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 					selection = 0;
 					subMode = 0;
 				}
-			} else if (subMode == 2 || subMode == 3 || subMode == 4 || subMode == 5) {
 
+			} else if (subMode == 2 || subMode == 3 || subMode == 4 || subMode == 5) {
 				if (hDown & KEY_SELECT) {
 					if (topSelect) {
 						if (bankPattern[selection]) {
 							grabImg = CoreUtils::patternImage(bankPatternImage[selection], bankPattern[selection]->getType());
 							displayInfo = true;
+
 						}
 					} else {
 						if (savePattern[selection]) {
@@ -738,12 +794,13 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 						/* Check if valid too. */
 						if (topSelect) {
 							if (bankPattern[selection]) {
-								grabInf = {selection, topSelect};
+								grabInf = { selection, topSelect };
 								grab = true;
 							}
+
 						} else {
 							if (savePattern[selection]) {
-								grabInf = {selection, topSelect};
+								grabInf = { selection, topSelect };
 								grab = true;
 							}
 						}
@@ -752,12 +809,13 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 						if (topSelect) {
 							storageInject(storage, grabInf.second ? bankPattern[grabInf.first] : savePattern[grabInf.first], (box * 10) + selection);
 							refreshBank = true;
+
 						} else {
 							injectToGame(grabInf.second ? bankPattern[grabInf.first] : savePattern[grabInf.first], savePattern[selection]);
 							refreshGame = true;
 						}
 
-						grabInf = {-1, true};
+						grabInf = { -1, true };
 						grab = false;
 					}
 				}
@@ -766,9 +824,11 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 				if (hRepeat & KEY_RIGHT) {
 					if (topSelect) {
 						if (selection < 9) selection++;
+
 					} else {
 						if (subMode != 4 && subMode != 5) {
 							if (selection < maxSavePTN - 1) selection++;
+
 						} else if (subMode == 5) {
 							if (selection < 12) selection += 3;
 						}
@@ -781,6 +841,7 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 							box++;
 							refreshBank = true;
 						}
+
 					} else {
 						if (page < 7) {
 							page++;
@@ -795,6 +856,7 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 							box--;
 							refreshBank = true;
 						}
+
 					} else {
 						if (page > 0) {
 							page--;
@@ -806,9 +868,11 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 				if (hRepeat & KEY_LEFT) {
 					if (topSelect) {
 						if (selection > 0) selection--;
+
 					} else {
 						if (subMode != 4 && subMode != 5) {
 							if (selection > 0) selection--;
+
 						} else if (subMode == 5) {
 							if (selection > 2) selection -= 3;
 						}
@@ -818,9 +882,11 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 				if (hRepeat & KEY_UP) {
 					if (topSelect) {
 						if (selection > 4) selection -= 5;
+
 					} else {
 						if (maxSavePTN == 8) {
 							if (selection > 3) selection -= 4;
+
 							else if (selection < 5) {
 								topSelect = true;
 								if (selection == 0) selection = 5;
@@ -843,6 +909,7 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 								topSelect = true;
 								if (selection == 0) selection = 5;
 								else selection = 5 + (selection / 3);
+
 							} else {
 								if (selection > 0) {
 									selection--;
@@ -857,7 +924,7 @@ void Overlays::StorageHandling(std::unique_ptr<Storage> &storage, std::unique_pt
 						if (selection < 5) selection += 5;
 						else if (selection > 4) {
 							topSelect = false;
-							
+
 							if (maxSavePTN == 8) {
 								if (selection == 5) selection = 0;
 								else selection = selection - 4;

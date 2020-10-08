@@ -64,7 +64,7 @@ static void DrawBottom() {
 static void operation(std::unique_ptr<Sav> &savefile, std::string fileName) {
 	savefile = nullptr;
 	FILE *file = fopen(fileName.c_str(), "rb");
-	
+
 	if (file) {
 		fseek(file, 0, SEEK_END);
 		u32 size = ftell(file);
@@ -83,10 +83,10 @@ bool Overlays::SelectSaveFile(std::unique_ptr<Sav> &savefile) {
 
 	/* Initial directory change. */
 	dirContents.clear();
-
 	chdir("sdmc:/3ds/LeafEdit/");
 	std::vector<DirEntry> dirContentsTemp;
-	getDirectoryContents(dirContentsTemp, {"dat", "sav"});
+	getDirectoryContents(dirContentsTemp, { "dat", "sav" });
+
 	for(uint i = 0; i < dirContentsTemp.size(); i++) {
 		dirContents.push_back(dirContentsTemp[i]);
 	}
@@ -105,7 +105,8 @@ bool Overlays::SelectSaveFile(std::unique_ptr<Sav> &savefile) {
 		if (dirChanged) {
 			dirContents.clear();
 			std::vector<DirEntry> dirContentsTemp;
-			getDirectoryContents(dirContentsTemp, {"dat", "sav"});
+			getDirectoryContents(dirContentsTemp, { "dat", "sav" });
+
 			for(uint i = 0; i < dirContentsTemp.size(); i++) {
 				dirContents.push_back(dirContentsTemp[i]);
 			}
@@ -124,13 +125,14 @@ bool Overlays::SelectSaveFile(std::unique_ptr<Sav> &savefile) {
 				selectedFile++;
 			}
 		}
-		
+
 		if (hDown & KEY_A) {
 			if (dirContents.size() > 0) {
 				if (dirContents[selectedFile].isDirectory) {
 					chdir(dirContents[selectedFile].name.c_str());
 					selectedFile = 0;
 					dirChanged = true;
+
 				} else {
 					char path[PATH_MAX];
 					getcwd(path, PATH_MAX);
@@ -143,15 +145,17 @@ bool Overlays::SelectSaveFile(std::unique_ptr<Sav> &savefile) {
 		if (hDown & KEY_B) {
 			char path[PATH_MAX];
 			getcwd(path, PATH_MAX);
+
 			if (strcmp(path, "sdmc:/") == 0 || strcmp(path, "/") == 0) {
 				return false;
+
 			} else {
 				chdir("..");
 				selectedFile = 0;
 				dirChanged = true;
 			}
 		}
-		
+
 		if (hDown & KEY_START) {
 			selectedFile = 0;
 			dirChanged = true;

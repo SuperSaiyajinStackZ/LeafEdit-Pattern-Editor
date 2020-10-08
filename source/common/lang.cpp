@@ -30,14 +30,12 @@
 nlohmann::json appJson;
 
 std::string Lang::get(const std::string &key) {
-	if (!appJson.contains(key)) {
-		return "";
-	}
-	
+	if (!appJson.contains(key)) return "";
+
 	return appJson.at(key).get_ref<const std::string&>();
 }
 
-std::string langs[] = {"de", "en", "es", "fr", "it", "lt", "pt", "jp"};
+std::string langs[] = { "de", "en", "es", "fr", "it", "lt", "pt", "jp" };
 
 void Lang::load(int lang) {
 	FILE* values;

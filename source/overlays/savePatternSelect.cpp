@@ -87,7 +87,7 @@ static const std::vector<Structs::ButtonPos> Pattern15 = {
 	{197, 100, 48, 48},
 	{197, 160, 48, 48},
 
-	{257, 40, 48, 48},	
+	{257, 40, 48, 48},
 	{257, 100, 48, 48},
 	{257, 160, 48, 48}
 };
@@ -116,13 +116,13 @@ static void DrawHHDSelection(std::vector<C2D_Image> &images, int selection, int 
 	UI::DrawBase(false, true);
 
 	for (int i = 0; i < 15; i++) {
-		if (images[i].subtex) {
+		if (images[i].tex) {
 			C2D_DrawImageAt(images[i], Pattern15[i].x, Pattern15[i].y, 0.5f, nullptr, 1.5f, 1.5f);
 		}
 	}
 
 	UI::DrawSprite(sprites_pointer_idx, Pattern15[selection].x+10, Pattern15[selection].y+10);
-	
+
 	C3D_FrameEnd(0);
 }
 
@@ -137,7 +137,7 @@ static void CategorySelect(int selection) {
 	UI::DrawSprite(sprites_bottom_bar_idx, 0, 209);
 	Gui::DrawStringCentered(0, 218, 0.9f, C2D_Color32(255, 255, 255, 255), Lang::get("X_SELECT"), 395, 0, fnt);
 	UI::DrawBase(false, true);
-	
+
 	for (int i = 0; i < 3; i++) {
 		UI::DrawButton(buttons[i], 0.55);
 	}
@@ -159,7 +159,7 @@ static void PlayerSelect(int selection, std::unique_ptr<Sav> &savefile, int play
 	UI::DrawSprite(sprites_bottom_bar_idx, 0, 209);
 	Gui::DrawStringCentered(0, 218, 0.9f, C2D_Color32(255, 255, 255, 255), Lang::get("X_SELECT"), 395, 0, fnt);
 	UI::DrawBase(false, true);
-	
+
 	if (savefile || playerAmount > 0) {
 		for (int i = 0; i < 4; i++) {
 			if (savefile->PlayerExist(i)) {
@@ -220,7 +220,7 @@ static void SelectPlayerPattern(std::vector<C2D_Image> &images, int selection, i
 
 		UI::DrawSprite(sprites_pointer_idx, 24 + (selectX * 60), 67 + (selectY * 80));
 	}
-	
+
 	C3D_FrameEnd(0);
 }
 
@@ -251,13 +251,14 @@ static void SelectAbleSisterPattern(std::vector<C2D_Image> &images, int selectio
 	if (selection > 3)	selectX = selection - 4;	else selectX = selection;
 
 	UI::DrawSprite(sprites_pointer_idx, 45 + (selectX * 60), 67 + (selectY * 80));
-	
+
 	C3D_FrameEnd(0);
 }
 
 
 bool Overlays::SelectSavePattern(std::unique_ptr<Sav> &savefile, std::unique_ptr<Pattern> &ptrn) {
 	if (!savefile) return false;
+
 	std::vector<C2D_Image> images;
 	touchPosition touch;
 	int category = 0, selection = 0, SelectedPlayer = 0, playerAmount = 0, page = 0;
@@ -300,15 +301,19 @@ bool Overlays::SelectSavePattern(std::unique_ptr<Sav> &savefile, std::unique_ptr
 			case 0:
 				CategorySelect(selection);
 				break;
+
 			case 1:
 				PlayerSelect(selection, savefile, playerAmount);
 				break;
+
 			case 2:
 				SelectPlayerPattern(images, selection, savefile->getPlayerAmount());
 				break;
+
 			case 3:
 				SelectAbleSisterPattern(images, selection);
 				break;
+
 			case 4:
 				DrawHHDSelection(images, selection, page);
 				break;
@@ -403,7 +408,6 @@ bool Overlays::SelectSavePattern(std::unique_ptr<Sav> &savefile, std::unique_ptr
 				}
 
 				if (hDown & KEY_B) return false;
-
 			}
 
 		/* Player Selection. */
@@ -474,6 +478,7 @@ bool Overlays::SelectSavePattern(std::unique_ptr<Sav> &savefile, std::unique_ptr
 					if (selection < 7) {
 						selection++;
 					}
+
 				} else {
 					if (selection < 9) {
 						selection++;
@@ -490,6 +495,7 @@ bool Overlays::SelectSavePattern(std::unique_ptr<Sav> &savefile, std::unique_ptr
 			if (hRepeat & KEY_DOWN) {
 				if (savefile->getType() == SaveType::WW) {
 					if (selection < 4) selection += 4;
+
 				} else {
 					if (selection < 5) selection += 5;
 				}
@@ -498,6 +504,7 @@ bool Overlays::SelectSavePattern(std::unique_ptr<Sav> &savefile, std::unique_ptr
 			if (hRepeat & KEY_UP) {
 				if (savefile->getType() == SaveType::WW) {
 					if (selection > 3) selection -= 4;
+
 				} else {
 					if (selection > 4) selection -= 5;
 				}
@@ -516,16 +523,19 @@ bool Overlays::SelectSavePattern(std::unique_ptr<Sav> &savefile, std::unique_ptr
 					for (int i = 0; i < savefile->getPlayerAmount(); i++) {
 						if (touchPattern(touch, Pattern8[i])) {
 							gspWaitForVBlank();
+
 							if (savefile->playerPattern(SelectedPlayer, i)) {
 								ptrn = savefile->playerPattern(SelectedPlayer, i); /* Return player pattern. */
 								return true;
 							}
 						}
 					}
+
 				} else {
 					for (int i = 0; i < savefile->getPlayerAmount(); i++) {
 						if (touchPattern(touch, Pattern10[i])) {
 							gspWaitForVBlank();
+
 							if (savefile->playerPattern(SelectedPlayer, i)) {
 								ptrn = savefile->playerPattern(SelectedPlayer, i); /* Return player pattern. */
 								return true;
@@ -569,6 +579,7 @@ bool Overlays::SelectSavePattern(std::unique_ptr<Sav> &savefile, std::unique_ptr
 				for (int i = 0; i < savefile->getPlayerAmount(); i++) {
 					if (touchPattern(touch, Pattern8[i])) {
 						gspWaitForVBlank();
+
 						if (savefile->ableSisterPattern(i)) {
 							ptrn = savefile->ableSisterPattern(i); /* Return able sister pattern. */
 							return true;
@@ -579,6 +590,7 @@ bool Overlays::SelectSavePattern(std::unique_ptr<Sav> &savefile, std::unique_ptr
 
 			if (hDown & KEY_X) {
 				gspWaitForVBlank();
+
 				if (savefile->ableSisterPattern(selection)) {
 					ptrn = savefile->ableSisterPattern(selection); /* Return able sister pattern. */
 					return true;
@@ -592,6 +604,7 @@ bool Overlays::SelectSavePattern(std::unique_ptr<Sav> &savefile, std::unique_ptr
 				gspWaitForVBlank();
 				category = 0;
 			}
+
 		} else if (category == 4) {
 
 			/* HHD. */
@@ -636,6 +649,7 @@ bool Overlays::SelectSavePattern(std::unique_ptr<Sav> &savefile, std::unique_ptr
 				for (int i = 0; i < 15; i++) {
 					if (touchPattern(touch, Pattern15[i])) {
 						gspWaitForVBlank();
+
 						if (savefile->HHDPattern((15 * page) + i)) {
 							ptrn = savefile->HHDPattern((15 * page) + i); /* Return HHD pattern. */
 							return true;

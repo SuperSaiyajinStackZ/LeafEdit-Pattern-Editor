@@ -64,6 +64,7 @@ void UI::DrawSelector(bool top, int y) {
 		DrawSprite(sprites_selector_side_idx, 391, y, -1.0, 1.0);
 		/* Stretch the middle. */
 		C2D_DrawImageAt({sprite.tex, &tex}, 9, y, 0.5f, nullptr, 382.0, 1);
+
 	} else {
 		/* Draw Sides. */
 		DrawSprite(sprites_selector_side_idx, 0, y);
@@ -92,7 +93,7 @@ void UI::DrawBox(int y, int ySize) {
 void UI::DrawBtn(int x, int y, int xLength, int yLength) {
 	C2D_Image sprite = C2D_SpriteSheetGetImage(sprites, sprites_button_corner_idx);
 	Tex3DS_SubTexture tex;
-	
+
 	/* Corners. */
 	DrawSprite(sprites_button_corner_idx, x, y, 1, 1);
 	DrawSprite(sprites_button_corner_idx, x + xLength - 14, y, -1.0, 1.0);
@@ -109,7 +110,7 @@ void UI::DrawBtn(int x, int y, int xLength, int yLength) {
 	tex = _select_box(sprite, 11, 0, 12, 14); // Get Width.
 
 	C2D_DrawImageAt({sprite.tex, &tex}, x + 14, y, 0.5f, nullptr, xLength - 28, 1);
-	C2D_DrawImageAt({sprite.tex, &tex}, x + 14, y + yLength - 14, 0.5f, nullptr, xLength - 28, -1);	
+	C2D_DrawImageAt({sprite.tex, &tex}, x + 14, y + yLength - 14, 0.5f, nullptr, xLength - 28, -1);
 
 	/* And now the middle. */
 	tex = _select_box(sprite, 11, 11, 12, 12); // Get Corner pixel.
@@ -133,10 +134,12 @@ void UI::DrawBase(bool onTop, bool bar) {
 			DrawSprite(sprites_bar_idx, 0, 215);
 			/* Draw Text bar, so Text is readable. */
 			DrawSprite(sprites_top_bar_idx, 0, 0);
+
 		} else {
 			/* Just solid. */
 			Gui::Draw_Rect(0, 0, 400, 240, C2D_Color32(215, 178, 111, 255)); // Draw BG based on Tile's color.
 		}
+
 	} else {
 		DrawSprite(sprites_tileBG_idx, 0, 0);
 		DrawSprite(sprites_tileBG_idx, 135, 0);
@@ -144,6 +147,7 @@ void UI::DrawBase(bool onTop, bool bar) {
 		DrawSprite(sprites_tileBG_idx, 0, 132);
 		DrawSprite(sprites_tileBG_idx, 135, 132);
 		DrawSprite(sprites_tileBG_idx, 270, 132);
+
 		if (bar) {
 			DrawSprite(sprites_bar_idx, 0, 0, 1, -1);
 			DrawSprite(sprites_bar_idx, 0, 215);
@@ -154,26 +158,32 @@ void UI::DrawBase(bool onTop, bool bar) {
 void UI::DrawFileBrowseBG(bool isTop) {
 	if (isTop) {
 		Gui::ScreenDraw(Top);
+
 		/* Draw Bakground. */
 		Gui::Draw_Rect(0, 0, 400, 240, C2D_Color32(0xD5, 0xB0, 0x6E, 255));
+
 		/* Draw FileBrowse Bars. */
 		Gui::Draw_Rect(0, 45, 400, 21, C2D_Color32(0xDF, 0xBB, 0x78, 255));
 		Gui::Draw_Rect(0, 87, 400, 21, C2D_Color32(0xDF, 0xBB, 0x78, 255));
 		Gui::Draw_Rect(0, 129, 400, 21, C2D_Color32(0xDF, 0xBB, 0x78, 255));
 		Gui::Draw_Rect(0, 171, 400, 21, C2D_Color32(0xDF, 0xBB, 0x78, 255));
+
 		/* Draw Textbox bars. */
 		DrawSprite(sprites_top_bar_idx, 0, 0);
 		DrawSprite(sprites_bottom_bar_idx, 0, 208);
+
 	} else {
 		Gui::ScreenDraw(Bottom);
 		/* Draw Background. */
 		Gui::Draw_Rect(0, 0, 320, 240, C2D_Color32(0xD5, 0xB0, 0x6E, 255));
+
 		/* Draw FileBrowse Bars. */
 		Gui::Draw_Rect(0, 24, 320, 21, C2D_Color32(0xDF, 0xBB, 0x78, 255));
 		Gui::Draw_Rect(0, 67, 320, 21, C2D_Color32(0xDF, 0xBB, 0x78, 255));
 		Gui::Draw_Rect(0, 109, 320, 21, C2D_Color32(0xDF, 0xBB, 0x78, 255));
 		Gui::Draw_Rect(0, 152, 320, 21, C2D_Color32(0xDF, 0xBB, 0x78, 255));
 		Gui::Draw_Rect(0, 194, 320, 21, C2D_Color32(0xDF, 0xBB, 0x78, 255));
+
 		/* Draw grass Bars. */
 		DrawSprite(sprites_bar_idx, 0, 0, 1, -1);
 		DrawSprite(sprites_bar_idx, 0, 215);
@@ -202,7 +212,7 @@ void UI::bankSelect(int x, int y) {
 	C2D_SetImageTint(&tint, C2D_TopLeft, C2D_Color32(200, 0, 0, 255), 0.5);
 	C2D_SetImageTint(&tint, C2D_TopRight, C2D_Color32(200, 0, 0, 255), 0.5);
 	C2D_SetImageTint(&tint, C2D_BotLeft, C2D_Color32(200, 0, 0, 255), 0.5);
-	C2D_SetImageTint(&tint, C2D_BotRight, C2D_Color32(200, 0, 0, 255), 0.5);	
+	C2D_SetImageTint(&tint, C2D_BotRight, C2D_Color32(200, 0, 0, 255), 0.5);
 
 	C2D_DrawImageAt(C2D_SpriteSheetGetImage(sprites, sprites_pattern_border_idx), x, y, 0.5f, &tint, 1, 1);
 }

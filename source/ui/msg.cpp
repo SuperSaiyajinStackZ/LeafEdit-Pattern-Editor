@@ -68,7 +68,7 @@ bool Msg::promptMsg(std::string promptMsg) {
 		hidTouchRead(&touch);
 
 		if (hidKeysDown() & KEY_LEFT) selection = 0;
-		else if(hidKeysDown() & KEY_RIGHT) selection = 1;
+		else if (hidKeysDown() & KEY_RIGHT) selection = 1;
 
 		if (hidKeysDown() & KEY_A) {
 			if (selection == 0) return true;

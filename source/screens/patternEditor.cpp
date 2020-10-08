@@ -37,7 +37,7 @@ extern bool touching(touchPosition touch, Structs::ButtonPos button);
 extern bool exiting;
 
 /* Needed to display Palettes. */
-static const u32 WWPaletteColors[] = {
+static constexpr u32 WWPaletteColors[] = {
 	0xFF0000FF, 0xFF3173FF, 0xFF00ADFF, 0xFF00FFFF, 0xFF00FFAD, 0xFF00FF52, 0xFF00FF00, 0xFF52AD00, 0xFFAD5200, 0xFFFF0000, 0xFFFF0052, 0xFFFF00AD, 0xFFFF00FF, 0xFF000000, 0xFFFFFFFF,
 	0xFF7B7BFF, 0xFF7BB5FF, 0xFF7BE7FF, 0xFF7BFFFF, 0xFF7BFFDE, 0xFF7BFFAD, 0xFF7BFF7B, 0xFF84AD52, 0xFFAD8452, 0xFFFF7B7B, 0xFFFF7BB5, 0xFFFF7BE7, 0xFFFF7BFF, 0xFF000000, 0xFFFFFFFF,
 	0xFF0000A5, 0xFF0031A5, 0xFF0073A5, 0xFF00A5A5, 0xFF00A573, 0xFF00A531, 0xFF00A500, 0xFF215200, 0xFF522100, 0xFFA50000, 0xFFA50031, 0xFFA50073, 0xFFA500A5, 0xFF000000, 0xFFFFFFFF,
@@ -56,7 +56,7 @@ static const u32 WWPaletteColors[] = {
 	0xFF7B8CFF, 0xFF0000FF, 0xFF007BFF, 0xFF00FFFF, 0xFF008400, 0xFF00FF00, 0xFFFF0000, 0xFFFF9C00, 0xFFFF00D6, 0xFFFF6BFF, 0xFF00009C, 0xFF0094FF, 0xFF94BDFF, 0xFF000000, 0xFFFFFFFF
 };
 
-static const u32 NLPaletteColors[] = {
+static constexpr u32 NLPaletteColors[] = {
 	0xFFFFEEFF, 0xFFAA99FF, 0xFF9955EE, 0xFFAA66FF, 0xFF6600FF, 0xFF7744BB, 0xFF5500CC, 0xFF330099, 0xFF332255, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
 	0xFFCCBBFF, 0xFF7777FF, 0xFF1133DD, 0xFF4455FF, 0xFF0000FF, 0xFF6666CC, 0xFF4444BB, 0xFF0000BB, 0xFF222288, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFEEEEEE,
 	0xFFBBCCDD, 0xFF66CCFF, 0xFF2266DD, 0xFF22AAFF, 0xFF0066FF, 0xFF5588BB, 0xFF0044DD, 0xFF0044BB, 0xFF113366, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFDDDDDD,
@@ -82,6 +82,7 @@ void PatternEditor::loadSave() {
 			this->saveLoaded = true;
 			this->overloadSaveStuff();
 		}
+
 	} else {
 		Msg::DisplayWaitMsg(Lang::get("SAVE_LOAD_MSG"));
 	}
@@ -106,6 +107,7 @@ void PatternEditor::saveStuff() {
 			Msg::DisplayWaitMsg(Lang::get("SAVED_CHANGES"));
 			this->unloadSave();
 			return;
+
 		} else {
 			Msg::DisplayWaitMsg(Lang::get("NO_SAVE_LOADED"));
 		}
@@ -117,6 +119,7 @@ void PatternEditor::unloadSave() {
 	if (this->saveLoaded) {
 		this->saveLoaded = false;
 		this->savefile = nullptr;
+
 	} else {
 		Msg::DisplayWaitMsg(Lang::get("ALREADY_UNLOADED"));
 	}
@@ -133,6 +136,7 @@ void PatternEditor::PatternFromSaveLoad() {
 				this->patternImage = CoreUtils::patternImage(this->image, this->savetype);
 				return;
 			}
+
 		} else {
 			Msg::DisplayWaitMsg(Lang::get("NO_SAVE_LOADED2"));
 		}
@@ -144,12 +148,16 @@ const std::string PatternEditor::getSaveName() const {
 	switch(this->savetype) {
 		case SaveType::WW:
 			return "Wild World";
+
 		case SaveType::NL:
 			return "New Leaf";
+
 		case SaveType::WA:
 			return "Welcome Amiibo";
+
 		case SaveType::HHD:
 			return "Happy Home Designer";
+
 		case SaveType::UNUSED:
 			return "?";
 	}
@@ -163,13 +171,17 @@ const std::string PatternEditor::getRegionName() const {
 		case WWRegion::JPN_REV0:
 		case WWRegion::JPN_REV1:
 			return "Japanese";
+
 		case WWRegion::USA_REV0:
 			return "USA";
+
 		case WWRegion::USA_REV1:
 		case WWRegion::EUR_REV1:
 			return "Europe";
+
 		case WWRegion::KOR_REV1:
 			return "Korean";
+
 		case WWRegion::UNKNOWN:
 			return "?";
 	}
@@ -181,12 +193,13 @@ const std::string PatternEditor::getRegionName() const {
 void PatternEditor::getPattern(const std::string ptrnFile) {
 	this->isValid = false;
 	this->data = nullptr;
-	// Reset to invalid.
+	/* Reset to invalid. */
 	this->saveregion = WWRegion::UNKNOWN;
 	this->savetype = SaveType::UNUSED;
 	this->patternSize = 0;
 
 	FILE *file = fopen(ptrnFile.c_str(), "rb");
+
 	if (file) {
 		fseek(file, 0, SEEK_END);
 		this->patternSize = ftell(file);
@@ -261,7 +274,7 @@ void PatternEditor::load(const std::string ptrnFile, bool fromFile) {
 PatternEditor::PatternEditor() {
 	this->load(Settings::getDefaultPath(), true);
 	this->storage = std::make_unique<Storage>("Storage1");
-	
+
 	PatternInformations info = CoreUtils::getDefaultInformation(this->savetype, this->saveregion);
 
 	/* Strings. */
@@ -295,6 +308,7 @@ void PatternEditor::Draw(void) const {
 
 		if (this->saveLoaded) {
 			Gui::DrawStringCentered(0, -2, 0.9f, C2D_Color32(255, 255, 255, 255), Lang::get("PATTERN_EDITOR") + " - " + Lang::get("SAVE_MODE"), 395, 0, fnt);
+
 		} else {
 			Gui::DrawStringCentered(0, -2, 0.9f, C2D_Color32(255, 255, 255, 255), Lang::get("PATTERN_EDITOR") + " - " + Lang::get("RAW_MODE"), 395, 0, fnt);
 		}
@@ -307,10 +321,11 @@ void PatternEditor::Draw(void) const {
 
 		if (this->pattern->creatorGender()) {
 			Gui::DrawStringCentered(0, isAcww ? 130 : 140, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("PATTERN_CREATOR_GENDER") + Lang::get("FEMALE"), 395, 0, fnt);
+
 		} else {
 			Gui::DrawStringCentered(0, isAcww ? 130 : 140, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("PATTERN_CREATOR_GENDER") + Lang::get("MALE"), 395, 0, fnt);
 		}
-		
+
 		Gui::DrawStringCentered(0, isAcww ? 150 : 160, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("DESIGNTYPE") + std::to_string(this->pattern->designtype()), 395, 0, fnt);
 
 		/* Display Savetype. */
@@ -331,9 +346,10 @@ void PatternEditor::Draw(void) const {
 		if (this->savetype == SaveType::WW) {
 			for (int i = 0; i < 15; i++) {
 				if (i == this->color) {
-					UI::DrawPaletteGrid(palettePos[i].x, palettePos[i].y, palettePos[i].w, palettePos[i].h, WWPaletteColors[this->image->getPaletteColor(i)], C2D_Color32(160, 0, 0, 255));
+					UI::DrawPaletteGrid(this->palettePos[i].x, this->palettePos[i].y, this->palettePos[i].w, this->palettePos[i].h, WWPaletteColors[this->image->getPaletteColor(i)], C2D_Color32(160, 0, 0, 255));
+
 				} else {
-					UI::DrawPaletteGrid(palettePos[i].x, palettePos[i].y, palettePos[i].w, palettePos[i].h, WWPaletteColors[this->image->getPaletteColor(i)], C2D_Color32(20, 20, 20, 255));
+					UI::DrawPaletteGrid(this->palettePos[i].x, this->palettePos[i].y, this->palettePos[i].w, this->palettePos[i].h, WWPaletteColors[this->image->getPaletteColor(i)], C2D_Color32(20, 20, 20, 255));
 				}
 			}
 
@@ -341,6 +357,7 @@ void PatternEditor::Draw(void) const {
 			for (int i = 0; i < 15; i++) {
 				if (i == this->color) {
 					UI::DrawPaletteGrid(palettePos[i].x, palettePos[i].y, palettePos[i].w, palettePos[i].h, NLPaletteColors[this->image->getPaletteColor(i)], C2D_Color32(160, 0, 0, 255));
+
 				} else {
 					UI::DrawPaletteGrid(palettePos[i].x, palettePos[i].y, palettePos[i].w, palettePos[i].h, NLPaletteColors[this->image->getPaletteColor(i)], C2D_Color32(20, 20, 20, 255));
 				}
@@ -406,7 +423,6 @@ void PatternEditor::Logic(u32 hDown, u32 hHeld, touchPosition touch) {
 
 	/* Injection Mode. */
 	if (this->mode == PatternMode::Inject) {
-		
 		if (Msg::promptMsg("INJECT_PROMPT")) {
 			std::string file;
 			bool result = Overlays::SelectPattern(0, file);
@@ -427,7 +443,7 @@ void PatternEditor::Logic(u32 hDown, u32 hHeld, touchPosition touch) {
 		Overlays::StorageMenu(this->storage, this->savefile);
 		this->mode = PatternMode::Draw;
 	}
-	
+
 
 	/* Save your changes Mode. */
 	if (this->mode == PatternMode::DoSave) {
@@ -481,10 +497,11 @@ void PatternEditor::Logic(u32 hDown, u32 hHeld, touchPosition touch) {
 	/* Share Mode. */
 	if (this->mode == PatternMode::Share) {
 		std::string comment = "";
-		if (Msg::promptMsg("ENTER_COMMENT_PROMPT")) {
+
+		if (Msg::promptMsg(Lang::get("ENTER_COMMENT_PROMPT"))) {
 			comment = KBD::kbdString(40, Lang::get("ENTER_COMMENT"));
 		}
-		
+
 		Overlays::ShareOverlay(this->image, this->patternImage, this->pattern, comment);
 		this->mode = PatternMode::Draw;
 	}
@@ -493,7 +510,7 @@ void PatternEditor::Logic(u32 hDown, u32 hHeld, touchPosition touch) {
 	if (this->mode == PatternMode::SetDefault) {
 		if (Msg::promptMsg("SET_DEFAULT_PROMPT")) {
 			PatternInformations info = CoreUtils::getDefaultInformation(this->savetype, this->saveregion);
-		
+
 			/* ID's. */
 			this->pattern->creatorid(info.CreatorID);
 			this->pattern->origtownid(info.TownID);
@@ -514,6 +531,7 @@ void PatternEditor::Logic(u32 hDown, u32 hHeld, touchPosition touch) {
 		if (this->saveLoaded) {
 			CoreUtils::generateEmptyPattern(this->savetype, this->saveregion, this->data, this->patternSize);
 			this->load("", false);
+
 		} else {
 			bool result = Overlays::SaveSelect(this->savetype, this->saveregion);
 			if (result) {
@@ -562,11 +580,13 @@ void PatternEditor::Logic(u32 hDown, u32 hHeld, touchPosition touch) {
 						case SaveType::WW:
 							destination += ".acww";
 							break;
+
 						case SaveType::NL:
 						case SaveType::WA:
 						case SaveType::HHD:
 							destination += ".acnl";
 							break;
+
 						case SaveType::UNUSED:
 							destination += ".invalid";
 							break;

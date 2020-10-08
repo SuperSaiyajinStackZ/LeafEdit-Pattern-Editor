@@ -74,7 +74,8 @@ bool Overlays::SelectPattern(int sltMode, std::string &file) {
 
 	chdir("romfs:/pattern/");
 	std::vector<DirEntry> dirContentsTemp;
-	getDirectoryContents(dirContentsTemp, {"acnl", "acww"});
+	getDirectoryContents(dirContentsTemp, { "acnl", "acww" });
+
 	for(uint i = 0; i < dirContentsTemp.size(); i++) {
 		dirContents.push_back(dirContentsTemp[i]);
 	}
@@ -93,7 +94,8 @@ bool Overlays::SelectPattern(int sltMode, std::string &file) {
 		if (dirChanged) {
 			dirContents.clear();
 			std::vector<DirEntry> dirContentsTemp;
-			getDirectoryContents(dirContentsTemp, {"acnl", "acww"});
+			getDirectoryContents(dirContentsTemp, { "acnl", "acww" });
+
 			for(uint i = 0; i < dirContentsTemp.size(); i++) {
 				dirContents.push_back(dirContentsTemp[i]);
 			}
@@ -106,20 +108,21 @@ bool Overlays::SelectPattern(int sltMode, std::string &file) {
 				selectedFile--;
 			}
 		}
-		
+
 
 		if (hRepeat & KEY_DOWN) {
 			if ((uint)selectedFile < dirContents.size()-1) {
 				selectedFile++;
 			}
 		}
-		
+
 		if (hDown & KEY_A) {
 			if (dirContents.size() > 0) {
 				if (dirContents[selectedFile].isDirectory) {
 					chdir(dirContents[selectedFile].name.c_str());
 					selectedFile = 0;
 					dirChanged = true;
+
 				} else {
 					char path[PATH_MAX];
 					getcwd(path, PATH_MAX);
@@ -134,6 +137,7 @@ bool Overlays::SelectPattern(int sltMode, std::string &file) {
 			getcwd(path, PATH_MAX);
 			if (strcmp(path, "sdmc:/3ds/LeafEdit/Pattern-Editor/") == 0 || strcmp(path, "/3ds/LeafEdit/Pattern-Editor/") == 0 || strcmp(path, "romfs:/pattern/") == 0) {
 				return false;
+
 			} else {
 				chdir("..");
 				selectedFile = 0;
@@ -145,15 +149,16 @@ bool Overlays::SelectPattern(int sltMode, std::string &file) {
 			if (romfsMode) {
 				romfsMode = false;
 				chdir("sdmc:/3ds/LeafEdit/Pattern-Editor/");
+
 			} else {
 				romfsMode = true;
 				chdir("romfs:/pattern/");
 			}
-			
+
 			selectedFile = 0;
 			dirChanged = true;
 		}
-		
+
 		if (hDown & KEY_START) {
 			selectedFile = 0;
 			dirChanged = true;

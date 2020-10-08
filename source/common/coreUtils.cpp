@@ -43,14 +43,17 @@ void CoreUtils::generateEmptyPattern(SaveType ST, WWRegion region, std::unique_p
 				case WWRegion::JPN_REV1:
 					path = "romfs:/pattern/empty/ww_jpn.acww";
 					break;
+
 				case WWRegion::USA_REV0:
 				case WWRegion::USA_REV1:
 				case WWRegion::EUR_REV1:
 					path = "romfs:/pattern/empty/ww_eur.acww";
 					break;
+
 				case WWRegion::KOR_REV1:
 					path = "romfs:/pattern/empty/ww_kor.acww";
 					break;
+
 				case WWRegion::UNKNOWN:
 					return; // Because invalid.
 			}
@@ -61,6 +64,7 @@ void CoreUtils::generateEmptyPattern(SaveType ST, WWRegion region, std::unique_p
 		case SaveType::HHD:
 			path = "romfs:/pattern/empty/nl.acnl";
 			break;
+
 		case SaveType::UNUSED:
 			return; // Because invalid.
 	}
@@ -76,7 +80,7 @@ void CoreUtils::generateEmptyPattern(SaveType ST, WWRegion region, std::unique_p
 
 /* All Palettes. */
 /* Color format seems to be: RGBA. */
-static const u32 NLPaletteColors[] = {
+static constexpr u32 NLPaletteColors[] = {
 	0xFFEEFFFF, 0xFF99AAFF, 0xEE5599FF, 0xFF66AAFF, 0xFF0066FF, 0xBB4477FF, 0xCC0055FF, 0x990033FF, 0x552233FF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
 	0xFFBBCCFF, 0xFF7777FF, 0xDD3311FF, 0xFF5544FF, 0xFF0000FF, 0xCC6666FF, 0xBB4444FF, 0xBB0000FF, 0x882222FF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xEEEEEEFF,
 	0xDDCCBBFF, 0xFFCC66FF, 0xDD6622FF, 0xFFAA22FF, 0xFF6600FF, 0xBB8855FF, 0xDD4400FF, 0xBB4400FF, 0x663311FF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xDDDDDDFF,
@@ -96,7 +100,7 @@ static const u32 NLPaletteColors[] = {
 };
 
 /* Color format seems to be: BRGA. */
-static const u32 WWPaletteColors[] = {
+static constexpr u32 WWPaletteColors[] = {
 	0xFF0000FF, 0xFF7331FF, 0xFFAD00FF, 0xFFFF00FF, 0xADFF00FF, 0x52FF00FF, 0x00FF00FF, 0x00AD52FF, 0x0052ADFF, 0x0000FFFF, 0x5200FFFF, 0xAD00FFFF, 0xFF00FFFF, 0x000000FF, 0xFFFFFFFF,
 	0xFF7B7BFF, 0xFFB57BFF, 0xFFE77BFF, 0xFFFF7BFF, 0xDEFF7BFF, 0xADFF7BFF, 0x7BFF7BFF, 0x52AD84FF, 0x5284ADFF, 0x7B7BFFFF, 0xB57BFFFF, 0xE77BFFFF, 0xFF7BFFFF, 0x000000FF, 0xFFFFFFFF,
 	0xA50000FF, 0xA53100FF, 0xA57300FF, 0xA5A500FF, 0x73A500FF, 0x31A500FF, 0x00A500FF, 0x005221FF, 0x002152FF, 0x0000A5FF, 0x3100A5FF, 0x7300A5FF, 0xA500A5FF, 0x000000FF, 0xFFFFFFFF,
@@ -139,7 +143,7 @@ C2D_Image CoreUtils::savePatternImage(std::unique_ptr<PatternImage> image, SaveT
 
 			case SaveType::UNUSED:
 				linearFree(buffer); // Free buffer cause unneeded.
-				return {nullptr};
+				return { nullptr };
 		}
 
 
@@ -148,7 +152,7 @@ C2D_Image CoreUtils::savePatternImage(std::unique_ptr<PatternImage> image, SaveT
 		return tmp;
 	}
 
-	return {nullptr};
+	return { nullptr };
 }
 
 /* Get a C2D_Image of the pattern buffer. */
@@ -175,7 +179,7 @@ C2D_Image CoreUtils::patternImage(std::unique_ptr<PatternImage> &image, SaveType
 
 			case SaveType::UNUSED:
 				linearFree(buffer); // Free buffer cause unneeded.
-				return {nullptr};
+				return { nullptr };
 		}
 
 
@@ -184,7 +188,7 @@ C2D_Image CoreUtils::patternImage(std::unique_ptr<PatternImage> &image, SaveType
 		return tmp;
 	}
 
-	return {nullptr};
+	return { nullptr };
 }
 
 /* Get the default file. */
@@ -197,6 +201,7 @@ std::string CoreUtils::getDefaultFile(SaveType ST, WWRegion region) {
 				case WWRegion::JPN_REV1:
 					if (access("sdmc:/3ds/LeafEdit/Pattern-Editor/defaults/wwJPNDefault.pt", F_OK) == 0) {
 						return "sdmc:/3ds/LeafEdit/Pattern-Editor/defaults/wwJPNDefault.pt";
+
 					} else {
 						return "romfs:/defaults/wwJPNDefault.pt";
 					}
@@ -205,6 +210,7 @@ std::string CoreUtils::getDefaultFile(SaveType ST, WWRegion region) {
 				case WWRegion::USA_REV1:
 					if (access("sdmc:/3ds/LeafEdit/Pattern-Editor/defaults/wwUSADefault.pt", F_OK) == 0) {
 						return "sdmc:/3ds/LeafEdit/Pattern-Editor/defaults/wwUSADefault.pt";
+
 					} else {
 						return "romfs:/defaults/wwUSADefault.pt";
 					}
@@ -212,6 +218,7 @@ std::string CoreUtils::getDefaultFile(SaveType ST, WWRegion region) {
 				case WWRegion::EUR_REV1:
 					if (access("sdmc:/3ds/LeafEdit/Pattern-Editor/defaults/wwEURDefault.pt", F_OK) == 0) {
 						return "sdmc:/3ds/LeafEdit/Pattern-Editor/defaults/wwEURDefault.pt";
+
 					} else {
 						return "romfs:/defaults/wwEURDefault.pt";
 					}
@@ -219,6 +226,7 @@ std::string CoreUtils::getDefaultFile(SaveType ST, WWRegion region) {
 				case WWRegion::KOR_REV1:
 					if (access("sdmc:/3ds/LeafEdit/Pattern-Editor/defaults/wwKORDefault.pt", F_OK) == 0) {
 						return "sdmc:/3ds/LeafEdit/Pattern-Editor/defaults/wwKORDefault.pt";
+
 					} else {
 						return "romfs:/defaults/wwKORDefault.pt";
 					}
@@ -230,6 +238,7 @@ std::string CoreUtils::getDefaultFile(SaveType ST, WWRegion region) {
 		case SaveType::NL:
 			if (access("sdmc:/3ds/LeafEdit/Pattern-Editor/defaults/nlDefault.pt", F_OK) == 0) {
 				return "sdmc:/3ds/LeafEdit/Pattern-Editor/defaults/nlDefault.pt";
+
 			} else {
 				return "romfs:/defaults/nlDefault.pt";
 			}
@@ -238,6 +247,7 @@ std::string CoreUtils::getDefaultFile(SaveType ST, WWRegion region) {
 		case SaveType::HHD:
 			if (access("sdmc:/3ds/LeafEdit/Pattern-Editor/defaults/waDefault.pt", F_OK) == 0) {
 				return "sdmc:/3ds/LeafEdit/Pattern-Editor/defaults/waDefault.pt";
+
 			} else {
 				return "romfs:/defaults/waDefault.pt";
 			}
@@ -251,7 +261,7 @@ std::string CoreUtils::getDefaultFile(SaveType ST, WWRegion region) {
 
 
 PatternInformations CoreUtils::getDefaultInformation(SaveType ST, WWRegion region) {
-	PatternInformations output = {StringUtils::UTF8toUTF16("?"), StringUtils::UTF8toUTF16("?"), StringUtils::UTF8toUTF16("?"), 0, 0, 0}; // Default.
+	PatternInformations output = { StringUtils::UTF8toUTF16("?"), StringUtils::UTF8toUTF16("?"), StringUtils::UTF8toUTF16("?"), 0, 0, 0 }; // Default.
 
 	bool UTF8Read = true; /* If UTF-8 or UTF-16 Read. */
 	u8 patternLength = 0, creatorLength = 0, townLength = 0; /* Name Reading Length. */
@@ -354,12 +364,13 @@ PatternInformations CoreUtils::getDefaultInformation(SaveType ST, WWRegion regio
 
 			/* fetch! */
 			if (data) {
-			
+
 				/* String read. */
 				if (UTF8Read) {
 					output.PatternName = StringUtils::ReadUTF8String(data.get(), 0, patternLength, region);
 					output.CreatorName = StringUtils::ReadUTF8String(data.get(), creatorNameStart, creatorLength, region);
 					output.TownName = StringUtils::ReadUTF8String(data.get(), townNameStart, townLength, region);
+
 				} else {
 					output.PatternName = StringUtils::ReadUTF16String(data.get(), 0, patternLength);
 					output.CreatorName = StringUtils::ReadUTF16String(data.get(), creatorNameStart, creatorLength);
@@ -497,6 +508,7 @@ void CoreUtils::dumpPatternInformation(SaveType ST, WWRegion region, std::unique
 				StringUtils::WriteUTF8String(data.get(), ptrn->name(), 0, patternLength, region);
 				StringUtils::WriteUTF8String(data.get(), ptrn->creatorname(), creatorNameStart, creatorLength, region);
 				StringUtils::WriteUTF8String(data.get(), ptrn->origtownname(), townNameStart, townLength, region);
+
 			} else {
 				StringUtils::WriteUTF16String(data.get(), ptrn->name(), 0, patternLength);
 				StringUtils::WriteUTF16String(data.get(), ptrn->creatorname(), creatorNameStart, creatorLength);

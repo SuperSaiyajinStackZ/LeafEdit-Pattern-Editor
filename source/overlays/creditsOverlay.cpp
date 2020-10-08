@@ -44,27 +44,32 @@ static void Draw(int page) {
 	UI::DrawSprite(sprites_top_bar_idx, 0, 0);
 	Gui::DrawStringCentered(0, -2, 0.9f, C2D_Color32(255, 255, 255, 255), Lang::get("PAGE") + std::to_string(page + 1) + " | 3", 310, 0, fnt);
 
-	if (page == 0) {
-		Gui::DrawStringCentered(0, 28, 0.8f, C2D_Color32(0, 0, 0, 255), Lang::get("ALL_LEAFEDIT_CORE"), 310, 0, fnt);
-		Gui::DrawStringCentered(0, 48, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("HELP_LEAFEDIT_CORE"), 310, 0, fnt);
-		Gui::DrawStringCentered(0, 78, 0.8f, C2D_Color32(0, 0, 0, 255), "devkitPro", 310, 0, fnt);
-		Gui::DrawStringCentered(0, 98, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("DEVKITPRO"), 310, 0, fnt);
-		Gui::DrawStringCentered(0, 128, 0.8f, C2D_Color32(0, 0, 0, 255), "FlagBrew", 310, 0, fnt);
-		Gui::DrawStringCentered(0, 148, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("BANK_SYSTEM"), 310, 0, fnt);
-		Gui::DrawStringCentered(0, 178, 0.8f, C2D_Color32(0, 0, 0, 255), "Slattz", 310, 0, fnt);
-		Gui::DrawStringCentered(0, 198, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("NLTK_CREDIT"), 310, 0, fnt);
-	} else if (page == 1) {
-		Gui::DrawStringCentered(0, 28, 0.8f, C2D_Color32(0, 0, 0, 255), "SuperSaiyajinStackZ", 310, 0, fnt);
-		Gui::DrawStringCentered(0, 48, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("CREATING_APP"), 310, 0, fnt);
-		Gui::DrawStringCentered(0, 78, 0.8f, C2D_Color32(0, 0, 0, 255), "TotallyNotGuy", 310, 0, fnt);
-		Gui::DrawStringCentered(0, 98, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("LEAFEDIT_GRAPHICS"), 310, 0, fnt);
-		Gui::DrawStringCentered(0, 128, 0.8f, C2D_Color32(0, 0, 0, 255), "Universal-Team", 310, 0, fnt);
-		Gui::DrawStringCentered(0, 148, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("UT_CREDITS"), 310, 0, fnt);
-	} else {
-		Gui::DrawString(5, 45, 0.8f, C2D_Color32(0, 0, 0, 255), "Deutsch\nEnglish", 310, 0, fnt);
-		Gui::DrawString(150, 45, 0.8f, C2D_Color32(0, 0, 0, 255), "SuperSaiyajinStackZ\nSuperSaiyajinStackZ", 310, 0, fnt);
+	switch(page) {
+		case 0:
+			Gui::DrawStringCentered(0, 28, 0.8f, C2D_Color32(0, 0, 0, 255), Lang::get("ALL_LEAFEDIT_CORE"), 310, 0, fnt);
+			Gui::DrawStringCentered(0, 48, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("HELP_LEAFEDIT_CORE"), 310, 0, fnt);
+			Gui::DrawStringCentered(0, 78, 0.8f, C2D_Color32(0, 0, 0, 255), "devkitPro", 310, 0, fnt);
+			Gui::DrawStringCentered(0, 98, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("DEVKITPRO"), 310, 0, fnt);
+			Gui::DrawStringCentered(0, 128, 0.8f, C2D_Color32(0, 0, 0, 255), "FlagBrew", 310, 0, fnt);
+			Gui::DrawStringCentered(0, 148, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("BANK_SYSTEM"), 310, 0, fnt);
+			Gui::DrawStringCentered(0, 178, 0.8f, C2D_Color32(0, 0, 0, 255), "Slattz", 310, 0, fnt);
+			Gui::DrawStringCentered(0, 198, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("NLTK_CREDIT"), 310, 0, fnt);
+			break;
+
+		case 1:
+			Gui::DrawStringCentered(0, 28, 0.8f, C2D_Color32(0, 0, 0, 255), "SuperSaiyajinStackZ", 310, 0, fnt);
+			Gui::DrawStringCentered(0, 48, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("CREATING_APP"), 310, 0, fnt);
+			Gui::DrawStringCentered(0, 78, 0.8f, C2D_Color32(0, 0, 0, 255), "TotallyNotGuy", 310, 0, fnt);
+			Gui::DrawStringCentered(0, 98, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("LEAFEDIT_GRAPHICS"), 310, 0, fnt);
+			Gui::DrawStringCentered(0, 128, 0.8f, C2D_Color32(0, 0, 0, 255), "Universal-Team", 310, 0, fnt);
+			Gui::DrawStringCentered(0, 148, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("UT_CREDITS"), 310, 0, fnt);
+			break;
+
+		case 2:
+			Gui::DrawString(5, 45, 0.8f, C2D_Color32(0, 0, 0, 255), "Deutsch\nEnglish", 310, 0, fnt);
+			Gui::DrawString(150, 45, 0.8f, C2D_Color32(0, 0, 0, 255), "SuperSaiyajinStackZ\nSuperSaiyajinStackZ", 310, 0, fnt);
 	}
-	
+
 	C3D_FrameEnd(0);
 }
 

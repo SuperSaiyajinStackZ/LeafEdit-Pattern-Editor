@@ -77,25 +77,30 @@ constexpr std::array<char16_t, 256> wwCharacterDictionaryJapanese = {
 std::u16string StringUtils::wwToUnicode(const std::string &input, WWRegion region) {
 	std::u16string output;
 	const std::array<char16_t, 256> *characters;
+
 	switch(region) {
 		case WWRegion::USA_REV0:
 		case WWRegion::USA_REV1:
 		case WWRegion::EUR_REV1:
 			characters = &wwCharacterDictionary;
 			break;
+
 		case WWRegion::JPN_REV0:
 		case WWRegion::JPN_REV1:
 			characters = &wwCharacterDictionaryJapanese;
 			break;
+
 		case WWRegion::KOR_REV1:
 		case WWRegion::UNKNOWN:
 			return output;
+
 		default:
 			return output;
 	}
 
 	for (char16_t character : input) {
 		if ((*characters)[character] == '\0') break;
+
 		if (character < characters->size()) {
 			output += (*characters)[character];
 		}
@@ -107,27 +112,31 @@ std::u16string StringUtils::wwToUnicode(const std::string &input, WWRegion regio
 // Korean is different and uses the NL Strings.
 std::string StringUtils::unicodeToWW(const std::u16string &input, WWRegion region) {
 	std::string output;
-
 	const std::array<char16_t, 256> *characters;
+
 	switch(region) {
 		case WWRegion::USA_REV0:
 		case WWRegion::USA_REV1:
 		case WWRegion::EUR_REV1:
 			characters = &wwCharacterDictionary;
 			break;
+
 		case WWRegion::JPN_REV0:
 		case WWRegion::JPN_REV1:
 			characters = &wwCharacterDictionaryJapanese;
 			break;
+
 		case WWRegion::KOR_REV1:
 		case WWRegion::UNKNOWN:
 			return "";
+
 		default:
 			return "";
 	}
 
 	for(char16_t character : input) {
 		auto it = std::find(characters->begin(), characters->end(), character);
+
 		if (it != characters->end()) {
 			output += std::distance(characters->begin(), it);
 		}
@@ -143,13 +152,16 @@ std::string utf16DataToUtf8(const char16_t* data, size_t size, char16_t delim = 
 	for (size_t i = 0; i < size; i++) {
 		if (data[i] == delim) {
 			return ret;
+
 		} else if (data[i] < 0x0080) {
 			addChar[0] = data[i];
 			addChar[1] = '\0';
+
 		} else if (data[i] < 0x0800) {
 			addChar[0] = 0xC0 | ((data[i] >> 6) & 0x1F);
 			addChar[1] = 0x80 | (data[i] & 0x3F);
 			addChar[2] = '\0';
+
 		} else {
 			addChar[0] = 0xE0 | ((data[i] >> 12) & 0x0F);
 			addChar[1] = 0x80 | ((data[i] >> 6) & 0x3F);
@@ -175,10 +187,12 @@ std::u16string StringUtils::UTF8toUTF16(const std::string& src) {
 			codepoint	= codepoint << 6 | (src[i + 1] & 0x3F);
 			codepoint	= codepoint << 6 | (src[i + 2] & 0x3F);
 			iMod		= 2;
+
 		} else if (src[i] & 0x80 && src[i] & 0x40 && !(src[i] & 0x20) && i + 1 < src.size()) {
 			codepoint	= src[i] & 0x1F;
 			codepoint	= codepoint << 6 | (src[i + 1] & 0x3F);
 			iMod		= 1;
+
 		} else if (!(src[i] & 0x80)) {
 			codepoint = src[i];
 		}

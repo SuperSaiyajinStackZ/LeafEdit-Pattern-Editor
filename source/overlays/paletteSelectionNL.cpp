@@ -29,7 +29,7 @@
 
 extern bool touching(touchPosition touch, Structs::ButtonPos button);
 
-static const u32 NLPaletteColors[] = {
+static constexpr u32 NLPaletteColors[] = {
 	0xFFFFEEFF, 0xFFAA99FF, 0xFF9955EE, 0xFFAA66FF, 0xFF6600FF, 0xFF7744BB, 0xFF5500CC, 0xFF330099, 0xFF332255, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
 	0xFFCCBBFF, 0xFF7777FF, 0xFF1133DD, 0xFF4455FF, 0xFF0000FF, 0xFF6666CC, 0xFF4444BB, 0xFF0000BB, 0xFF222288, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFEEEEEE,
 	0xFFBBCCDD, 0xFF66CCFF, 0xFF2266DD, 0xFF22AAFF, 0xFF0066FF, 0xFF5588BB, 0xFF0044DD, 0xFF0044BB, 0xFF113366, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFDDDDDD,
@@ -97,6 +97,7 @@ static void Draw(std::unique_ptr<PatternImage> &pImg, C2D_Image &img, int index,
 	for (int i = 0; i < 15; i++) {
 		if (i == index) {
 			UI::DrawPaletteGrid(paletteGrid[i].x, paletteGrid[i].y, paletteGrid[i].w, paletteGrid[i].h, NLPaletteColors[pImg->getPaletteColor(i)], C2D_Color32(180, 0, 0, 255));
+
 		} else {
 			UI::DrawPaletteGrid(paletteGrid[i].x, paletteGrid[i].y, paletteGrid[i].w, paletteGrid[i].h, NLPaletteColors[pImg->getPaletteColor(i)], C2D_Color32(20, 20, 20, 255));
 		}
@@ -134,7 +135,7 @@ static void DrawPaletteSelection(C2D_Image &img, int colorGroup, int selection, 
 		UI::DrawBox((240-Gui::GetStringHeight(0.7f, Lang::get("PALETTE_NL_INSTR2"), fnt))/2 - 24, Gui::GetStringHeight(0.7f, Lang::get("PALETTE_NL_INSTR2"), fnt));
 		Gui::DrawStringCentered(0, (240-Gui::GetStringHeight(0.7f, Lang::get("PALETTE_NL_INSTR2"), fnt))/2, 0.7f, WHITE, Lang::get("PALETTE_NL_INSTR2"), 385, 100, fnt);
 	}
-	
+
 	UI::DrawBase(false, true);
 	UI::DrawSprite(sprites_top_bar_idx, 0, 0);
 	Gui::DrawStringCentered(0, -2, 0.9, C2D_Color32(255, 255, 255, 255), Lang::get("SHOW_INSTRUCTION"), 310, 0, fnt);
@@ -144,6 +145,7 @@ static void DrawPaletteSelection(C2D_Image &img, int colorGroup, int selection, 
 		for (int i = 0; i < 9; i++) {
 			if (i == selection) {
 				UI::DrawPaletteGrid(colorGrid[i].x, colorGrid[i].y, colorGrid[i].w, colorGrid[i].h, NLPaletteColors[(i + (colorGroup * 16))], C2D_Color32(180, 0, 0, 255));
+
 			} else {
 				UI::DrawPaletteGrid(colorGrid[i].x, colorGrid[i].y, colorGrid[i].w, colorGrid[i].h, NLPaletteColors[(i + (colorGroup * 16))], C2D_Color32(0, 0, 0, 255));
 			}
@@ -153,6 +155,7 @@ static void DrawPaletteSelection(C2D_Image &img, int colorGroup, int selection, 
 		for (int i = 0; i < 15; i++) {
 			if (i == selection) {
 				UI::DrawPaletteGrid(paletteGrid[i].x, paletteGrid[i].y, paletteGrid[i].w, paletteGrid[i].h, NLPaletteColors[(15 + (colorGroup * i))], C2D_Color32(180, 0, 0, 255));
+
 			} else {
 				UI::DrawPaletteGrid(paletteGrid[i].x, paletteGrid[i].y, paletteGrid[i].w, paletteGrid[i].h, NLPaletteColors[(15 + (colorGroup * i))], C2D_Color32(20, 20, 20, 255));
 			}
@@ -163,13 +166,10 @@ static void DrawPaletteSelection(C2D_Image &img, int colorGroup, int selection, 
 }
 
 void Overlays::PaletteToolNL(std::unique_ptr<PatternImage> &pImg, C2D_Image &img) {
-	bool exitOverlay = false;
-	bool selectColor = false;
-	bool showInstructions = false;
+	bool exitOverlay = false, selectColor = false, showInstructions = false;
 	int group = 0, groupSelection = 0, index = 0;
 
 	while(!exitOverlay) {
-		
 		if (!selectColor) Draw(pImg, img, index, showInstructions);
 		else DrawPaletteSelection(img, group, groupSelection, showInstructions);
 		touchPosition touch;
@@ -206,6 +206,7 @@ void Overlays::PaletteToolNL(std::unique_ptr<PatternImage> &pImg, C2D_Image &img
 									break;
 								}
 							}
+
 						} else {
 							for (int i = 0; i < 15; i++) {
 								if (touching(touch, paletteGrid[i])) {
@@ -237,6 +238,7 @@ void Overlays::PaletteToolNL(std::unique_ptr<PatternImage> &pImg, C2D_Image &img
 							if (groupSelection < 2 || groupSelection < 5 || groupSelection < 8) {
 								groupSelection++;
 							}
+
 						} else {
 							if (groupSelection < 14) groupSelection++;
 						}
@@ -247,6 +249,7 @@ void Overlays::PaletteToolNL(std::unique_ptr<PatternImage> &pImg, C2D_Image &img
 							if (groupSelection > 0 || groupSelection > 3 || groupSelection > 6) {
 								groupSelection--;
 							}
+
 						} else {
 							if (groupSelection > 0) groupSelection--;
 						}
@@ -273,11 +276,13 @@ void Overlays::PaletteToolNL(std::unique_ptr<PatternImage> &pImg, C2D_Image &img
 						group = 0;
 						selectColor = false;
 					}
+
 					if (hDown & KEY_B) {
 						groupSelection = 0;
 						group = 0;
 						selectColor = false;
 					}
+
 				} else {
 					if (hRepeat & KEY_RIGHT) {
 						if (index < 14) index++;

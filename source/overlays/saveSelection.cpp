@@ -48,11 +48,12 @@ static void Draw(int mode, int selection) {
 	C2D_TargetClear(Bottom, C2D_Color32(0, 0, 0, 0));
 
 	UI::DrawBase(true, true);
+
 	if (mode == 0) {
 		Gui::DrawStringCentered(0, -2, 0.9f, C2D_Color32(255, 255, 255, 255), Lang::get("SELECT_GAME"), 395, 0, fnt);
 		UI::DrawBase(false, true);
 
-		
+
 		UI::DrawSprite(sprites_iconNL_idx, types[0].x, types[0].y);
 		UI::DrawSprite(sprites_iconWA_idx, types[1].x, types[1].y);
 		UI::DrawSprite(sprites_iconWW_idx, types[2].x, types[2].y);
@@ -62,10 +63,11 @@ static void Draw(int mode, int selection) {
 		Gui::DrawString(20, 70, 0.75f, C2D_Color32(0, 0, 0, 255), "New Leaf", 0, 0, fnt);
 		Gui::DrawString(105, 140, 0.75f, C2D_Color32(0, 0, 0, 255), "Welcome Amiibo", 0, 0, fnt);
 		Gui::DrawString(220, 70, 0.75f, C2D_Color32(0, 0, 0, 255), "Wild World", 0, 0, fnt);
+
 	} else {
 		Gui::DrawStringCentered(0, -2, 0.9f, C2D_Color32(255, 255, 255, 255), Lang::get("SELECT_REGION"), 395, 0, fnt);
 		UI::DrawBase(false, true);
-		
+
 		UI::DrawSprite(sprites_japan_idx, regions[0].x, regions[0].y);
 		UI::DrawSprite(sprites_usa_idx, regions[1].x, regions[1].y);
 		UI::DrawSprite(sprites_europe_idx, regions[2].x, regions[2].y);
@@ -84,8 +86,8 @@ static void Draw(int mode, int selection) {
 
 bool Overlays::SaveSelect(SaveType &ST, WWRegion &region) {
 	int mode = 0, selection = 0;
-
 	gspWaitForVBlank();
+
 	while(1) {
 		Draw(mode, selection);
 		touchPosition touch;
@@ -109,9 +111,11 @@ bool Overlays::SaveSelect(SaveType &ST, WWRegion &region) {
 				if (touching(touch, types[0])) {
 					ST = SaveType::NL;
 					return true;
+
 				} else if (touching(touch, types[1])) {
 					ST = SaveType::WA;
 					return true;
+
  				} else if (touching(touch, types[2])) {
 					ST = SaveType::WW;
 					gspWaitForVBlank();
@@ -126,10 +130,12 @@ bool Overlays::SaveSelect(SaveType &ST, WWRegion &region) {
 						ST = SaveType::NL;
 						return true;
 						break;
+
 					case 1:
 						ST = SaveType::WA;
 						return true;
 						break;
+
 					case 2:
 						ST = SaveType::WW;
 						gspWaitForVBlank();
@@ -153,12 +159,15 @@ bool Overlays::SaveSelect(SaveType &ST, WWRegion &region) {
 				if (touching(touch, regions[0])) {
 					region = WWRegion::JPN_REV1;
 					return true;
+
 				} else if (touching(touch, regions[1])) {
 					region = WWRegion::USA_REV1;
 					return true;
+
  				} else if (touching(touch, regions[2])) {
 					region = WWRegion::EUR_REV1;
 					return true;
+
 				} else if (touching(touch, regions[3])) {
 					region = WWRegion::KOR_REV1;
 					return true;
@@ -171,14 +180,17 @@ bool Overlays::SaveSelect(SaveType &ST, WWRegion &region) {
 						region = WWRegion::JPN_REV1;
 						return true;
 						break;
+
 					case 1:
 						region = WWRegion::USA_REV1;
 						return true;
 						break;
+
 					case 2:
 						region = WWRegion::EUR_REV1;
 						return true;
 						break;
+
 					case 3:
 						region = WWRegion::KOR_REV1;
 						return true;

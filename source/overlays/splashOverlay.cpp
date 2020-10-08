@@ -25,38 +25,75 @@
 */
 
 #include "overlay.hpp"
+#include <ctime>
 
-static void Draw(void) {
+#define _SPLASH_X_LOGO_POS 140
+#define _SPLASH_LOGO_INIT_DELAY 50
+#define _SPLASH_WAIT_DELAY 200
+
+static void Draw(const int &logoPos, const uint32_t &year) {
 	Gui::clearTextBufs();
 	C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
 	C2D_TargetClear(Top, C2D_Color32(0, 0, 0, 0));
 	C2D_TargetClear(Bottom, C2D_Color32(0, 0, 0, 0));
-	Gui::ScreenDraw(Top);
-	UI::DrawSprite(sprites_dev_by_idx, 0, 0);
-	Gui::DrawString(240, 175, 0.7, C2D_Color32(0, 0, 0, 255), "2020", 0, 0, fnt);
-	if (fadealpha > 0) Gui::Draw_Rect(0, 0, 400, 240, C2D_Color32(fadecolor, fadecolor, fadecolor, fadealpha)); // Fade in/out effect
-	Gui::ScreenDraw(Bottom);
-	UI::DrawSprite(sprites_universal_core_idx, 0, 0);
-	if (fadealpha > 0) Gui::Draw_Rect(0, 0, 320, 240, C2D_Color32(fadecolor, fadecolor, fadecolor, fadealpha)); // Fade in/out effect
+
+	UI::DrawBase(true, true);
+	UI::DrawSprite(sprites_bottom_bar_idx, 0, 209);
+	Gui::DrawStringCentered(0, -2, 0.9f, WHITE, Lang::get("STACKZ_PRESENTS"), 0, 0, fnt);
+	UI::DrawSprite(sprites_stackz_idx, 2, 74);
+	if (logoPos < 400) UI::DrawSprite(sprites_banner_idx, logoPos, 56);
+	Gui::DrawStringCentered(0, 217, 0.9f, WHITE, "2020 - " + std::to_string(year), 0, 0, fnt);
+	if (fadealpha > 0) Gui::Draw_Rect(0, 0, 400, 240, C2D_Color32(fadecolor, fadecolor, fadecolor, fadealpha));
+
+	UI::DrawBase(false, false);
+	UI::DrawSprite(sprites_universal_core_idx, 0, 26);
+	if (fadealpha > 0) Gui::Draw_Rect(0, 0, 320, 240, C2D_Color32(fadecolor, fadecolor, fadecolor, fadealpha));
+
 	C3D_FrameEnd(0);
 }
 
 void Overlays::SplashOverlay() {
-	fadein = true;
-	fadealpha = 255;
-	int delay = 200; // The delay for exiting the overlay.
-	bool doOut = false;
+	int delay = _SPLASH_WAIT_DELAY, logoPos = 402, swipeDelay = _SPLASH_LOGO_INIT_DELAY;
+	bool doOut = false, swipedIn = false, doSwipe = false;
+
+	/* Get current time / year. */
+	time_t currentTime = time(NULL);
+	struct tm *currentTimeStruct = localtime(&currentTime);
+	uint32_t year = 1900 + currentTimeStruct->tm_year;
+
 	while(!doOut) {
-		Draw();
-		Gui::fadeEffects(16, 16, false);
+		Draw(logoPos, year);
+
 		hidScanInput();
 
-		if (delay > 0) {
-			delay--;
+		if (hidKeysDown()) doOut = true;
 
-			if (delay == 0) doOut = true;
+		if (!swipedIn) {
+			if (swipeDelay > 0) {
+				swipeDelay--;
+
+				if (swipeDelay == 0) {
+					doSwipe = true;
+				}
+			}
 		}
 
-		if (hidKeysDown()) doOut = true;
+		if (doSwipe) {
+			if (logoPos > _SPLASH_X_LOGO_POS) {
+				logoPos--;
+
+				if (logoPos == _SPLASH_X_LOGO_POS) {
+					swipedIn = true;
+				}
+			}
+		}
+
+		if (swipedIn) {
+			if (delay > 0) {
+				delay--;
+
+				if (delay == 0) doOut = true;
+			}
+		}
 	}
 }

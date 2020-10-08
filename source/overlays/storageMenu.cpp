@@ -32,7 +32,7 @@ static const std::vector<Button> buttons = {
 	{15, 34, 130, 48, "RESIZE_STORAGE"},
 	{175, 34, 130, 48, "CHANGE_STORAGE"},
 	{15, 97, 130, 48, "CREATE_STORAGE"},
-	{175, 97, 130, 48, "MANAGE_STORAGE"}, 
+	{175, 97, 130, 48, "MANAGE_STORAGE"},
 	{15, 159, 130, 48, "SAVE_STORAGE"}
 };
 
@@ -55,6 +55,7 @@ static void Draw(std::unique_ptr<Storage> &storage, int select) {
 
 	if (storage) {
 		Gui::DrawStringCentered(0, 218, 0.9f, C2D_Color32(255, 255, 255, 255), Lang::get("STORAGE_NAME") + storage->name(), 395, 0, fnt);
+
 	} else {
 		Gui::DrawStringCentered(0, 218, 0.9f, C2D_Color32(255, 255, 255, 255), Lang::get("STORAGE_NOT_LOADED"), 395, 0, fnt);
 	}
@@ -91,6 +92,7 @@ static void changeStorage(std::unique_ptr<Storage> &storage) {
 		file.erase(file.size()-8, 8);
 
 		std::unique_ptr<Storage> tmpStorage = std::make_unique<Storage>(file);
+
 		if (tmpStorage) {
 			storage->save();
 			storage = nullptr;
@@ -102,6 +104,7 @@ static void changeStorage(std::unique_ptr<Storage> &storage) {
 void Overlays::StorageMenu(std::unique_ptr<Storage> &storage, std::unique_ptr<Sav> &savefile) {
 	bool doOut = false;
 	int selection = 0;
+
 	while(!doOut) {
 		Draw(storage, selection);
 		touchPosition touch;
@@ -138,19 +141,23 @@ void Overlays::StorageMenu(std::unique_ptr<Storage> &storage, std::unique_ptr<Sa
 					handleResize(storage);
 					gspWaitForVBlank();
 					break;
+
 				case 1:
 					changeStorage(storage);
 					gspWaitForVBlank();
 					break;
+
 				case 2:
 					storage->name(KBD::kbdString(20, Lang::get("ENTER_STORAGE_NAME")));
 					storage->createStorage();
 					storage->load();
 					gspWaitForVBlank();
 					break;
+
 				case 3:
 					if (storage && savefile) {
 						Overlays::StorageHandling(storage, savefile);
+
 					} else {
 						Msg::DisplayWaitMsg(Lang::get("STORAGE_MSG"));
 					}
@@ -158,6 +165,7 @@ void Overlays::StorageMenu(std::unique_ptr<Storage> &storage, std::unique_ptr<Sa
 					gspWaitForVBlank();
 
 					break;
+
 				case 4:
 					if (Msg::promptMsg("SAVE_STORAGE_MSG")) storage->save();
 					gspWaitForVBlank();
@@ -169,29 +177,33 @@ void Overlays::StorageMenu(std::unique_ptr<Storage> &storage, std::unique_ptr<Sa
 			if (touching(touch, buttons[0])) {
 				handleResize(storage);
 				gspWaitForVBlank();
+
 			} else if (touching(touch, buttons[1])) {
 				changeStorage(storage);
 				gspWaitForVBlank();
+
 			} else if (touching(touch, buttons[2])) {
 				storage->name(KBD::kbdString(20, Lang::get("ENTER_STORAGE_NAME")));
 				storage->createStorage();
 				storage->load();
 				gspWaitForVBlank();
+
 			} else if (touching(touch, buttons[3])) {
 				if (storage && savefile) {
 					Overlays::StorageHandling(storage, savefile);
+
 				} else {
 					Msg::DisplayWaitMsg(Lang::get("STORAGE_MSG"));
 				}
 
 				gspWaitForVBlank();
+
 			} else if (touching(touch, buttons[4])) {
 				if (Msg::promptMsg("SAVE_STORAGE_MSG")) storage->save();
 				gspWaitForVBlank();
-			}	
+			}
 		}
 
 		if (hDown & KEY_B) doOut = true;
 	}
-
 }

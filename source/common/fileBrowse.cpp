@@ -69,6 +69,7 @@ void getDirectoryContents(std::vector<DirEntry>& dirContents, const std::vector<
 
 	if (pdir == NULL) {
 		for(int i = 0; i < 120; i++) gspWaitForVBlank();
+
 	} else {
 		while(true) {
 			DirEntry dirEntry;

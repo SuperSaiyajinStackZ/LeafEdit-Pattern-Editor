@@ -35,7 +35,7 @@ static void Draw(std::unique_ptr<PatternImage> &pImg, C2D_Image &img, std::uniqu
 	UI::DrawBase(true, true);
 	UI::DrawSprite(sprites_bottom_bar_idx, 0, 209);
 	Gui::DrawStringCentered(0, -2, 0.9, C2D_Color32(255, 255, 255, 255), StringUtils::UTF16toUTF8(ptrn->name()) + " " + Lang::get("CREATED_BY") + StringUtils::UTF16toUTF8(ptrn->creatorname()) + ".", 395, 100, fnt);
-	if (img.subtex != nullptr) C2D_DrawImageAt(img, 18, 42, 0.5f, nullptr, 5, 5); // 160x160. 160/32 -> 5.
+	if (img.tex) C2D_DrawImageAt(img, 18, 42, 0.5f, nullptr, 5, 5); // 160x160. 160/32 -> 5.
 
 	Gui::DrawString(210, 60, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("PATTERN_NAME") + StringUtils::UTF16toUTF8(ptrn->name()), 160, 0, fnt);
 	Gui::DrawString(210, 80, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("PATTERN_CREATOR_NAME") + StringUtils::UTF16toUTF8(ptrn->creatorname()), 160, 0, fnt);
@@ -45,6 +45,7 @@ static void Draw(std::unique_ptr<PatternImage> &pImg, C2D_Image &img, std::uniqu
 
 	if (ptrn->creatorGender()) {
 		Gui::DrawString(210, 160, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("PATTERN_CREATOR_GENDER") + Lang::get("FEMALE"), 160, 0, fnt);
+
 	} else {
 		Gui::DrawString(210, 160, 0.7f, C2D_Color32(0, 0, 0, 255), Lang::get("PATTERN_CREATOR_GENDER") + Lang::get("MALE"), 160, 0, fnt);
 	}
